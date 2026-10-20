@@ -1,0 +1,5 @@
+Copyright (c) 2026 Torsten Ahlemeyer
+
+All rights reserved.
+
+A public project license will be added before the first official release.

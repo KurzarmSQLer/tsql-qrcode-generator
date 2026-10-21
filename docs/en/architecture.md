@@ -4,21 +4,29 @@ The project is divided into the following logical components:
 
 
 
-Matrix Creation
+1. Matrix Initialization
 
-Data Encoding
+2. Pattern Placement
+   - Finder
+   - Separator
+   - Timing
+   - Alignment
+   - Dark Module
 
-Reed-Solomon Error Correction
+3. Data Encoding
 
-Interleaving
+4. Reed-Solomon Error Correction
 
-Data Placement
+5. Interleaving
 
-Mask Selection
+6. Bit Stream Generation
 
-Format Information
+7. Data Placement
 
-Logo Projection
+8. Mask Selection
 
-SVG Rendering
+9. Format Information
 
+10. Logo Projection
+
+11. SVG Rendering

@@ -1,5 +1,50 @@
+T-SQL QR Code Generator Educational License
+Version 1.0
+
 Copyright (c) 2026 Torsten Ahlemeyer
 
-All rights reserved.
+Permission is granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files ("the Software")
+for educational, personal, and internal business use, subject to the
+following conditions:
 
-A public project license will be added before the first official release.
+PERMITTED USES
+
+- Learning and studying the source code
+- Personal use
+- Internal use within an organization
+- Modifying the source code
+- Creating derivative works for personal or internal use
+- Sharing unchanged copies of the Software together with this license
+
+RESTRICTIONS
+
+Without prior written permission from the copyright holder, you may NOT:
+
+- Sell the Software
+- Sell modified versions of the Software
+- Include the Software in commercial products
+- Use the Software or substantial parts of it as training material in
+  commercial courses, workshops, seminars, or consulting engagements
+- Redistribute the Software for commercial purposes
+- Remove copyright notices or author information
+- Present the Software as your own original work
+
+ATTRIBUTION
+
+Any public redistribution of this Software or derivative works must
+retain this copyright notice and clearly credit:
+
+    Torsten Ahlemeyer
+    GitHub: KurzarmSQLer
+
+DISCLAIMER
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES,
+OR OTHER LIABILITY ARISING FROM THE SOFTWARE OR ITS USE.
+
+For commercial licensing inquiries contact the author.

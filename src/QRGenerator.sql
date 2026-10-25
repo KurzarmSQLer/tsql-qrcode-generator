@@ -1,4 +1,21 @@
-﻿USE [Kopfnuesse]
+﻿-- ##############################################################################
+-- ### Project: T-SQL QR Code Generator                                       ###
+-- ### Author:  Torsten Ahlemeyer                                             ###
+-- ##############################################################################
+-- ### Do you want to learn how professional QR codes are structured? Can     ###
+-- ### special characters be encoded this way? Can I really integrate my      ###
+-- ### company’s colored logo into the QR code without reducing my            ###
+-- ### smartphone’s recognition rate for that QR code? What percentage of the ###
+-- ### code can a coffee stain theoretically cover without affecting its      ###
+-- ### functionality? Do all pixels really have to be square? How do you      ###
+-- ### create scalable graphics using pure T-SQL?                             ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### GitHub:      KurzarmSQLer                                              ###
+-- ### Repository:  tsql-qrcode-generator                                     ###
+-- ### License:     T-SQL QR Code Generator Educational License 1.0           ###
+-- ### Copyright:   (c) 2026 Torsten Ahlemeyer                                ###
+-- ##############################################################################
+USE [Kopfnuesse]
 GO
 
 -- Schema anlegen, um diese Objekte sauber von anderen Aufgaben der Kopfnussreihe zu trennen
@@ -6,36 +23,53 @@ IF SCHEMA_ID(N'QR') IS NULL
     EXEC(N'CREATE SCHEMA [QR]');
 GO
 
-
+-- ##############################################################################
+-- ### Table: [QR].[DataCodeword]                                             ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimenta         ###
+-- ### [ ] system-versioned   [x] complete rebuild    [ ] deprecated          ###
+-- ###                                                [ ] internal            ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[DataCodeword];
 GO
 
 CREATE TABLE [QR].[DataCodeword]
 (
-      [Position] INT NOT NULL
-    , [Value]    TINYINT NOT NULL
-
+      [Position]        INTEGER     NOT NULL
+    , [Value]           TINYINT     NOT NULL
     CONSTRAINT [PK_QR_DataCodeword]
         PRIMARY KEY ([Position])
 );
 GO
 
-
-
+-- ##############################################################################
+-- ### Table: [QR].[GeneratedSvg]                                             ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [ ] complete rebuild              ###
+-- ##############################################################################
 IF OBJECT_ID('QR.GeneratedSvg') IS NULL
 BEGIN
-    CREATE TABLE QR.GeneratedSvg
+    CREATE TABLE [QR].[GeneratedSvg]
     (
-          [SvgID]                   BIGINT       IDENTITY(1,1)
+          [SvgID]                   BIGINT          IDENTITY(1,1)
         , [CreatedAt]               DATETIME2(0)                    NOT NULL
         , [VersionNumber]           TINYINT                         NULL
         , [SvgContent]              NVARCHAR(MAX)                   NOT NULL
         , [TextEncoded]             VARCHAR(255)                    NULL
         , [LogoName]                VARCHAR(50)                     NULL
         , [ErrorCorrectionLevel]    CHAR(1)                         NULL
-        , [SvgLength]               INT                             NULL
+        , [SvgLength]               INTEGER                         NULL
         , [SvgHash]                 VARBINARY(32)                   NULL
-        , [TextLength]              INT                             NULL
+        , [TextLength]              INTEGER                         NULL
         , [InputHash]               VARBINARY(32)                   NULL
         CONSTRAINT [PK_QR_GeneratedSvg]
                 PRIMARY KEY ([SvgID])
@@ -43,8 +77,16 @@ BEGIN
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Table: [QR].[InterleavedCodeword]                                      ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[InterleavedCodeword];
 GO
 
@@ -57,7 +99,16 @@ CREATE TABLE [QR].[InterleavedCodeword]
 );
 GO
 
-
+-- ##############################################################################
+-- ### Table: [QR].[DataBlock]                                                ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[DataBlock];
 GO
 
@@ -73,7 +124,16 @@ CREATE TABLE [QR].[DataBlock]
     )
 );
 
-
+-- ##############################################################################
+-- ### Table: [QR].[EccBlock]                                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[EccBlock];
 GO
 
@@ -89,13 +149,19 @@ CREATE TABLE [QR].[EccBlock]
     )
 );
 
-
-
--- Haupttabelle anlegen
+-- ##############################################################################
+-- ### Table: [QR].[Module]                                                   ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[Module];
 GO
 
--- Wir konzemntrieren uns zu Demo-Zwecken auf einen QR-Code der Größe 21x21
 CREATE TABLE [QR].[Module]
 (
     [X]             TINYINT         NOT NULL,
@@ -107,27 +173,44 @@ CREATE TABLE [QR].[Module]
 );
 GO
 
-
+-- ##############################################################################
+-- ### Table: [QR].[LogoArea]                                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [ ] complete rebuild              ###
+-- ##############################################################################
 IF OBJECT_ID('QR.LogoArea') IS NULL
 BEGIN
     CREATE TABLE [QR].[LogoArea]
     (
-          [AreaName] VARCHAR(50) NOT NULL
-        , [StartX]   TINYINT     NOT NULL
-        , [StartY]   TINYINT     NOT NULL
-        , [EndX]     TINYINT     NOT NULL
-        , [EndY]     TINYINT     NOT NULL
-        , [Width]    SMALLINT    NOT NULL
-        , [Height]   SMALLINT    NOT NULL
-        , [Area]     INT         NOT NULL
-
+          [AreaName]    VARCHAR(50)     NOT NULL
+        , [StartX]      TINYINT         NOT NULL
+        , [StartY]      TINYINT         NOT NULL
+        , [EndX]        TINYINT         NOT NULL
+        , [EndY]        TINYINT         NOT NULL
+        , [Width]       SMALLINT        NOT NULL
+        , [Height]      SMALLINT        NOT NULL
+        , [Area]        INTEGER         NOT NULL
         CONSTRAINT [PK_QR_LogoArea]
             PRIMARY KEY ([AreaName])
     )
 END;
 GO
 
-
+-- ##############################################################################
+-- ### Table: [QR].[GeneratorPolynomial]                                      ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [X] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [ ] complete rebuild              ###
+-- ##############################################################################
 IF OBJECT_ID('QR.GeneratorPolynomial') IS NULL
 BEGIN
     CREATE TABLE [QR].[GeneratorPolynomial]
@@ -151,331 +234,184 @@ BEGIN
         , Coefficient
     )
     VALUES
-        /* --------------------------------------------------
-           ECC = 10   (Level M)
-           -------------------------------------------------- */
-          (10,0,1)
-        , (10,1,216)
-        , (10,2,194)
-        , (10,3,159)
-        , (10,4,111)
-        , (10,5,199)
-        , (10,6,94)
-        , (10,7,95)
-        , (10,8,113)
-        , (10,9,157)
-        , (10,10,193)
-        /* --------------------------------------------------
-           ECC = 7   (Level L)
-           -------------------------------------------------- */
-        ,(7, 0,   1)
-        ,(7, 1, 127)
-        ,(7, 2, 122)
-        ,(7, 3, 154)
-        ,(7, 4, 164)
-        ,(7, 5,  11)
-        ,(7, 6,  68)
-        ,(7, 7, 117)
+        --------------------------------------------------
+        -- ECC = 10   (Level M)
+        -------------------------------------------------- 
+         ( 10,  0,  1)       ,( 10,  1,216)       ,( 10,  2,194)       ,( 10,  3,159)
+        ,( 10,  4,111)       ,( 10,  5,199)       ,( 10,  6, 94)       ,( 10,  7, 95)
+        ,( 10,  8,113)       ,( 10,  9,157)       ,( 10, 10,193)
 
-        /* --------------------------------------------------
-           ECC = 13  (Level Q)
-           -------------------------------------------------- */
-        ,(13, 0,   1)
-        ,(13, 1, 137)
-        ,(13, 2,  73)
-        ,(13, 3, 227)
-        ,(13, 4,  17)
-        ,(13, 5, 177)
-        ,(13, 6,  17)
-        ,(13, 7,  52)
-        ,(13, 8,  13)
-        ,(13, 9,  46)
-        ,(13,10,  43)
-        ,(13,11,  83)
-        ,(13,12, 132)
-        ,(13,13, 120)
+        -------------------------------------------------- 
+        -- ECC = 7   (Level L)
+        --------------------------------------------------
+        ,(  7,  0,   1)      ,(  7,  1, 127)      ,(  7,  2, 122)      ,(  7,  3, 154)
+        ,(  7,  4, 164)      ,(  7,  5,  11)      ,(  7,  6,  68)      ,(  7,  7, 117)
 
-        /* --------------------------------------------------
-           ECC = 17  (Level H)
-           -------------------------------------------------- */
-        ,(17, 0,   1)
-        ,(17, 1, 119)
-        ,(17, 2,  66)
-        ,(17, 3,  83)
-        ,(17, 4, 120)
-        ,(17, 5, 119)
-        ,(17, 6,  22)
-        ,(17, 7, 197)
-        ,(17, 8,  83)
-        ,(17, 9, 249)
-        ,(17,10,  41)
-        ,(17,11, 143)
-        ,(17,12, 134)
-        ,(17,13,  85)
-        ,(17,14,  53)
-        ,(17,15, 125)
-        ,(17,16,  99)
-        ,(17,17,  79)
+        --------------------------------------------------
+        -- ECC = 13  (Level Q)
+        --------------------------------------------------
+        ,( 13, 0,   1)       ,( 13,  1, 137)      ,( 13,  2,  73)      ,( 13, 3, 227)
+        ,( 13, 4,  17)       ,( 13,  5, 177)      ,( 13,  6,  17)      ,( 13, 7,  52)
+        ,( 13, 8,  13)       ,( 13,  9,  46)      ,( 13, 10,  43)      ,( 13,11,  83)
+        ,( 13,12, 132)       ,( 13, 13, 120)
 
+        --------------------------------------------------
+        -- ECC = 17  (Level H)
+        --------------------------------------------------
+        ,( 17, 0,   1)       ,( 17, 1, 119)      ,( 17, 2,  66)        ,( 17, 3,  83)
+        ,( 17, 4, 120)       ,( 17, 5, 119)      ,( 17, 6,  22)        ,( 17, 7, 197)
+        ,( 17, 8,  83)       ,( 17, 9, 249)      ,( 17,10,  41)        ,( 17,11, 143)
+        ,( 17,12, 134)       ,( 17,13,  85)      ,( 17,14,  53)        ,( 17,15, 125)
+        ,( 17,16,  99)       ,( 17,17,  79)
 
-        /* --------------------------------------------------
-           ECC = 18 
-           -------------------------------------------------- */
-        ,(18, 0,   1)
-        ,(18, 1, 239)
-        ,(18, 2, 251)
-        ,(18, 3, 183)
-        ,(18, 4, 113)
-        ,(18, 5, 149)
-        ,(18, 6, 175)
-        ,(18, 7, 199)
-        ,(18, 8, 215)
-        ,(18, 9, 240)
-        ,(18,10, 220)
-        ,(18,11,  73)
-        ,(18,12,  82)
-        ,(18,13, 173)
-        ,(18,14,  75)
-        ,(18,15,  32)
-        ,(18,16,  67)
-        ,(18,17, 217)
-        ,(18,18, 146)
+        --------------------------------------------------
+        -- ECC = 18 
+        --------------------------------------------------
+        ,( 18, 0,   1)       ,( 18, 1, 239)      ,( 18, 2, 251)        ,( 18, 3, 183)
+        ,( 18, 4, 113)       ,( 18, 5, 149)      ,( 18, 6, 175)        ,( 18, 7, 199)
+        ,( 18, 8, 215)       ,( 18, 9, 240)      ,( 18,10, 220)        ,( 18,11,  73)
+        ,( 18,12,  82)       ,( 18,13, 173)      ,( 18,14,  75)        ,( 18,15,  32)
+        ,( 18,16,  67)       ,( 18,17, 217)      ,( 18,18, 146)
 
+        --------------------------------------------------
         -- ECC = 15
-        ,(15,0,1)
-        ,(15,1,29)
-        ,(15,2,196)
-        ,(15,3,111)
-        ,(15,4,163)
-        ,(15,5,112)
-        ,(15,6,74)
-        ,(15,7,10)
-        ,(15,8,105)
-        ,(15,9,105)
-        ,(15,10,139)
-        ,(15,11,132)
-        ,(15,12,151)
-        ,(15,13,32)
-        ,(15,14,134)
-        ,(15,15,26)
+        --------------------------------------------------
+        ,( 15,  0,  1)       ,( 15,  1, 29)      ,( 15,  2,196)        ,( 15,  3,111)
+        ,( 15,  4,163)       ,( 15,  5,112)      ,( 15,  6, 74)        ,( 15,  7, 10)
+        ,( 15,  8,105)       ,( 15,  9,105)      ,( 15, 10,139)        ,( 15, 11,132)
+        ,( 15, 12,151)       ,( 15, 13, 32)      ,( 15, 14,134)        ,( 15, 15, 26)
 
+        --------------------------------------------------
         -- ECC = 16
-        ,(16,0,1)
-        ,(16,1,59)
-        ,(16,2,13)
-        ,(16,3,104)
-        ,(16,4,189)
-        ,(16,5,68)
-        ,(16,6,209)
-        ,(16,7,30)
-        ,(16,8,8)
-        ,(16,9,163)
-        ,(16,10,65)
-        ,(16,11,41)
-        ,(16,12,229)
-        ,(16,13,98)
-        ,(16,14,50)
-        ,(16,15,36)
-        ,(16,16,59)
+        --------------------------------------------------
+        ,( 16,  0,  1)       ,( 16,  1, 59)      ,( 16,  2, 13)        ,( 16,  3,104)
+        ,( 16,  4,189)       ,( 16,  5, 68)      ,( 16,  6,209)        ,( 16,  7, 30)
+        ,( 16,  8,  8)       ,( 16,  9,163)      ,( 16, 10, 65)        ,( 16, 11, 41)
+        ,( 16, 12,229)       ,( 16, 13, 98)      ,( 16, 14, 50)        ,( 16, 15, 36)
+        ,( 16, 16, 59)
 
+        --------------------------------------------------
         -- ECC = 20
-        ,(20,0,1)
-        ,(20,1,152)
-        ,(20,2,185)
-        ,(20,3,240)
-        ,(20,4,5)
-        ,(20,5,111)
-        ,(20,6,99)
-        ,(20,7,6)
-        ,(20,8,220)
-        ,(20,9,112)
-        ,(20,10,150)
-        ,(20,11,69)
-        ,(20,12,36)
-        ,(20,13,187)
-        ,(20,14,22)
-        ,(20,15,228)
-        ,(20,16,198)
-        ,(20,17,121)
-        ,(20,18,121)
-        ,(20,19,165)
-        ,(20,20,174)
+        --------------------------------------------------
+        ,( 20,  0,  1)       ,( 20,  1,152)      ,( 20,  2,185)        ,( 20,  3,240)
+        ,( 20,  4,  5)       ,( 20,  5,111)      ,( 20,  6, 99)        ,( 20,  7,  6)
+        ,( 20,  8,220)       ,( 20,  9,112)      ,( 20, 10,150)        ,( 20, 11, 69)
+        ,( 20, 12, 36)       ,( 20, 13,187)      ,( 20, 14, 22)        ,( 20, 15,228)
+        ,( 20, 16,198)       ,( 20, 17,121)      ,( 20, 18,121)        ,( 20, 19,165)
+        ,( 20, 20,174)
 
+        --------------------------------------------------
         -- ECC = 22
-        ,(22,0,1)
-        ,(22,1,89)
-        ,(22,2,179)
-        ,(22,3,131)
-        ,(22,4,176)
-        ,(22,5,182)
-        ,(22,6,244)
-        ,(22,7,19)
-        ,(22,8,189)
-        ,(22,9,69)
-        ,(22,10,40)
-        ,(22,11,28)
-        ,(22,12,137)
-        ,(22,13,29)
-        ,(22,14,123)
-        ,(22,15,67)
-        ,(22,16,253)
-        ,(22,17,86)
-        ,(22,18,218)
-        ,(22,19,230)
-        ,(22,20,26)
-        ,(22,21,145)
-        ,(22,22,245)
+        --------------------------------------------------
+        ,( 22,  0,  1)       ,( 22,  1, 89)      ,( 22,  2,179)        ,( 22,  3,131)
+        ,( 22,  4,176)       ,( 22,  5,182)      ,( 22,  6,244)        ,( 22,  7, 19)
+        ,( 22,  8,189)       ,( 22,  9, 69)      ,( 22, 10, 40)        ,( 22, 11, 28)
+        ,( 22, 12,137)       ,( 22, 13, 29)      ,( 22, 14,123)        ,( 22, 15, 67)
+        ,( 22, 16,253)       ,( 22, 17, 86)      ,( 22, 18,218)        ,( 22, 19,230)
+        ,( 22, 20, 26)       ,( 22, 21,145)      ,( 22, 22,245)
 
+        --------------------------------------------------
         -- ECC = 24
-        ,(24,0,1)
-        ,(24,1,122)
-        ,(24,2,118)
-        ,(24,3,169)
-        ,(24,4,70)
-        ,(24,5,178)
-        ,(24,6,237)
-        ,(24,7,216)
-        ,(24,8,102)
-        ,(24,9,115)
-        ,(24,10,150)
-        ,(24,11,229)
-        ,(24,12,73)
-        ,(24,13,130)
-        ,(24,14,72)
-        ,(24,15,61)
-        ,(24,16,43)
-        ,(24,17,206)
-        ,(24,18,1)
-        ,(24,19,237)
-        ,(24,20,247)
-        ,(24,21,127)
-        ,(24,22,217)
-        ,(24,23,144)
-        ,(24,24,117)
+        --------------------------------------------------
+        ,( 24,  0,  1)       ,( 24,  1,122)      ,( 24,  2,118)        ,( 24,  3,169)
+        ,( 24,  4, 70)       ,( 24,  5,178)      ,( 24,  6,237)        ,( 24,  7,216)
+        ,( 24,  8,102)       ,( 24,  9,115)      ,( 24, 10,150)        ,( 24, 11,229)
+        ,( 24, 12, 73)       ,( 24, 13,130)      ,( 24, 14, 72)        ,( 24, 15, 61)
+        ,( 24, 16, 43)       ,( 24, 17,206)      ,( 24, 18,  1)        ,( 24, 19,237)
+        ,( 24, 20,247)       ,( 24, 21,127)      ,( 24, 22,217)        ,( 24, 23,144)
+        ,( 24, 24,117)
 
+        --------------------------------------------------
         -- ECC = 26
-        ,(26,0,1)
-        ,(26,1,246)
-        ,(26,2,51)
-        ,(26,3,183)
-        ,(26,4,4)
-        ,(26,5,136)
-        ,(26,6,98)
-        ,(26,7,199)
-        ,(26,8,152)
-        ,(26,9,77)
-        ,(26,10,56)
-        ,(26,11,206)
-        ,(26,12,24)
-        ,(26,13,145)
-        ,(26,14,40)
-        ,(26,15,209)
-        ,(26,16,117)
-        ,(26,17,233)
-        ,(26,18,42)
-        ,(26,19,135)
-        ,(26,20,68)
-        ,(26,21,70)
-        ,(26,22,144)
-        ,(26,23,146)
-        ,(26,24,77)
-        ,(26,25,43)
-        ,(26,26,94)
+        --------------------------------------------------
+        ,( 26,  0,  1)       ,( 26,  1,246)      ,( 26,  2, 51)        ,( 26,  3,183)
+        ,( 26,  4,  4)       ,( 26,  5,136)      ,( 26,  6, 98)        ,( 26,  7,199)
+        ,( 26,  8,152)       ,( 26,  9, 77)      ,( 26, 10, 56)        ,( 26, 11,206)
+        ,( 26, 12, 24)       ,( 26, 13,145)      ,( 26, 14, 40)        ,( 26, 15,209)
+        ,( 26, 16,117)       ,( 26, 17,233)      ,( 26, 18, 42)        ,( 26, 19,135)
+        ,( 26, 20, 68)       ,( 26, 21, 70)      ,( 26, 22,144)        ,( 26, 23,146)
+        ,( 26, 24, 77)       ,( 26, 25, 43)      ,( 26, 26, 94)
 
+        --------------------------------------------------
         -- ECC = 28
-        ,(28,0,1)
-        ,(28,1,252)
-        ,(28,2,9)
-        ,(28,3,28)
-        ,(28,4,13)
-        ,(28,5,18)
-        ,(28,6,251)
-        ,(28,7,208)
-        ,(28,8,150)
-        ,(28,9,103)
-        ,(28,10,174)
-        ,(28,11,100)
-        ,(28,12,41)
-        ,(28,13,167)
-        ,(28,14,12)
-        ,(28,15,247)
-        ,(28,16,56)
-        ,(28,17,117)
-        ,(28,18,119)
-        ,(28,19,233)
-        ,(28,20,127)
-        ,(28,21,181)
-        ,(28,22,100)
-        ,(28,23,121)
-        ,(28,24,147)
-        ,(28,25,176)
-        ,(28,26,74)
-        ,(28,27,58)
-        ,(28,28,197)
+        --------------------------------------------------
+        ,( 28,  0,  1)      ,( 28,  1,252)      ,( 28,  2,  9)          ,( 28,  3, 28)
+        ,( 28,  4, 13)      ,( 28,  5, 18)      ,( 28,  6,251)          ,( 28,  7,208)
+        ,( 28,  8,150)      ,( 28,  9,103)      ,( 28, 10,174)          ,( 28, 11,100)
+        ,( 28, 12, 41)      ,( 28, 13,167)      ,( 28, 14, 12)          ,( 28, 15,247)
+        ,( 28, 16, 56)      ,( 28, 17,117)      ,( 28, 18,119)          ,( 28, 19,233)
+        ,( 28, 20,127)      ,( 28, 21,181)      ,( 28, 22,100)          ,( 28, 23,121)
+        ,( 28, 24,147)      ,( 28, 25,176)      ,( 28, 26, 74)          ,( 28, 27, 58)
+        ,( 28, 28,197)
 
+        --------------------------------------------------
         -- ECC = 30
-        ,(30,0,1)
-        ,(30,1,212)
-        ,(30,2,246)
-        ,(30,3,77)
-        ,(30,4,73)
-        ,(30,5,195)
-        ,(30,6,192)
-        ,(30,7,75)
-        ,(30,8,98)
-        ,(30,9,5)
-        ,(30,10,70)
-        ,(30,11,103)
-        ,(30,12,177)
-        ,(30,13,22)
-        ,(30,14,217)
-        ,(30,15,138)
-        ,(30,16,51)
-        ,(30,17,181)
-        ,(30,18,246)
-        ,(30,19,72)
-        ,(30,20,25)
-        ,(30,21,18)
-        ,(30,22,46)
-        ,(30,23,228)
-        ,(30,24,74)
-        ,(30,25,216)
-        ,(30,26,195)
-        ,(30,27,11)
-        ,(30,28,106)
-        ,(30,29,130)
-        ,(30,30,150)
+        --------------------------------------------------
+        ,( 30,  0,  1)      ,( 30,  1,212)      ,( 30,  2,246)          ,( 30,  3, 77)
+        ,( 30,  4, 73)      ,( 30,  5,195)      ,( 30,  6,192)          ,( 30,  7, 75)
+        ,( 30,  8, 98)      ,( 30,  9,  5)      ,( 30, 10, 70)          ,( 30, 11,103)
+        ,( 30, 12,177)      ,( 30, 13, 22)      ,( 30, 14,217)          ,( 30, 15,138)
+        ,( 30, 16, 51)      ,( 30, 17,181)      ,( 30, 18,246)          ,( 30, 19, 72)
+        ,( 30, 20, 25)      ,( 30, 21, 18)      ,( 30, 22, 46)          ,( 30, 23,228)
+        ,( 30, 24, 74)      ,( 30, 25,216)      ,( 30, 26,195)          ,( 30, 27, 11)
+        ,( 30, 28,106)      ,( 30, 29,130)      ,( 30, 30,150)
 END;
 GO
 
-
-DROP TABLE IF EXISTS QR.GaloisExp;
+-- ##############################################################################
+-- ### Table: [QR].[GaloisExp]                                                ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
+DROP TABLE IF EXISTS [QR].[GaloisExp];
 GO
 
-CREATE TABLE QR.GaloisExp
+CREATE TABLE [QR].[GaloisExp]
 (
-      [Exponent] INT NOT NULL
-    , [Value]    INT NOT NULL
-
-    CONSTRAINT PK_QR_GaloisExp
+      [Exponent]    INTEGER     NOT NULL
+    , [Value]       INTEGER     NOT NULL
+    CONSTRAINT [PK_QR_GaloisExp]
         PRIMARY KEY ([Exponent])
 );
 GO
 
+-- ##############################################################################
+-- ### Table: [QR].[GaloisLog]                                                ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[GaloisLog];
 GO
 
 CREATE TABLE [QR].[GaloisLog]
 (
-      [Value]    INT NOT NULL
-    , [LogValue] INT NOT NULL
-
+      [Value]       INTEGER     NOT NULL
+    , [LogValue]    INTEGER     NOT NULL
     CONSTRAINT [PK_QR_GaloisLog]
         PRIMARY KEY ([Value])
 );
 GO
 
-
+-- ##############################################################################
+-- ### Table: [QR].[AlignmentPatternPosition]                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [x] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[AlignmentPatternPosition]
 GO
 
@@ -495,99 +431,31 @@ CREATE TABLE [QR].[AlignmentPatternPosition]
 );
 GO
 
-/* --------------------------------------------------------------------
-   Version 2
-   Zentren: 6,18
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(2,18,18);
-
-/* --------------------------------------------------------------------
-   Version 3
-   Zentren: 6,22
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(3,22,22);
-
-/* --------------------------------------------------------------------
-   Version 4
-   Zentren: 6,26
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(4,26,26);
-
-/* --------------------------------------------------------------------
-   Version 5
-   Zentren: 6,30
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(5,30,30);
-
-/* --------------------------------------------------------------------
-   Version 6
-   Zentren: 6,34
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(6,34,34);
-
-/* --------------------------------------------------------------------
-   Version 7
-   Zentren: 6,22,38
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(7, 6,22),
-(7, 6,38),
-(7,22, 6),
-(7,22,22),
-(7,22,38),
-(7,38, 6),
-(7,38,22),
-(7,38,38);
-
-/* --------------------------------------------------------------------
-   Version 8
-   Zentren: 6,24,42
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(8, 6,24),
-(8, 6,42),
-(8,24, 6),
-(8,24,24),
-(8,24,42),
-(8,42, 6),
-(8,42,24),
-(8,42,42);
-
-/* --------------------------------------------------------------------
-   Version 9
-   Zentren: 6,26,46
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(9, 6,26),
-(9, 6,46),
-(9,26, 6),
-(9,26,26),
-(9,26,46),
-(9,46, 6),
-(9,46,26),
-(9,46,46);
-
-/* --------------------------------------------------------------------
-   Version 10
-   Zentren: 6,28,50
-   -------------------------------------------------------------------- */
-INSERT INTO QR.AlignmentPatternPosition VALUES
-(10, 6,28),
-(10, 6,50),
-(10,28, 6),
-(10,28,28),
-(10,28,50),
-(10,50, 6),
-(10,50,28),
-(10,50,50);
+INSERT INTO QR.AlignmentPatternPosition VALUES(  2, 18, 18);
+INSERT INTO QR.AlignmentPatternPosition VALUES(  3, 22, 22);
+INSERT INTO QR.AlignmentPatternPosition VALUES(  4, 26, 26);
+INSERT INTO QR.AlignmentPatternPosition VALUES(  5, 30, 30);
+INSERT INTO QR.AlignmentPatternPosition VALUES(  6, 34, 34);
+INSERT INTO QR.AlignmentPatternPosition VALUES(  7,  6, 22), (  7,  6, 38), (  7, 22,  6), (  7, 22, 22),
+                                              (  7, 22, 38), (  7, 38,  6), (  7, 38, 22), (  7, 38, 38);
+INSERT INTO QR.AlignmentPatternPosition VALUES(  8,  6, 24), (  8,  6, 42), (  8, 24,  6), (  8, 24, 24),
+                                              (  8, 24, 42), (  8, 42,  6), (  8, 42, 24), (  8, 42, 42);
+INSERT INTO QR.AlignmentPatternPosition VALUES(  9,  6, 26), (  9,  6, 46), (  9, 26,  6), (  9, 26, 26),
+                                              (  9, 26, 46), (  9, 46,  6), (  9, 46, 26), (  9, 46, 46);
+INSERT INTO QR.AlignmentPatternPosition VALUES( 10,  6, 28), ( 10,  6, 50), ( 10, 28,  6), ( 10, 28, 28),
+                                              ( 10, 28, 50), ( 10, 50,  6), ( 10, 50, 28), ( 10, 50, 50);
 GO
 
-
+-- ##############################################################################
+-- ### Table: [QR].[VersionRemainderBits]                                     ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [x] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[VersionRemainderBits]
 GO
 
@@ -602,325 +470,9 @@ CREATE TABLE [QR].[VersionRemainderBits]
 GO
 
 INSERT INTO QR.VersionRemainderBits
-VALUES
- (1 ,0)
-,(2 ,7)
-,(3 ,7)
-,(4 ,7)
-,(5 ,7)
-,(6 ,7)
-,(7 ,0)
-,(8 ,0)
-,(9 ,0)
-,(10,0);
+VALUES  (1 ,0), (2 ,7), (3 ,7), (4 ,7), ( 5, 7)
+       ,(6 ,7), (7 ,0), (8 ,0), (9 ,0), (10, 0);
 GO
-
-
-
-
-
-
-
-
-
-
-
-
-CREATE OR ALTER VIEW [QR].[vGeneratedSvgHistory]
-AS
-SELECT
-      [SvgID]
-    , [CreatedAt]
-    , [VersionNumber]
-    , [ErrorCorrectionLevel]
-    , [LogoName]
-    , [TextLength]
-    , [SvgLength]
-    , [TextEncoded]
-    , CONVERT(VARCHAR(64), [InputHash], 2)              AS [InputHashHex]
-    , CONVERT(VARCHAR(64), [SvgHash],   2)              AS [SvgHashHex]
-FROM [QR].[GeneratedSvg];
-GO
-
-
-CREATE OR ALTER PROCEDURE [QR].[pBuildDataBlocks]
-(
-      @VersionNumber        TINYINT
-    , @ErrorCorrectionLevel CHAR(1)
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    DELETE FROM [QR].[DataBlock];
-
-    DECLARE
-          @GroupNumber           INT
-        , @BlockCount            INT
-        , @DataCodewordsPerBlock INT;
-
-    DECLARE
-          @SourcePosition INT = 0
-        , @BlockNumber    INT = 1;
-
-    DECLARE C CURSOR LOCAL FAST_FORWARD
-    FOR
-    SELECT
-          GroupNumber
-        , BlockCount
-        , DataCodewordsPerBlock
-    FROM QR.VersionBlockStructure
-    WHERE
-            VersionNumber        = @VersionNumber
-        AND ErrorCorrectionLevel = @ErrorCorrectionLevel
-    ORDER BY GroupNumber;
-
-    OPEN C;
-
-    FETCH NEXT FROM C
-    INTO
-          @GroupNumber
-        , @BlockCount
-        , @DataCodewordsPerBlock;
-
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-
-        DECLARE @CurrentBlock INT = 1;
-
-        WHILE @CurrentBlock <= @BlockCount
-        BEGIN
-
-            DECLARE @BlockPosition INT = 0;
-
-            WHILE @BlockPosition < @DataCodewordsPerBlock
-            BEGIN
-
-                INSERT INTO [QR].[DataBlock]
-                (
-                      [BlockNumber]
-                    , [Position]
-                    , [Value]
-                )
-                SELECT
-                      @BlockNumber
-                    , @BlockPosition
-                    , Value
-                FROM [QR].[DataCodeword]
-                WHERE Position = @SourcePosition;
-
-                SET @SourcePosition += 1;
-                SET @BlockPosition += 1;
-            END
-            SET @BlockNumber += 1;
-            SET @CurrentBlock += 1;
-        END
-
-        FETCH NEXT FROM [C]
-        INTO
-              @GroupNumber
-            , @BlockCount
-            , @DataCodewordsPerBlock;
-    END
-    CLOSE C;
-    DEALLOCATE C;
-
-    -----------------------------------------------------------------
-    -- Kontrolle
-    -----------------------------------------------------------------
-    IF
-    (
-        SELECT COUNT(*)
-        FROM [QR].[DataBlock]
-    )
-    <>
-    (
-        SELECT COUNT(*)
-        FROM [QR].[DataCodeword]
-    )
-    BEGIN
-        THROW 52001, 'Nicht alle Data-Codewords wurden auf Blöcke verteilt.', 1;
-    END;
-END;
-GO
-
-
-
-
-CREATE OR ALTER PROCEDURE QR.pSetAlignmentPattern
-(
-      @CenterX INT
-    , @CenterY INT
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    IF EXISTS
-    (
-        SELECT 1
-        FROM QR.Module
-        WHERE
-                X BETWEEN @CenterX - 2 AND @CenterX + 2
-            AND Y BETWEEN @CenterY - 2 AND @CenterY + 2
-            AND ModuleType IN
-            (
-                'Finder',
-                'Separator'
-            )
-    )
-    RETURN;
-
-
-    UPDATE M
-    SET
-        IsBlack =
-            CASE
-                WHEN ABS(M.X - @CenterX) = 2 THEN 1
-                WHEN ABS(M.Y - @CenterY) = 2 THEN 1
-
-                WHEN ABS(M.X - @CenterX) = 1
-                 AND ABS(M.Y - @CenterY) = 1
-                    THEN 0
-
-                WHEN ABS(M.X - @CenterX) = 1
-                 AND ABS(M.Y - @CenterY) = 0
-                    THEN 0
-
-                WHEN ABS(M.X - @CenterX) = 0
-                 AND ABS(M.Y - @CenterY) = 1
-                    THEN 0
-
-                ELSE 1
-            END,
-
-        ModuleType = 'Alignment'
-
-    FROM QR.Module M
-
-    WHERE
-            M.X BETWEEN @CenterX - 2 AND @CenterX + 2
-        AND M.Y BETWEEN @CenterY - 2 AND @CenterY + 2;
-END;
-GO
-
-CREATE OR ALTER PROCEDURE QR.pSetAlignmentPatterns
-(
-    @VersionNumber TINYINT
-)
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    IF @VersionNumber = 1
-        RETURN;
-
-    DECLARE
-          @X INT
-        , @Y INT;
-
-    DECLARE C CURSOR LOCAL FAST_FORWARD
-    FOR
-    SELECT
-          X
-        , Y
-    FROM QR.AlignmentPatternPosition
-    WHERE VersionNumber = @VersionNumber;
-
-    OPEN C;
-
-    FETCH NEXT FROM C
-    INTO
-          @X
-        , @Y;
-
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-
-        EXEC QR.pSetAlignmentPattern
-              @CenterX = @X
-            , @CenterY = @Y;
-
-        FETCH NEXT FROM C
-        INTO
-              @X
-            , @Y;
-    END
-
-    CLOSE C;
-    DEALLOCATE C;
-END;
-GO
-
-
-CREATE OR ALTER PROCEDURE QR.pBuildGaloisTables
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    TRUNCATE TABLE [QR].[GaloisExp];
-    TRUNCATE TABLE [QR].[GaloisLog];
-
-    DECLARE
-          @Exponent INT = 0
-        , @Value    INT = 1
-        , @Next     INT;
-
-    WHILE @Exponent < 255
-    BEGIN
-
-        INSERT INTO QR.GaloisExp
-        (
-              Exponent
-            , Value
-        )
-        VALUES
-        (
-              @Exponent
-            , @Value
-        );
-
-        INSERT INTO QR.GaloisLog
-        (
-              Value
-            , LogValue
-        )
-        VALUES
-        (
-              @Value
-            , @Exponent
-        );
-
-        SET @Next = @Value * 2;
-
-        IF @Next >= 256
-            SET @Next = @Next ^ 285;
-
-        SET @Value = @Next;
-
-        SET @Exponent += 1;
-    END;
-
-    /*
-        Komfort:
-        Exp-Tabelle bis 511 erweitern.
-        Dadurch kann später Exp(Log(A)+Log(B)) ohne Modulo 255 erfolgen.
-    */
-
-    INSERT INTO QR.GaloisExp
-    (
-          Exponent
-        , Value
-    )
-    SELECT
-          Exponent + 255
-        , Value
-    FROM QR.GaloisExp
-    WHERE Exponent < 255;
-
-END;
-GO
-
 
 IF OBJECT_ID('QR.LogoPattern') IS NULL
 BEGIN
@@ -942,7 +494,16 @@ BEGIN
 END;
 GO
 
-
+-- ##############################################################################
+-- ### Table: [QR].[LogoPlacement]                                            ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[LogoPlacement];
 GO
 
@@ -965,6 +526,16 @@ CREATE TABLE [QR].[LogoPlacement]
 );
 GO
 
+-- ##############################################################################
+-- ### Table: [QR].[ErrorCorrectionLevel]                                     ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [ ] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[ErrorCorrectionLevel];
 GO
 
@@ -983,8 +554,16 @@ VALUES
     , ('H', 9,17);
 GO
 
-
-
+-- ##############################################################################
+-- ### Table: [QR].[VersionCapacity]                                          ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [x] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[VersionCapacity];
 GO
 
@@ -1012,69 +591,28 @@ INSERT INTO [QR].[VersionCapacity]
     , [EccCodewords]
 )
 VALUES
-
--- Version 1
- (1,'L',19, 7)
-,(1,'M',16,10)
-,(1,'Q',13,13)
-,(1,'H', 9,17)
-
--- Version 2
-,(2,'L',34,10)
-,(2,'M',28,16)
-,(2,'Q',22,22)
-,(2,'H',16,28)
-
--- Version 3
-,(3,'L',55,15)
-,(3,'M',44,26)
-,(3,'Q',34,18)
-,(3,'H',26,22)
-
--- Version 4
-,(4,'L',80,20)
-,(4,'M',64,18)
-,(4,'Q',48,26)
-,(4,'H',36,16)
-
--- Version 5
-,(5,'L',108,26)
-,(5,'M',86,24)
-,(5,'Q',62,18)
-,(5,'H',46,22)
-
--- Version 6
-,(6,'L',136,18)
-,(6,'M',108,16)
-,(6,'Q',76,24)
-,(6,'H',60,28)
-
--- Version 7
-,(7,'L',156,20)
-,(7,'M',124,18)
-,(7,'Q',88,18)
-,(7,'H',66,26)
-
--- Version 8
-,(8,'L',194,24)
-,(8,'M',154,22)
-,(8,'Q',110,22)
-,(8,'H',86,26)
-
--- Version 9
-,(9,'L',232,30)
-,(9,'M',182,22)
-,(9,'Q',132,20)
-,(9,'H',100,24)
-
--- Version 10
-,(10,'L',274,18)
-,(10,'M',216,26)
-,(10,'Q',154,24)
-,(10,'H',122,28);
+     (  1,'L', 19,  7), (  1,'M', 16, 10), (  1,'Q', 13, 13), (  1,'H',  9, 17)     -- Version  1
+    ,(  2,'L', 34, 10), (  2,'M', 28, 16), (  2,'Q', 22, 22), (  2,'H', 16, 28)     -- Version  2
+    ,(  3,'L', 55, 15), (  3,'M', 44, 26), (  3,'Q', 34, 18), (  3,'H', 26, 22)     -- Version  3
+    ,(  4,'L', 80, 20), (  4,'M', 64, 18), (  4,'Q', 48, 26), (  4,'H', 36, 16)     -- Version  4
+    ,(  5,'L',108, 26), (  5,'M', 86, 24), (  5,'Q', 62, 18), (  5,'H', 46, 22)     -- Version  5
+    ,(  6,'L',136, 18), (  6,'M',108, 16), (  6,'Q', 76, 24), (  6,'H', 60, 28)     -- Version  6
+    ,(  7,'L',156, 20), (  7,'M',124, 18), (  7,'Q', 88, 18), (  7,'H', 66, 26)     -- Version  7
+    ,(  8,'L',194, 24), (  8,'M',154, 22), (  8,'Q',110, 22), (  8,'H', 86, 26)     -- Version  8
+    ,(  9,'L',232, 30), (  9,'M',182, 22), (  9,'Q',132, 20), (  9,'H',100, 24)     -- Version  9
+    ,( 10,'L',274, 18), ( 10,'M',216, 26), ( 10,'Q',154, 24), ( 10,'H',122, 28);    -- Version 10
 GO
 
-
+-- ##############################################################################
+-- ### Table: [QR].[VersionBlockStructure]                                    ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [x] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[VersionBlockStructure];
 GO
 
@@ -1096,118 +634,29 @@ CREATE TABLE [QR].[VersionBlockStructure]
 );
 GO
 
-/* ---------------------------------------------------------
-   Version 1
-   --------------------------------------------------------- */
 INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (1,'L',1,1,19),
-    (1,'M',1,1,16),
-    (1,'Q',1,1,13),
-    (1,'H',1,1,9);
-
-/* ---------------------------------------------------------
-   Version 2
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (2,'L',1,1,34),
-    (2,'M',1,1,28),
-    (2,'Q',1,1,22),
-    (2,'H',1,1,16);
-
-/* ---------------------------------------------------------
-   Version 3
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (3,'L',1,1,55),
-    (3,'M',1,1,44),
-    (3,'Q',1,2,17),
-    (3,'H',1,2,13);
-
-/* ---------------------------------------------------------
-   Version 4
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (4,'L',1,1,80),
-    (4,'M',1,2,32),
-    (4,'Q',1,2,24),
-    (4,'H',1,4,9);
-
-/* ---------------------------------------------------------
-   Version 5
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (5,'L',1,1,108),
-    (5,'M',1,2,43),
-    (5,'Q',1,2,15),
-    (5,'Q',2,2,16),
-    (5,'H',1,2,11),
-    (5,'H',2,2,12);
-
-/* ---------------------------------------------------------
-   Version 6
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (6,'L',1,2,68),
-    (6,'M',1,4,27),
-    (6,'Q',1,4,19),
-    (6,'H',1,4,15);
-
-/* ---------------------------------------------------------
-   Version 7
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (7,'L',1,2,78),
-    (7,'M',1,4,31),
-    (7,'Q',1,2,14),
-    (7,'Q',2,4,15),
-    (7,'H',1,4,13),
-    (7,'H',2,1,14);
-
-/* ---------------------------------------------------------
-   Version 8
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (8,'L',1,2,97),
-    (8,'M',1,2,38),
-    (8,'M',2,2,39),
-    (8,'Q',1,4,18),
-    (8,'Q',2,2,19),
-    (8,'H',1,4,14),
-    (8,'H',2,2,15);
-
-/* ---------------------------------------------------------
-   Version 9
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (9,'L',1,2,116),
-    (9,'M',1,3,36),
-    (9,'M',2,2,37),
-    (9,'Q',1,4,16),
-    (9,'Q',2,4,17),
-    (9,'H',1,4,12),
-    (9,'H',2,4,13);
-
-/* ---------------------------------------------------------
-   Version 10
-   --------------------------------------------------------- */
-INSERT INTO [QR].[VersionBlockStructure] VALUES
-    (10,'L',1,2,68),
-    (10,'L',2,2,69),
-    (10,'M',1,4,43),
-    (10,'M',2,1,44),
-    (10,'Q',1,6,19),
-    (10,'Q',2,2,20),
-    (10,'H',1,6,15),
-    (10,'H',2,2,16);
+     (  1,'L',  1,  1, 19), (  1,'M',  1,  1, 16), (  1,'Q',  1,  1, 13), (  1,'H',  1,  1,  9)        -- Version  1
+    ,(  2,'L',  1,  1, 34), (  2,'M',  1,  1, 28), (  2,'Q',  1,  1, 22), (  2,'H',  1,  1, 16)        -- Version  2
+    ,(  3,'L',  1,  1, 55), (  3,'M',  1,  1, 44), (  3,'Q',  1,  2, 17), (  3,'H',  1,  2, 13)        -- Version  3
+    ,(  4,'L',  1,  1, 80), (  4,'M',  1,  2, 32), (  4,'Q',  1,  2, 24), (  4,'H',  1,  4,  9)        -- Version  4
+    ,(  5,'L',  1,  1,108), (  5,'M',  1,  2, 43), (  5,'Q',  1,  2, 15), (  5,'Q',  2,  2, 16), (  5,'H',  1,  2, 11), (  5,'H',  2,  2, 12)
+    ,(  6,'L',  1,  2, 68), (  6,'M',  1,  4, 27), (  6,'Q',  1,  4, 19), (  6,'H',  1,  4, 15)        -- Version  6
+    ,(  7,'L',  1,  2, 78), (  7,'M',  1,  4, 31), (  7,'Q',  1,  2, 14), (  7,'Q',  2,  4, 15), (  7,'H',  1,  4, 13), (  7,'H',  2,  1, 14)
+    ,(  8,'L',  1,  2, 97), (  8,'M',  1,  2, 38), (  8,'M',  2,  2, 39), (  8,'Q',  1,  4, 18), (  8,'Q',  2,  2, 19), (  8,'H',  1,  4, 14), (  8,'H',  2,  2, 15)
+    ,(  9,'L',  1,  2,116), (  9,'M',  1,  3, 36), (  9,'M',  2,  2, 37), (  9,'Q',  1,  4, 16), (  9,'Q',  2,  4, 17), (  9,'H',  1,  4, 12), (  9,'H',  2,  4, 13)
+    ,( 10,'L',  1,  2, 68), ( 10,'L',  2,  2, 69), ( 10,'M',  1,  4, 43), ( 10,'M',  2,  1, 44), ( 10,'Q',  1,  6, 19), ( 10,'Q',  2,  2, 20), ( 10,'H',  1,  6, 15), ( 10,'H',  2,  2, 16);
 GO
 
-
-
-
-
-
-
-
+-- ##############################################################################
+-- ### Table: [QR].[VersionDefinition]                                        ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###    [x] standard                      [x] initial filling               ###
+-- ###    [ ] self-versioned                [ ] truncate                      ###
+-- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ##############################################################################
 DROP TABLE IF EXISTS [QR].[VersionDefinition];
 GO
 
@@ -1252,6 +701,42 @@ GO
 
 
 
+
+
+
+
+
+-- ##############################################################################
+-- ### View: [QR].[vGeneratedSvgHistory]                                      ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ##############################################################################
+CREATE OR ALTER VIEW [QR].[vGeneratedSvgHistory]
+AS
+SELECT
+      [SvgID]                                           AS [SvgID]
+    , [CreatedAt]                                       AS [CreatedAt]
+    , [VersionNumber]                                   AS [VersionNumber]
+    , [ErrorCorrectionLevel]                            AS [ErrorCorrectionLevel]
+    , [LogoName]                                        AS [LogoName]
+    , [TextLength]                                      AS [TextLength]
+    , [SvgLength]                                       AS [SvgLength]
+    , [TextEncoded]                                     AS [TextEncoded]
+    , CONVERT(VARCHAR(64), [InputHash], 2)              AS [InputHashHex]
+    , CONVERT(VARCHAR(64), [SvgHash],   2)              AS [SvgHashHex]
+FROM [QR].[GeneratedSvg];
+GO
+
+-- ##############################################################################
+-- ### View: [QR].[vLogoCandidates]                                           ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Derived from:                                                          ###
+-- ###    [QR].[Module]                                                       ###
+-- ##############################################################################
 CREATE OR ALTER VIEW [QR].[vLogoCandidates]
 AS
 SELECT
@@ -1274,7 +759,278 @@ GO
 
 
 
+-- ##############################################################################
+-- ### Procedure: [QR].[pBuildDataBlocks]                                     ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ##############################################################################
+CREATE OR ALTER PROCEDURE [QR].[pBuildDataBlocks]
+(
+      @VersionNumber        TINYINT
+    , @ErrorCorrectionLevel CHAR(1)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
+    DELETE FROM [QR].[DataBlock];
+
+    DECLARE @GroupNumber                INTEGER
+    DECLARE @BlockCount                 INTEGER
+    DECLARE @DataCodewordsPerBlock      INTEGER
+    DECLARE @SourcePosition             INTEGER = 0
+    DECLARE @BlockNumber                INTEGER = 1
+
+    DECLARE C CURSOR LOCAL FAST_FORWARD
+    FOR
+    SELECT
+          [GroupNumber]
+        , [BlockCount]
+        , [DataCodewordsPerBlock]
+    FROM [QR].[VersionBlockStructure]
+    WHERE 1 = 1
+        AND [VersionNumber]        = @VersionNumber
+        AND [ErrorCorrectionLevel] = @ErrorCorrectionLevel
+    ORDER BY [GroupNumber];
+
+    OPEN [C];
+
+    FETCH NEXT FROM [C]
+    INTO
+          @GroupNumber
+        , @BlockCount
+        , @DataCodewordsPerBlock;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        DECLARE @CurrentBlock INTEGER = 1;
+
+        WHILE @CurrentBlock <= @BlockCount
+        BEGIN
+            DECLARE @BlockPosition INTEGER = 0;
+
+            WHILE @BlockPosition < @DataCodewordsPerBlock
+            BEGIN
+                INSERT INTO [QR].[DataBlock]
+                (
+                      [BlockNumber]
+                    , [Position]
+                    , [Value]
+                )
+                SELECT
+                      @BlockNumber
+                    , @BlockPosition
+                    , [Value]
+                FROM [QR].[DataCodeword]
+                WHERE [Position] = @SourcePosition;
+
+                SET @SourcePosition     += 1;
+                SET @BlockPosition      += 1;
+            END
+
+            SET @BlockNumber            += 1;
+            SET @CurrentBlock           += 1;
+        END
+
+        FETCH NEXT FROM [C]
+        INTO
+              @GroupNumber
+            , @BlockCount
+            , @DataCodewordsPerBlock;
+    END
+    CLOSE [C];
+    DEALLOCATE [C];
+
+    -----------------------------------------------------------------
+    -- Kontrolle
+    -----------------------------------------------------------------
+    IF (SELECT COUNT(*) FROM [QR].[DataBlock])
+       <>
+       (SELECT COUNT(*) FROM [QR].[DataCodeword])
+    BEGIN
+        DECLARE @ErrorMessage NVARCHAR(MAX)
+        SET @ErrorMessage =
+              N'DE: Nicht alle Data-Codewords wurden auf Blöcke verteilt.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: Not all data codewords were distributed across blocks.'
+        RAISERROR (@ErrorMessage, 16, 1)
+    END;
+END;
+GO
+
+
+
+-- ##############################################################################
+-- ### Procedure: [QR].[pSetAlignmentPattern]                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ##############################################################################
+CREATE OR ALTER PROCEDURE [QR].[pSetAlignmentPattern]
+(
+      @CenterX INTEGER
+    , @CenterY INTEGER
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF EXISTS
+    (
+        SELECT 1
+        FROM [QR].[Module]
+        WHERE 1 = 1
+            AND [X]             BETWEEN @CenterX - 2 AND @CenterX + 2
+            AND [Y]             BETWEEN @CenterY - 2 AND @CenterY + 2
+            AND [ModuleType]    IN ('Finder', 'Separator')
+    )
+    RETURN;
+
+    UPDATE [M]
+    SET [IsBlack] =
+        CASE
+            WHEN ABS([M].[X] - @CenterX) = 2                                    THEN 1
+            WHEN ABS([M].[Y] - @CenterY) = 2                                    THEN 1
+            WHEN ABS([M].[X] - @CenterX) = 1 AND ABS([M].[Y] - @CenterY) = 1    THEN 0
+            WHEN ABS([M].[X] - @CenterX) = 1 AND ABS([M].[Y] - @CenterY) = 0    THEN 0
+            WHEN ABS([M].[X] - @CenterX) = 0 AND ABS([M].[Y] - @CenterY) = 1    THEN 0
+            ELSE 1
+        END,
+        [ModuleType] = 'Alignment'
+    FROM [QR].[Module]                  AS [M]
+    WHERE
+            [M].[X] BETWEEN @CenterX - 2 AND @CenterX + 2
+        AND [M].[Y] BETWEEN @CenterY - 2 AND @CenterY + 2;
+END;
+GO
+
+-- ##############################################################################
+-- ### Procedure: [QR].[pSetAlignmentPatterns]                                ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ##############################################################################
+CREATE OR ALTER PROCEDURE [QR].[pSetAlignmentPatterns]
+(
+    @VersionNumber      TINYINT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF @VersionNumber = 1
+        RETURN;
+
+    DECLARE
+          @X INT
+        , @Y INT;
+
+    DECLARE [C] CURSOR LOCAL FAST_FORWARD
+    FOR
+    SELECT
+          [X]
+        , [Y]
+    FROM [QR].[AlignmentPatternPosition]
+    WHERE [VersionNumber] = @VersionNumber;
+
+    OPEN [C];
+
+    FETCH NEXT FROM [C]
+    INTO
+          @X
+        , @Y;
+
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        EXEC [QR].[pSetAlignmentPattern]
+              @CenterX = @X
+            , @CenterY = @Y;
+
+        FETCH NEXT FROM [C]
+        INTO
+              @X
+            , @Y;
+    END
+
+    CLOSE [C];
+    DEALLOCATE [C];
+END;
+GO
+
+-- ##############################################################################
+-- ### Procedure: [QR].[pBuildGaloisTables]                                   ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ##############################################################################
+CREATE OR ALTER PROCEDURE [QR].[pBuildGaloisTables]
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    TRUNCATE TABLE [QR].[GaloisExp];
+    TRUNCATE TABLE [QR].[GaloisLog];
+
+    DECLARE
+          @Exponent INT = 0
+        , @Value    INT = 1
+        , @Next     INT;
+
+    WHILE @Exponent < 255
+    BEGIN
+
+        INSERT INTO [QR].[GaloisExp]
+        (
+              [Exponent]
+            , [Value]
+        )
+        VALUES
+        (
+              @Exponent
+            , @Value
+        );
+
+        INSERT INTO [QR].[GaloisLog]
+        (
+              [Value]
+            , [LogValue]
+        )
+        VALUES
+        (
+              @Value
+            , @Exponent
+        );
+
+        SET @Next = @Value * 2;
+
+        IF @Next >= 256
+            SET @Next = @Next ^ 285;
+
+        SET @Value = @Next;
+
+        SET @Exponent += 1;
+    END;
+
+    INSERT INTO [QR].[GaloisExp]
+    (
+          [Exponent]
+        , [Value]
+    )
+    SELECT
+          [Exponent] + 255
+        , [Value]
+    FROM [QR].[GaloisExp]
+    WHERE [Exponent] < 255;
+END;
+GO
+
+-- ##############################################################################
+-- ### Procedure: [QR].[pApplyLogoColors]                                     ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###                                                                        ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pApplyLogoColors]
 (
     @LogoName VARCHAR(50)
@@ -1283,238 +1039,105 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    UPDATE M
+    UPDATE [M]
     SET
         [ColorHex] =
             CASE
-
-                WHEN P.[ColorClass] = 1
-                     AND M.[IsBlack] = 1
-                    THEN '#0F7285'
-
-                WHEN P.[ColorClass] = 1
-                     AND M.[IsBlack] = 0
-                    THEN '#C4D9DD'
-
-                WHEN P.[ColorClass] = 2
-                     AND M.[IsBlack] = 1
-                    THEN '#D09021'
-
-                WHEN P.[ColorClass] = 2
-                     AND M.[IsBlack] = 0
-                    THEN '#FCF8F1'
-
+                WHEN [P].[ColorClass] = 1 AND [M].[IsBlack] = 1         THEN '#0F7285'
+                WHEN [P].[ColorClass] = 1 AND [M].[IsBlack] = 0         THEN '#C4D9DD'
+                WHEN [P].[ColorClass] = 2 AND [M].[IsBlack] = 1         THEN '#D09021'
+                WHEN [P].[ColorClass] = 2 AND [M].[IsBlack] = 0         THEN '#FCF8F1'
             END
-
-    FROM [QR].[Module] M
-
-    INNER JOIN [QR].[LogoPlacement] P
-        ON P.[TargetX] = M.[X]
-       AND P.[TargetY] = M.[Y]
-
+    FROM [QR].[Module]                          AS [M]
+    INNER JOIN [QR].[LogoPlacement]             AS [P]
+        ON 1 = 1
+            AND [P].[TargetX] = [M].[X]
+            AND [P].[TargetY] = [M].[Y]
     WHERE
-        P.[LogoName] = @LogoName;
+        [P].[LogoName] = @LogoName;
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pApplyMask]                                           ###
+-- ##############################################################################
+-- ### Input parameters:  @MaskPattern = 0 to 7                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Purpose:                                                               ###
+-- ### Only modules with [ModuleType] = ‘Data’ are masked.                    ###
+-- ### This leaves the following unchanged: Finder Pattern, Separators,       ###
+-- ### Timing Pattern, Dark Module, Format Information                        ###
+-- ### Masking is an XOR operation --> If the mask condition is false:        ###
+-- ### the module remains unchanged;                                          ###
+-- ### If the mask condition is true: 0 -> 1, 1 -> 0                          ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pApplyMask]
     @MaskPattern TINYINT
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    /* ========================================================================
-       QR-Code Data Masking
-
-       Eingabe:
-           @MaskPattern = 0 bis 7
-
-       Maskiert werden ausschliesslich Module mit:
-
-           ModuleType = 'Data'
-
-       Damit bleiben unveraendert:
-
-           Finder Pattern
-           Separatoren
-           Timing Pattern
-           Dark Module
-           Format Information
-
-       Die Maskierung ist eine XOR-Operation:
-
-           Maskenbedingung falsch:
-               Modul bleibt unveraendert
-
-           Maskenbedingung wahr:
-               0 -> 1
-               1 -> 0
-       ======================================================================== */
-
-
-    /* ------------------------------------------------------------------------
-       Mask Pattern pruefen
-       ------------------------------------------------------------------------ */
-
     IF @MaskPattern IS NULL
     BEGIN
-        THROW 50200,
-              'Das Mask Pattern darf nicht NULL sein.',
-              1;
+        DECLARE @ErrorMessage NVARCHAR(MAX)
+        SET @ErrorMessage =
+              N'DE: Das Mask Pattern darf nicht NULL sein.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The mask pattern cannot be NULL.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
-
 
     IF @MaskPattern NOT BETWEEN 0 AND 7
     BEGIN
-        THROW 50201,
-              'Das Mask Pattern muss zwischen 0 und 7 liegen.',
-              1;
+        DECLARE @ErrorMessage NVARCHAR(MAX)
+        SET @ErrorMessage =
+              N'DE: Das Mask Pattern muss zwischen 0 und 7 liegen.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The mask pattern must be between 0 and 7.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
-
-    /* ------------------------------------------------------------------------
-       Sicherstellen, dass die Daten bereits platziert wurden
-       ------------------------------------------------------------------------ */
+    -- Ensure that the data has already been entered
+    ------------------------------------------------------------------------
     DECLARE @TotalDataBits INT;
 
     SELECT
         @TotalDataBits = COUNT(*)
-    FROM QR.Module
-    WHERE ModuleType IN ('Data', 'Remainder');
+    FROM [QR].[Module]
+    WHERE [ModuleType] IN ('Data', 'Remainder');
 
     IF @TotalDataBits = 0
     BEGIN
-        THROW 50202, 'Keine Datenmodule vorhanden.', 1;
+        DECLARE @ErrorMessage NVARCHAR(MAX)
+        SET @ErrorMessage =
+              N'DE: Keine Datenmodule vorhanden.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: No data modules available.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
-    /* ------------------------------------------------------------------------
-       Maskierung anwenden
-
-       Koordinaten:
-
-           Y = Zeile
-           X = Spalte
-
-       Der Ursprung (0,0) befindet sich oben links.
-       ------------------------------------------------------------------------ */
-    UPDATE M
-    SET
-        [IsBlack] =
-            CASE
-                WHEN
-                (
-                    /* Mask Pattern 0 */
-                    @MaskPattern = 0
-                    AND
-                    ((CONVERT(INT, [M].[Y]) + CONVERT(INT, [M].[X])) % 2) = 0
-                )
+    -- Apply masking. Coordinates: Y = row, X = column. The origin (0,0) is located at the top left.
+    ------------------------------------------------------------------------
+    UPDATE [M]
+    SET [IsBlack] = CASE 
+            WHEN 
+                (@MaskPattern = 0 AND ((CONVERT(INT, [M].[Y]) + CONVERT(INT, [M].[X])) % 2) = 0)                                                                -- Mask Pattern 0
                 OR
-                (
-                    /* Mask Pattern 1 */
-                    @MaskPattern = 1
-                    AND
-                    (CONVERT(INT, [M].[Y]) % 2) = 0
-                )
+                (@MaskPattern = 1 AND (CONVERT(INT, [M].[Y]) % 2) = 0)                                                                                          -- Mask Pattern 1
                 OR
-                (
-                    /* Mask Pattern 2 */
-                    @MaskPattern = 2
-                    AND
-                    (CONVERT(INT, [M].[X]) % 3) = 0
-                )
+                (@MaskPattern = 2 AND (CONVERT(INT, [M].[X]) % 3) = 0)                                                                                          -- Mask Pattern 2
                 OR
-                (
-                    /* Mask Pattern 3 */
-                    @MaskPattern = 3
-                    AND
-                    (
-                        (
-                            CONVERT(INT, [M].[Y])
-                            + CONVERT(INT, [M].[X])
-                        ) % 3
-                    ) = 0
-                )
+                (@MaskPattern = 3 AND ((CONVERT(INT, [M].[Y]) + CONVERT(INT, [M].[X])) % 3) = 0)                                                                -- Mask Pattern 3
                 OR
-                (
-                    /* Mask Pattern 4 */
-                    @MaskPattern = 4
-                    AND
-                    (
-                        (
-                            CONVERT(INT, [M].[Y]) / 2
-                        )
-                        +
-                        (
-                            CONVERT(INT, [M].[X]) / 3
-                        )
-                    ) % 2 = 0
-                )
+                (@MaskPattern = 4 AND ((CONVERT(INT, [M].[Y]) / 2)+ (CONVERT(INT, [M].[X]) / 3)) % 2 = 0)                                                       -- Mask Pattern 4
                 OR
-                (
-                    /* Mask Pattern 5 */
-                    @MaskPattern = 5
-                    AND
-                    (
-                        (
-                            CONVERT(INT, [M].[Y])
-                            * CONVERT(INT, [M].[X])
-                        ) % 2
-                        +
-                        (
-                            CONVERT(INT, [M].[Y])
-                            * CONVERT(INT, [M].[X])
-                        ) % 3
-                    ) = 0
-                )
+                (@MaskPattern = 5 AND ((CONVERT(INT, [M].[Y]) * CONVERT(INT, [M].[X])) % 2 + (CONVERT(INT, [M].[Y]) * CONVERT(INT, [M].[X])) % 3) = 0)          -- Mask Pattern 5
                 OR
-                (
-                    /* Mask Pattern 6 */
-                    @MaskPattern = 6
-                    AND
-                    (
-                        (
-                            (
-                                CONVERT(INT, [M].[Y])
-                                * CONVERT(INT, [M].[X])
-                            ) % 2
-                        )
-                        +
-                        (
-                            (
-                                CONVERT(INT, [M].[Y])
-                                * CONVERT(INT, [M].[X])
-                            ) % 3
-                        )
-                    ) % 2 = 0
-                )
+                (@MaskPattern = 6 AND (((CONVERT(INT, [M].[Y]) * CONVERT(INT, [M].[X])) % 2) + ((CONVERT(INT, [M].[Y]) * CONVERT(INT, [M].[X])) % 3)) % 2 = 0)  -- Mask Pattern 6
                 OR
-                (
-                    /* Mask Pattern 7 */
-                    @MaskPattern = 7
-                    AND
-                    (
-                        (
-                            (
-                                CONVERT(INT, [M].[Y])
-                                + CONVERT(INT, [M].[X])
-                            ) % 2
-                        )
-                        +
-                        (
-                            (
-                                CONVERT(INT, [M].[Y])
-                                * CONVERT(INT, [M].[X])
-                            ) % 3
-                        )
-                    ) % 2 = 0
-                )
-                THEN
-                    CONVERT(BIT, 1 - CONVERT(INT, [M].[IsBlack]))
-                ELSE
-                    [M].[IsBlack]
+                (@MaskPattern = 7 AND (((CONVERT(INT, [M].[Y]) + CONVERT(INT, [M].[X])) % 2) + ((CONVERT(INT, [M].[Y]) * CONVERT(INT, [M].[X])) % 3)) % 2 = 0)  -- Mask Pattern 7
+            THEN CONVERT(BIT, 1 - CONVERT(INT, [M].[IsBlack]))
+            ELSE [M].[IsBlack]
             END
     FROM [QR].[Module]                                                  AS [M]
     WHERE
@@ -1522,9 +1145,25 @@ BEGIN
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pCalculateMaskPenalty]                                ###
+-- ##############################################################################
+-- ### Input parameters:   @ReturnResultSet:                                  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###  Output parameters: @OutPenaltyRule1:                                  ###
+-- ###                     @OutPenaltyRule2:                                  ###
+-- ###                     @OutPenaltyRule3:                                  ###
+-- ###                     @OutPenaltyRule4:                                  ###
+-- ###                     @OutTotalPenalty:                                  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Purpose:                                                               ###
+-- ### Only modules with [ModuleType] = ‘Data’ are masked.                    ###
+-- ### This leaves the following unchanged: Finder Pattern, Separators,       ###
+-- ### Timing Pattern, Dark Module, Format Information                        ###
+-- ### Masking is an XOR operation --> If the mask condition is false:        ###
+-- ### the module remains unchanged;                                          ###
+-- ### If the mask condition is true: 0 -> 1, 1 -> 0                          ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCalculateMaskPenalty]
     @OutPenaltyRule1 INT OUTPUT,
     @OutPenaltyRule2 INT OUTPUT,
@@ -1538,12 +1177,12 @@ BEGIN
 
     /* ========================================================================
        QR Mask Penalty Score
-       Die vier Regeln werden getrennt berechnet:
-           Rule 1: Lange Folgen gleicher Farbe
-           Rule 2: 2x2-Bloecke gleicher Farbe
-           Rule 3: Finder-aehnliche Muster
-           Rule 4: Abweichung vom Verhaeltnis 50 Prozent schwarz
-       Am Ende werden alle vier Ergebnisse addiert.
+       The four rules are calculated separately:
+           Rule 1: Long sequences of the same color
+           Rule 2: 2x2 blocks of the same color
+           Rule 3: “Finder”-like patterns
+           Rule 4: Deviation from the 50 percent black ratio
+       Finally, all four results are added together.
        ======================================================================== */
     DECLARE @PenaltyRule1   INTEGER = 0;
     DECLARE @PenaltyRule2   INTEGER = 0;
@@ -1556,13 +1195,13 @@ BEGIN
     FROM QR.Module;
     /* ========================================================================
        Rule 1
-       Lange horizontale und vertikale Folgen gleicher Farbe
+       Long horizontal and vertical sequences of the same color
 
-       Fuer eine Folge mit mindestens 5 Modulen:
-           5 Module  -> 3 Punkte
-           6 Module  -> 4 Punkte
-           7 Module  -> 5 Punkte
-       Allgemein:
+       For a sequence of at least 5 modules:
+           5 modules  -> 3 points
+           6 modules  -> 4 points
+           7 modules  -> 5 points
+       In general:
            3 + RunLength - 5
        ======================================================================== */
 
@@ -1572,9 +1211,9 @@ BEGIN
     DECLARE @X              INTEGER;
     DECLARE @Y              INTEGER;
 
-    /* ------------------------------------------------------------------------
-       Horizontale Folgen
-       ------------------------------------------------------------------------ */
+    ------------------------------------------------------------------------
+    -- Horizontal Chain
+    ------------------------------------------------------------------------
     SET @Y = 0;
 
     WHILE @Y <= @MatrixSize - 1
@@ -1592,7 +1231,12 @@ BEGIN
 
             IF @CurrentColor IS NULL
             BEGIN
-                THROW 50300, 'Die Matrix enthaelt noch Module ohne Farbwert.', 1;
+                DECLARE @ErrorMessage NVARCHAR(MAX)
+                SET @ErrorMessage =
+                      N'DE: Die Matrix enthaelt noch Module ohne Farbwert.'
+                    + CHAR(13) + CHAR(10)
+                    + N'EN: The matrix still contains modules without color values.'
+                RAISERROR (@ErrorMessage, 16, 1)
             END;
 
             IF @PreviousColor IS NULL
@@ -1606,7 +1250,6 @@ BEGIN
             END
             ELSE
             BEGIN
-
                 IF @RunLength >= 5
                 BEGIN
                     SET @PenaltyRule1 =
@@ -1614,21 +1257,13 @@ BEGIN
                         + 3
                         + (@RunLength - 5);
                 END;
-
-
                 SET @PreviousColor = @CurrentColor;
                 SET @RunLength = 1;
-
             END;
-
-
             SET @X = @X + 1;
-
         END;
 
-
-        /* Letzte Folge der Zeile auswerten */
-
+        -- Evaluate the last row
         IF @RunLength >= 5
         BEGIN
             SET @PenaltyRule1 =
@@ -1637,23 +1272,19 @@ BEGIN
                 + (@RunLength - 5);
         END;
 
-
         SET @Y = @Y + 1;
-
     END;
 
-
-    /* ------------------------------------------------------------------------
-       Vertikale Folgen
-       ------------------------------------------------------------------------ */
-
+    ------------------------------------------------------------------------
+    -- Vertical Chain
+    ------------------------------------------------------------------------
     SET @X = 0;
 
     WHILE @X <= @MatrixSize - 1
     BEGIN
-        SET @Y = 0;
-        SET @RunLength = 0;
-        SET @PreviousColor = NULL;
+        SET @Y              = 0;
+        SET @RunLength      = 0;
+        SET @PreviousColor  = NULL;
 
         WHILE @Y <= @MatrixSize - 1
         BEGIN
@@ -1664,7 +1295,12 @@ BEGIN
 
             IF @CurrentColor IS NULL
             BEGIN
-                THROW 50301,'Die Matrix enthaelt noch Module ohne Farbwert.', 1;
+                DECLARE @ErrorMessage NVARCHAR(MAX)
+                SET @ErrorMessage =
+                      N'DE: Die Matrix enthaelt noch Module ohne Farbwert.'
+                    + CHAR(13) + CHAR(10)
+                    + N'EN: The matrix still contains modules without color values.'
+                RAISERROR (@ErrorMessage, 16, 1)
             END;
 
             IF @PreviousColor IS NULL
@@ -1693,7 +1329,6 @@ BEGIN
             SET @Y = @Y + 1;
         END;
 
-        /* Letzte Folge der Spalte auswerten */
         IF @RunLength >= 5
         BEGIN
             SET @PenaltyRule1 =
@@ -1704,17 +1339,12 @@ BEGIN
         SET @X = @X + 1;
     END;
 
-    /*
-    Penalty Rule 2: 2x2-Blöcke
-    Jeder 2x2-Block, dessen vier Module dieselbe Farbe besitzen, kostet 3 Punkte. 
-    Die 2x2-Fenster überlappen sich bewusst.*/
-
-    /* ========================================================================
-       Rule 2       2x2-Bloecke gleicher Farbe
-       Jeder 2x2-Block aus vier schwarzen oder vier weissen Modulen:
-           +3 Punkte
-       Die Bloecke duerfen und sollen sich ueberlappen.
-       ======================================================================== */
+    -- ========================================================================
+    -- Rule 2       2x2 blocks of the same color
+    -- Each 2x2 block consisting of four black or four white modules:
+    --  +3 points
+    -- The blocks may and should overlap.
+    -- ========================================================================
     SELECT
         @PenaltyRule2 =
             COUNT(*) * 3
@@ -1739,46 +1369,27 @@ BEGIN
         AND [M00].[IsBlack] = [M01].[IsBlack]
         AND [M00].[IsBlack] = [M11].[IsBlack];
 
-/*
-Penalty Rule 3: finderähnliche Muster
-Das ist die wichtigste und zugleich am stärksten gewichtete Regel.
-Gesucht wird das Verhältnis
-1 : 1 : 3 : 1 : 1, also das Bitmuster 1011101
-mit vier hellen Modulen davor oder danach, also 10111010000 oder 00001011101
-*/
-    /* ========================================================================
-       Rule 3
-       Finder-aehnliche Muster
-
-       Gesucht werden:
-
-           10111010000
-
-       oder:
-
-           00001011101
-
-       horizontal und vertikal.
-
-       Jedes Vorkommen:
-
-           +40 Punkte
-       ======================================================================== */
+    -- ------------------------------------------------------------------------
+    -- Penalty Rule 3: Finder-like Patterns
+    -- This is the most important rule and also the one with the highest weighting.
+    -- The pattern sought is the ratio 1 : 1 : 3 : 1 : 1, i.e., the bit pattern 
+    -- 1011101 with four light modules before or after it, such as 10111010000 
+    -- or 00001011101 (horizontal or vertical).
+    -- ------------------------------------------------------------------------
 
     DECLARE @PatternA CHAR(11) = '10111010000';
     DECLARE @PatternB CHAR(11) = '00001011101';
     DECLARE @Sequence CHAR(11);
 
-    /* ------------------------------------------------------------------------
-       Horizontal
-       ------------------------------------------------------------------------ */
+    -- ------------------------------------------------------------------------
+    -- Horizontal
+    -- ------------------------------------------------------------------------ */
     SET @Y = 0;
 
     WHILE @Y <= @MatrixSize - 1
     BEGIN
 
         SET @X = 0;
-
 
         WHILE @X <= @MatrixSize - 11
         BEGIN
@@ -1799,33 +1410,25 @@ mit vier hellen Modulen davor oder danach, also 10111010000 oder 00001011101
                         ORDER BY [X]
                     )
             FROM [QR].[Module]
-            WHERE
-                [Y] = @Y
+            WHERE 1 = 1
+                AND [Y] = @Y
                 AND [X] BETWEEN @X AND @X + 10;
-
 
             IF @Sequence = @PatternA
                 OR @Sequence = @PatternB
             BEGIN
-                SET @PenaltyRule3 =
-                    @PenaltyRule3 + 40;
+                SET @PenaltyRule3 = @PenaltyRule3 + 40;
             END;
 
-
             SET @X = @X + 1;
-
         END;
 
-
         SET @Y = @Y + 1;
-
     END;
 
-
-    /* ------------------------------------------------------------------------
-       Vertikal
-       ------------------------------------------------------------------------ */
-
+    -- ------------------------------------------------------------------------
+    -- Vertical
+    -- ------------------------------------------------------------------------
     SET @X = 0;
 
     WHILE @X <= @MatrixSize - 1
@@ -1833,10 +1436,8 @@ mit vier hellen Modulen davor oder danach, also 10111010000 oder 00001011101
 
         SET @Y = 0;
 
-
         WHILE @Y <= @MatrixSize - 11
         BEGIN
-
             SELECT
                 @Sequence =
                     STRING_AGG
@@ -1853,57 +1454,36 @@ mit vier hellen Modulen davor oder danach, also 10111010000 oder 00001011101
                         ORDER BY [Y]
                     )
             FROM [QR].[Module]
-            WHERE
-                [X] = @X
+            WHERE 1 = 1
+                AND [X] = @X
                 AND [Y] BETWEEN @Y AND @Y + 10;
-
 
             IF @Sequence = @PatternA
                 OR @Sequence = @PatternB
             BEGIN
-                SET @PenaltyRule3 =
-                    @PenaltyRule3 + 40;
+                SET @PenaltyRule3 = @PenaltyRule3 + 40;
             END;
 
-
             SET @Y = @Y + 1;
-
         END;
 
-
         SET @X = @X + 1;
-
     END;
 
-    /*
-    Penalty Rule 4: Verhältnis Schwarz/Weiß
-    Idealerweise liegt der Anteil schwarzer Module nahe bei 50 Prozent. Je weiter er davon abweicht, desto höher der Penalty Score. Regel 4 arbeitet in 5-Prozent-Schritten und vergibt je Schritt 10 Punkte
-    */
-
-        /* ========================================================================
-       Rule 4
-       Verhaeltnis schwarzer zu weisser Module
-
-       Gesamtzahl bei Version 1:
-
-           21 * 21 = 441 Module
-
-       Fuer jede Abweichung von 50 Prozent um weitere 5 Prozentpunkte:
-
-           +10 Punkte
-       ======================================================================== */
-
-    DECLARE @TotalModules INT;
-    DECLARE @BlackModules INT;
-
-    DECLARE @BlackPercent DECIMAL(10,4);
-    DECLARE @DeviationFrom50 DECIMAL(10,4);
-    DECLARE @FivePercentSteps INT;
-
+    -- ----------------------------------------------------------------------------- 
+    -- Penalty Rule 4: Black-to-White Ratio: Ideally, the percentage of black modules 
+    -- should be close to 50 percent. The further it deviates from this, the higher 
+    -- the penalty score. Rule 4 operates in 5-percent increments and assigns 10 
+    -- points per increment.
+    -- ----------------------------------------------------------------------------- 
+    DECLARE @TotalModules       INTEGER;
+    DECLARE @BlackModules       INTEGER;
+    DECLARE @BlackPercent       DECIMAL(10,4);
+    DECLARE @DeviationFrom50    DECIMAL(10,4);
+    DECLARE @FivePercentSteps   INTEGEr;
 
     SELECT
         @TotalModules = COUNT(*),
-
         @BlackModules =
             SUM
             (
@@ -1912,59 +1492,32 @@ mit vier hellen Modulen davor oder danach, also 10111010000 oder 00001011101
                     ELSE 0
                 END
             )
-
     FROM [QR].[Module];
 
+    SET @BlackPercent       = 100.0 * CONVERT(DECIMAL(10,4), @BlackModules) / CONVERT(DECIMAL(10,4), @TotalModules);
+    SET @DeviationFrom50    = ABS(@BlackPercent - 50.0);
+    SET @FivePercentSteps   = FLOOR(@DeviationFrom50 / 5.0);
+    SET @PenaltyRule4       = @FivePercentSteps * 10;
 
-    SET @BlackPercent =
-        100.0
-        * CONVERT(DECIMAL(10,4), @BlackModules)
-        / CONVERT(DECIMAL(10,4), @TotalModules);
+    -- Now let's add the four partial results
+    DECLARE @TotalPenalty   INTEGER;
+    SET @TotalPenalty = @PenaltyRule1 + @PenaltyRule2 + @PenaltyRule3 + @PenaltyRule4;
 
-
-    SET @DeviationFrom50 =
-        ABS(@BlackPercent - 50.0);
-
-
-    SET @FivePercentSteps =
-        FLOOR
-        (
-            @DeviationFrom50 / 5.0
-        );
-
-
-    SET @PenaltyRule4 =
-        @FivePercentSteps * 10;
-
-    -- jetzt addieren wir die vier Teilergebnisse
-        /* ========================================================================
-       Gesamtergebnis
-       ======================================================================== */
-    DECLARE @TotalPenalty INT;
-
-    SET @TotalPenalty =
-          @PenaltyRule1
-        + @PenaltyRule2
-        + @PenaltyRule3
-        + @PenaltyRule4;
-
-    /* ------------------------------------------------------------------------
-       Ergebnisse an den Aufrufer zurueckgeben
-       ------------------------------------------------------------------------ */
+    -- ------------------------------------------------------------------------
+    -- Return results to the caller
+    -- ------------------------------------------------------------------------
     SET @OutPenaltyRule1 = @PenaltyRule1;
     SET @OutPenaltyRule2 = @PenaltyRule2;
     SET @OutPenaltyRule3 = @PenaltyRule3;
     SET @OutPenaltyRule4 = @PenaltyRule4;
     SET @OutTotalPenalty = @TotalPenalty;
 
-    /* ------------------------------------------------------------------------
-       Optionale Kontrollausgabe
-
-       Beim manuellen Aufruf wollen wir weiterhin das bisherige Resultset
-       sehen koennen.
-
-       pSelectBestMask setzt @ReturnResultSet dagegen auf 0.
-       ------------------------------------------------------------------------ */
+    -- ------------------------------------------------------------------------
+    -- Optional Output Control
+    -- When calling the function manually, we still want to be able to see the 
+    -- previous result set. 
+    -- pSelectBestMask, on the other hand, sets @ReturnResultSet to 0.
+    -- ------------------------------------------------------------------------
     IF @ReturnResultSet = 1
     BEGIN
 
@@ -1983,11 +1536,18 @@ mit vier hellen Modulen davor oder danach, also 10111010000 oder 00001011101
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pCreateBaseMatrix]                                    ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ### ---------------------------------------------------------------------- ###
+-- ###  Output parameters:                                                    ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateBaseMatrix]
-    @VersionNumber      TINYINT = 1
+    @VersionNumber              TINYINT = 1
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -2008,24 +1568,39 @@ BEGIN
     EXEC [QR].[pSetSeparator] 0, @BorderRight;
 
     EXEC [QR].[pSetTimingPatterns]    @VersionNumber = @VersionNumber;
-
     EXEC [QR].[pSetAlignmentPatterns] @VersionNumber = @VersionNumber;
-
     EXEC [QR].[pSetDarkModule]        @VersionNumber = @VersionNumber;
-
     EXEC [QR].[pReserveFormatModules] @VersionNumber = @VersionNumber;
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pCreateColoredQrCode]                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ###   @Text:                                                               ###
+-- ###   @LogoName:                                                           ###
+-- ###   @VersionNumber:                                                      ###
+-- ###   @ErrorCorrectionLevel:                                               ###
+-- ###   @ModuleSize:                                                         ###
+-- ###   @QuietZone:                                                          ###
+-- ###   @ForegroundColor:                                                    ###
+-- ###   @BackgroundColor:                                                    ###
+-- ###   @RoundDataModulesOnly:                                               ###
+-- ###   @VersionNumber:                                                      ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ###   @SVG:                                                                ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateColoredQrCode]
 (
       @Text                     VARCHAR(255)
     , @LogoName                 VARCHAR(50)
     , @ErrorCorrectionLevel     CHAR(1)     = 'M'
-    , @ModuleSize               INT         = 10
-    , @QuietZone                INT         = 4
+    , @ModuleSize               INTEGER     = 10
+    , @QuietZone                INTEGER     = 4
     , @ForegroundColor          CHAR(7)     = '#000000'
     , @BackgroundColor          CHAR(7)     = '#FFFFFF'
     , @RoundDataModulesOnly     BIT         = 1
@@ -2036,9 +1611,8 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE
-          @DataBitStream  VARCHAR(MAX)
-        , @FinalBitStream VARCHAR(MAX);
+    DECLARE @DataBitStream      VARCHAR(MAX)
+    DECLARE @FinalBitStream     VARCHAR(MAX);
 
     ------------------------------------------------
     -- QR erzeugen
@@ -2085,8 +1659,8 @@ BEGIN
 
     -- '7 SelectBestMask';
     EXEC [QR].[pSelectBestMask]
-        @ErrorCorrectionLevel = @ErrorCorrectionLevel,
-        @VersionNumber        = @VersionNumber;
+        @ErrorCorrectionLevel       = @ErrorCorrectionLevel,
+        @VersionNumber              = @VersionNumber;
 
     ------------------------------------------------
     -- Logo
@@ -2096,21 +1670,21 @@ BEGIN
     EXEC [QR].[pDetermineLargestLogoArea];
 
     DECLARE
-          @StartX INT
-        , @StartY INT
-        , @Width  INT
-        , @Height INT;
+          @StartX       INTEGER
+        , @StartY       INTEGER
+        , @Width        INTEGER
+        , @Height       INTEGER;
 
     SELECT
-          @StartX = StartX
-        , @StartY = StartY
-        , @Width  = Width
-        , @Height = Height
-    FROM QR.LogoArea
-    WHERE AreaName = 'LargestFreeRectangle';
+          @StartX = [StartX]
+        , @StartY = [StartY]
+        , @Width  = [Width]
+        , @Height = [Height]
+    FROM [QR].[LogoArea]
+    WHERE [AreaName] = 'LargestFreeRectangle';
 
     -- '9 ProjectLogo';
-    EXEC QR.pProjectLogoPattern
+    EXEC [QR].[pProjectLogoPattern]
           @LogoName
         , @StartX
         , @StartY
@@ -2118,7 +1692,7 @@ BEGIN
         , @Height;
 
     -- '10 ApplyColors';
-    EXEC QR.pApplyLogoColors
+    EXEC [QR].[pApplyLogoColors]
          @LogoName;
 
     ------------------------------------------------
@@ -2134,16 +1708,16 @@ BEGIN
 
     INSERT INTO [QR].[GeneratedSvg]
     (
-          CreatedAt
-        , VersionNumber
-        , TextEncoded
-        , LogoName
-        , ErrorCorrectionLevel
-        , SvgLength
-        , SvgHash
-        , SvgContent
-        , TextLength
-        , InputHash
+          [CreatedAt]
+        , [VersionNumber]
+        , [TextEncoded]
+        , [LogoName]
+        , [ErrorCorrectionLevel]
+        , [SvgLength]
+        , [SvgHash]
+        , [SvgContent]
+        , [TextLength]
+        , [InputHash]
     )
     VALUES
     (
@@ -2175,33 +1749,41 @@ BEGIN
 END;
 GO
 
-
-
-
-CREATE OR ALTER PROCEDURE QR.pCreateDataBitStream
+-- ##############################################################################
+-- ### Procedure: [QR].[pCreateDataBitStream]                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ###     Encodes the input text into QR byte mode and generates the padded  ###
+-- ###     QR data bit stream.                                                ###
+-- ### Parameters:                                                            ###
+-- ###     @Text                  Input text                                  ###
+-- ###     @VersionNumber         QR version                                  ###
+-- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
+-- ###     @DataBitStream         Generated bit stream                        ###
+-- ##############################################################################
+CREATE OR ALTER PROCEDURE [QR].[pCreateDataBitStream]
 (
-      @Text VARCHAR(255)
-    , @VersionNumber TINYINT
-    , @ErrorCorrectionLevel CHAR(1)
-    , @DataBitStream VARCHAR(MAX) OUTPUT
+      @Text                     VARCHAR(255)
+    , @VersionNumber            TINYINT
+    , @ErrorCorrectionLevel     CHAR(1)
+    , @DataBitStream            VARCHAR(MAX) OUTPUT
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     DECLARE @ModeIndicator      CHAR(4)      = '0100';
-    DECLARE @CharacterCount     INT;
+    DECLARE @CharacterCount     INTEGER;
     DECLARE @CharacterCountBits CHAR(8);
     DECLARE @PayloadBits        VARCHAR(MAX);
     DECLARE @RawDataBits        VARCHAR(MAX);
     DECLARE @DataCodewords      INTEGER;
     DECLARE @CapacityBits       INTEGER;
-
     DECLARE @Bytes TABLE
     (
-          [Position]  INT
-        , [ByteValue] TINYINT
-        , [BitValue]  CHAR(8)
+          [Position]            INTEGER
+        , [ByteValue]           TINYINT
+        , [BitValue]            CHAR(8)
     );
 
     SET @DataCodewords =
@@ -2213,35 +1795,35 @@ BEGIN
 
     SET @CharacterCount = LEN(@Text);
 
-    ;WITH N AS
+    ;WITH [N] AS
     (
-        SELECT 1 AS Position
+        SELECT 1                                        AS Position
 
         UNION ALL
 
         SELECT Position + 1
-        FROM N
-        WHERE Position < LEN(@Text)
+        FROM [N]
+        WHERE [Position] < LEN(@Text)
     )
     INSERT INTO @Bytes
     (
-          Position
-        , ByteValue
-        , BitValue
+          [Position]
+        , [ByteValue]
+        , [BitValue]
     )
     SELECT
-          Position
-        , ASCII(SUBSTRING(@Text, Position, 1))
+          [Position]
+        , ASCII(SUBSTRING(@Text, [Position], 1))
 
-        , CASE WHEN ASCII(SUBSTRING(@Text, Position, 1)) & 128 = 128 THEN '1' ELSE '0' END
-        + CASE WHEN ASCII(SUBSTRING(@Text, Position, 1)) &  64 =  64 THEN '1' ELSE '0' END
-        + CASE WHEN ASCII(SUBSTRING(@Text, Position, 1)) &  32 =  32 THEN '1' ELSE '0' END
-        + CASE WHEN ASCII(SUBSTRING(@Text, Position, 1)) &  16 =  16 THEN '1' ELSE '0' END
-        + CASE WHEN ASCII(SUBSTRING(@Text, Position, 1)) &   8 =   8 THEN '1' ELSE '0' END
-        + CASE WHEN ASCII(SUBSTRING(@Text, Position, 1)) &   4 =   4 THEN '1' ELSE '0' END
-        + CASE WHEN ASCII(SUBSTRING(@Text, Position, 1)) &   2 =   2 THEN '1' ELSE '0' END
-        + CASE WHEN ASCII(SUBSTRING(@Text, Position, 1)) &   1 =   1 THEN '1' ELSE '0' END
-    FROM N
+        , CASE WHEN ASCII(SUBSTRING(@Text, [Position], 1)) & 128 = 128 THEN '1' ELSE '0' END
+        + CASE WHEN ASCII(SUBSTRING(@Text, [Position], 1)) &  64 =  64 THEN '1' ELSE '0' END
+        + CASE WHEN ASCII(SUBSTRING(@Text, [Position], 1)) &  32 =  32 THEN '1' ELSE '0' END
+        + CASE WHEN ASCII(SUBSTRING(@Text, [Position], 1)) &  16 =  16 THEN '1' ELSE '0' END
+        + CASE WHEN ASCII(SUBSTRING(@Text, [Position], 1)) &   8 =   8 THEN '1' ELSE '0' END
+        + CASE WHEN ASCII(SUBSTRING(@Text, [Position], 1)) &   4 =   4 THEN '1' ELSE '0' END
+        + CASE WHEN ASCII(SUBSTRING(@Text, [Position], 1)) &   2 =   2 THEN '1' ELSE '0' END
+        + CASE WHEN ASCII(SUBSTRING(@Text, [Position], 1)) &   1 =   1 THEN '1' ELSE '0' END
+    FROM [N]
     OPTION (MAXRECURSION 255);
 
     SET @CharacterCountBits =
@@ -2256,8 +1838,8 @@ BEGIN
 
     SELECT
         @PayloadBits =
-            STRING_AGG(CONVERT(VARCHAR(MAX), BitValue), '')
-            WITHIN GROUP (ORDER BY Position)
+            STRING_AGG(CONVERT(VARCHAR(MAX), [BitValue]), '')
+            WITHIN GROUP (ORDER BY [Position])
     FROM @Bytes;
 
     SET @RawDataBits =
@@ -2269,14 +1851,20 @@ BEGIN
 
     IF LEN(@RawDataBits) > @CapacityBits
     BEGIN
-        DECLARE @ErrorMessage NVARCHAR(500);
-        SET @ErrorMessage =
-              N'Die Nutzdaten überschreiten die Kapazität von Version '
+        DECLARE @ErrorMessage60002       NVARCHAR(500);
+        SET @ErrorMessage60002 =
+              N'DE: Die Nutzdaten überschreiten die Kapazität der gewählten QR-Version '
+            + CAST(@VersionNumber AS NVARCHAR(10))
+            + N'-'
+            + @ErrorCorrectionLevel
+            + N'.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The payload exceeds the capacity of the selected QR version '
             + CAST(@VersionNumber AS NVARCHAR(10))
             + N'-'
             + @ErrorCorrectionLevel
             + N'.';
-        THROW 60002, @ErrorMessage, 1;
+        THROW 60002, @ErrorMessage60002, 1;
     END;
 
     SET @DataBitStream =
@@ -2288,16 +1876,25 @@ BEGIN
 
     IF LEN(@DataBitStream) <> (@DataCodewords * 8)
     BEGIN
-        THROW 60001,
-              'Unerwartete Bitlänge im DataBitStream.',
-              1;
+        DECLARE @ErrorMessage60001       NVARCHAR(500);
+        SET @ErrorMessage60002 =
+              N'DE: Unerwartete Bitlänge im DataBitStream.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: Unexpected bit length in the DataBitStream.'
+        THROW 60001, @ErrorMessage60001, 1;
     END
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pCreateDataCodewords]                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Parameters:                                                            ###
+-- ###     @DataBitStream         Generated bit stream                        ###
+-- ###     @VersionNumber         QR version                                  ###
+-- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateDataCodewords]
 (
       @DataBitStream            VARCHAR(MAX)
@@ -2308,7 +1905,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
     
-    DECLARE @DataCodewords INT;
+    DECLARE @DataCodewords      INTEGER;
 
     SET @DataCodewords =
         [QR].[fnGetDataCodewords]
@@ -2320,12 +1917,11 @@ BEGIN
     DELETE FROM [QR].[DataCodeword];
 
     DECLARE
-          @Position INT = 0
-        , @ByteBits CHAR(8);
+          @Position             INTEGER = 0
+        , @ByteBits             CHAR(8);
 
     WHILE @Position < @DataCodewords
     BEGIN
-
         SET @ByteBits =
             SUBSTRING
             (
@@ -2350,8 +1946,12 @@ BEGIN
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pInterleaveCodewords]                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Parameters:                                                            ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pInterleaveCodewords]
 AS
 BEGIN
@@ -2366,78 +1966,78 @@ BEGIN
         @MaxDataPosition = MAX(Position)
     FROM QR.DataBlock;
 
-    DECLARE @DataPosition INT = 0;
+    DECLARE @DataPosition       INTEGER = 0;
+    DECLARE @MaxEccPosition     INTEGER;
+    DECLARE @EccPosition        INTEGER = 0;
 
     WHILE @DataPosition <= @MaxDataPosition
     BEGIN
-
-        INSERT INTO QR.InterleavedCodeword
+        INSERT INTO [QR].[InterleavedCodeword]
         (
-              Position
-            , Value
+              [Position]
+            , [Value]
         )
         SELECT
               @Position
             + ROW_NUMBER()
                 OVER
                 (
-                    ORDER BY BlockNumber
+                    ORDER BY [BlockNumber]
                 ) - 1
             , Value
-        FROM QR.DataBlock
-        WHERE Position = @DataPosition;
+        FROM [QR].[DataBlock]
+        WHERE [Position] = @DataPosition;
 
         SET @Position += @@ROWCOUNT;
 
         SET @DataPosition += 1;
     END;
-    DECLARE @MaxEccPosition INT;
 
     SELECT
-        @MaxEccPosition = MAX(Position)
-    FROM QR.EccBlock;
-
-    DECLARE @EccPosition INT = 0;
+        @MaxEccPosition = MAX([Position])
+    FROM [QR].[EccBlock];
 
     WHILE @EccPosition <= @MaxEccPosition
     BEGIN
-
-        INSERT INTO QR.InterleavedCodeword
+        INSERT INTO [QR].[InterleavedCodeword]
         (
-              Position
-            , Value
+              [Position]
+            , [Value]
         )
         SELECT
               @Position
             + ROW_NUMBER()
                 OVER
                 (
-                    ORDER BY BlockNumber
+                    ORDER BY [BlockNumber]
                 ) - 1
-            , Value
-        FROM QR.EccBlock
-        WHERE Position = @EccPosition;
+            , [Value]
+        FROM [QR].[EccBlock]
+        WHERE [Position] = @EccPosition;
 
         SET @Position += @@ROWCOUNT;
-
         SET @EccPosition += 1;
     END;
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pInterleaveCodewords]                                 ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Parameters:                                                            ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateEccForBlock]
 (
-      @BlockNumber            INT
-    , @VersionNumber          TINYINT
-    , @ErrorCorrectionLevel   CHAR(1)
+      @BlockNumber              INTEGER
+    , @VersionNumber            TINYINT
+    , @ErrorCorrectionLevel     CHAR(1)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @EccCodewords INT;
+    DECLARE @EccCodewords       INTEGER;
     SET @EccCodewords =
         [QR].[fnGetEccCodewords]
         (
@@ -2447,26 +2047,26 @@ BEGIN
 
     DECLARE @Remainder TABLE
     (
-        [Position] INTEGER     NOT NULL PRIMARY KEY,
-        [Value]    INTEGER     NOT NULL
+        [Position]              INTEGER     NOT NULL    PRIMARY KEY,
+        [Value]                 INTEGER     NOT NULL
     );
 
     DECLARE @Generator TABLE
     (
-          Position    INT PRIMARY KEY
-        , Coefficient INT NOT NULL
+          [Position]            INTEGER                 PRIMARY KEY
+        , [Coefficient]         INTEGER     NOT NULL
     );
 
     INSERT INTO @Generator
     (
-          Position
-        , Coefficient
+          [Position]
+        , [Coefficient]
     )
     SELECT
-          Position
-        , Coefficient
-    FROM QR.GeneratorPolynomial
-    WHERE EccCodewords = @EccCodewords;
+          [Position]
+        , [Coefficient]
+    FROM [QR].[GeneratorPolynomial]
+    WHERE [EccCodewords] = @EccCodewords;
 
     IF NOT EXISTS
     (
@@ -2474,7 +2074,12 @@ BEGIN
         FROM @Generator
     )
     BEGIN
-        THROW 70002, 'Kein Generatorpolynom gefunden.', 1;
+        DECLARE @ErrorMessage NVARCHAR(MAX)
+        SET @ErrorMessage =
+              N'DE: Kein Generatorpolynom gefunden.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: No generator polynomial found'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     ;WITH [N] AS
@@ -2495,7 +2100,7 @@ BEGIN
     SELECT
           [Position]
         , 0
-    FROM N
+    FROM [N]
     OPTION(MAXRECURSION 100);
 
     DECLARE @DataPosition           INTEGER = 0;
@@ -2506,16 +2111,16 @@ BEGIN
     DECLARE @GeneratorCoefficient   INTEGER;
     DECLARE @Product                INTEGER;
     DECLARE @OldValue               INTEGER;
+    DECLARE @DataCodewords          INTEGER;
     DECLARE @Shift TABLE
         (
-                [Position] INT PRIMARY KEY
-            , [Value]    INT NOT NULL
+              [Position]            INTEGER             PRIMARY KEY
+            , [Value]               INTEGER NOT NULL
         );
-    DECLARE @DataCodewords INT;
 
     SELECT
         @DataCodewords = COUNT(*)
-    FROM QR.DataBlock
+    FROM [QR].[DataBlock]
     WHERE BlockNumber = @BlockNumber;
 
     WHILE @DataPosition < @DataCodewords
@@ -2605,25 +2210,38 @@ BEGIN
         FROM @Remainder
     ) <> @EccCodewords
     BEGIN
-        THROW 70001, 'Falsche Anzahl ECC-Codewords erzeugt.', 1;
+        DECLARE @ErrorMessage NVARCHAR(MAX)
+        SET @ErrorMessage =
+              N'DE: Falsche Anzahl ECC-Codewords erzeugt.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: An incorrect number of ECC codewords was generated.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
-    INSERT INTO QR.EccBlock
+    INSERT INTO [QR].[EccBlock]
     (
-          BlockNumber
-        , Position
-        , Value
+          [BlockNumber]
+        , [Position]
+        , [Value]
     )
     SELECT
           @BlockNumber
-        , Position
-        , Value
+        , [Position]
+        , [Value]
     FROM @Remainder;
 END;
 GO
 
 
-CREATE OR ALTER PROCEDURE QR.pCreateEccBlocks
+-- ##############################################################################
+-- ### Procedure: [QR].[pCreateEccBlocks]                                     ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Parameters:                                                            ###
+-- ###     @VersionNumber         QR version                                  ###
+-- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
+-- ##############################################################################
+CREATE OR ALTER PROCEDURE [QR].[pCreateEccBlocks]
 (
       @VersionNumber          TINYINT
     , @ErrorCorrectionLevel   CHAR(1)
@@ -2632,20 +2250,18 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DELETE FROM QR.EccBlock;
+    DECLARE @MaxBlockNumber     INTEGER;
+    DECLARE @BlockNumber        INTEGER = 1;
 
-    DECLARE @MaxBlockNumber INT;
+    DELETE FROM [QR].[EccBlock];
 
     SELECT
         @MaxBlockNumber = MAX(BlockNumber)
-    FROM QR.DataBlock;
-
-    DECLARE @BlockNumber INT = 1;
+    FROM [QR].[DataBlock];
 
     WHILE @BlockNumber <= @MaxBlockNumber
     BEGIN
-
-        EXEC QR.pCreateEccForBlock
+        EXEC [QR].[pCreateEccForBlock]
               @BlockNumber
             , @VersionNumber
             , @ErrorCorrectionLevel;
@@ -2655,11 +2271,17 @@ BEGIN
 END;
 GO
 
-
-
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pCreateFinalBitStream]                                ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ###   @ErrorCorrectionLevel:  'L', 'M', 'Q' or 'H'                         ###
+-- ### Output Parameters:                                                     ###
+-- ###   @FinalBitStream:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateFinalBitStream]
 (
     @VersionNumber          TINYINT,
@@ -2670,7 +2292,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @DataCodewords INT;
+    DECLARE @DataCodewords      INTEGER;
+    DECLARE @EccCodewords       INTEGER;
+    DECLARE @ExpectedBits       INTEGER;
+    DECLARE @ExpectedCodewords  INTEGER;
 
     SET @DataCodewords =
         [QR].[fnGetDataCodewords]
@@ -2678,8 +2303,6 @@ BEGIN
               @VersionNumber
             , @ErrorCorrectionLevel
         );
-
-    DECLARE @EccCodewords INT;
 
     SET @EccCodewords =
         [QR].[fnGetEccCodewords]
@@ -2691,10 +2314,15 @@ BEGIN
     IF NOT EXISTS
     (
         SELECT 1
-        FROM QR.InterleavedCodeword
+        FROM [QR].[InterleavedCodeword]
     )
     BEGIN 
-        THROW 61002, 'Keine interleavten Codewords vorhanden.', 1;
+        DECLARE @ErrorMessage NVARCHAR(MAX)
+        SET @ErrorMessage =
+              N'DE: Keine interleavten Codewords vorhanden.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: No interleaved codewords are present.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     SELECT
@@ -2704,18 +2332,15 @@ BEGIN
                 CONVERT
                 (
                     VARCHAR(MAX),
-                    QR.fnByteToBinary(Value)
+                    [QR].[fnByteToBinary]([Value])
                 ),
                 ''
             )
             WITHIN GROUP
             (
-                ORDER BY Position
+                ORDER BY [Position]
             )
     FROM QR.InterleavedCodeword;
-
-    DECLARE @ExpectedBits INT;
-    DECLARE @ExpectedCodewords INT;
 
     SELECT
         @ExpectedCodewords = COUNT(*)
@@ -2725,23 +2350,35 @@ BEGIN
 
     IF LEN(@FinalBitStream) <> @ExpectedBits
     BEGIN
-
-        DECLARE @ErrorMessage NVARCHAR(300);
-
+        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'FinalBitStream besitzt '
             + CAST(LEN(@FinalBitStream) AS NVARCHAR(10))
             + N' statt '
             + CAST(@ExpectedBits AS NVARCHAR(10))
-            + N' Bits.';
-
-        THROW 61001, @ErrorMessage, 1;
+            + N' Bits.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: FinalBitStream has '
+            + CAST(LEN(@FinalBitStream) AS NVARCHAR(10))
+            + N'bits instead of '
+            + CAST(@ExpectedBits AS NVARCHAR(10))
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pCreateQrCode]                                        ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @Text:                                                               ###
+-- ###   @VersionNumber:                                                      ###
+-- ###   @ErrorCorrectionLevel:  'L', 'M', 'Q' or 'H'                         ###
+-- ### Output Parameters:                                                     ###
+-- ###   @FinalBitStream:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateQrCode]
 (
     @Text                   VARCHAR(255), 
@@ -2795,7 +2432,15 @@ END;
 GO
 
 
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pDeleteLogoPattern]                                   ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @LogoName:                                                           ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pDeleteLogoPattern]
 (
     @LogoName VARCHAR(50)
@@ -2810,38 +2455,39 @@ BEGIN
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pDetermineLargestLogoArea]                            ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pDetermineLargestLogoArea]
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE
-          @BestStartX INT = NULL
-        , @BestStartY INT = NULL
-        , @BestEndX   INT = NULL
-        , @BestEndY   INT = NULL
-        , @BestArea   INT = 0;
-
-    DECLARE
-          @StartX INT
-        , @StartY INT
-        , @EndX   INT
-        , @EndY   INT
-        , @Area   INT;
-    
-    DECLARE @MatrixSize INT;
+    DECLARE @BestStartX         INTEGER = NULL
+    DECLARE @BestStartY         INTEGER = NULL
+    DECLARE @BestEndX           INTEGER = NULL
+    DECLARE @BestEndY           INTEGER = NULL
+    DECLARE @BestArea           INTEGER = 0;
+    DECLARE @StartX             INTEGER
+    DECLARE @StartY             INTEGER
+    DECLARE @EndX               INTEGER
+    DECLARE @EndY               INTEGER
+    DECLARE @Area               INTEGER
+    DECLARE @MatrixSize         INTEGER;
 
     SELECT
-        @MatrixSize = MAX(X) + 1
-    FROM QR.Module;
+        @MatrixSize = MAX([X]) + 1
+    FROM [QR].[Module];
 
     SET @StartY = 0;
 
     WHILE @StartY <= @MatrixSize - 1
     BEGIN
-
         SET @StartX = 0;
 
         WHILE @StartX <= @MatrixSize - 1
@@ -2861,13 +2507,12 @@ BEGIN
                     (
                         SELECT 1
                         FROM [QR].[Module]
-                        WHERE
-                               [X] BETWEEN @StartX AND @EndX
+                        WHERE 1 = 1
+                           AND [X] BETWEEN @StartX AND @EndX
                            AND [Y] BETWEEN @StartY AND @EndY
                            AND [ModuleType] <> 'Data'
                     )
                     BEGIN
-
                         SET @Area =
                             (@EndX - @StartX + 1)
                           * (@EndY - @StartY + 1);
@@ -2920,12 +2565,23 @@ BEGIN
         , (@BestEndY - @BestStartY + 1)
         , @BestArea
     );
-
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pGenerateSvg]                                         ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @ModuleSize:                                                         ###
+-- ###   @QuietZone:                                                          ###
+-- ###   @ForegroundColor:                                                    ###
+-- ###   @BackgroundColor:                                                    ###
+-- ###   @RoundDataModulesOnly:                                               ###
+-- ### Output Parameters:                                                     ###
+-- ###   @Svg:                                                                ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pGenerateSvg]
 (
       @ModuleSize               INTEGER     = 10
@@ -2942,19 +2598,24 @@ BEGIN
     ------------------------------------------------------------------------
     -- Parameter prüfen
     ------------------------------------------------------------------------
-
     IF @ModuleSize < 1
     BEGIN
-        THROW 50610,
-              'ModuleSize muss mindestens 1 sein.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'ModuleSize muss mindestens 1 sein.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: ModuleSize must be at least 1.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     IF @QuietZone < 0
     BEGIN
-        THROW 50611,
-              'QuietZone darf nicht negativ sein.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'QuietZone darf nicht negativ sein.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: QuietZone must not be negative.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     ------------------------------------------------------------------------
@@ -2964,12 +2625,17 @@ BEGIN
 
     SELECT
         @QrSize =
-            MAX(X) + 1
+            MAX([X]) + 1
     FROM [QR].[Module];
 
     IF @QrSize IS NULL
     BEGIN
-        THROW 50602, 'Die QR-Matrix ist leer.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Die QR-Matrix ist leer.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The QR matrix is empty.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     IF
@@ -2978,38 +2644,40 @@ BEGIN
         FROM [QR].[Module]
     ) <> (@QrSize * @QrSize)
     BEGIN
-        THROW 50600,
-              'Die QR-Matrix ist unvollständig.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Die QR-Matrix ist unvollständig.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The QR matrix is incomplete.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     IF EXISTS
     (
         SELECT 1
         FROM [QR].[Module]
-        WHERE IsBlack IS NULL
+        WHERE [IsBlack] IS NULL
     )
     BEGIN
-        THROW 50601,
-              'Die QR-Matrix enthält noch undefinierte Module.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Die QR-Matrix enthält noch undefinierte Module.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The QR matrix still contains undefined modules.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     ------------------------------------------------------------------------
-    -- Zeichenfläche berechnen
+    -- Calculate Drawing Area
     ------------------------------------------------------------------------
-    DECLARE @CanvasModules INT;
+    DECLARE @CanvasModules      INTEGER;
+    DECLARE @CanvasPixels       INTEGER;
 
-    SET @CanvasModules =
-        @QrSize + (@QuietZone * 2);
-
-    DECLARE @CanvasPixels INT;
-
-    SET @CanvasPixels =
-        @CanvasModules * @ModuleSize;
+    SET @CanvasModules  = @QrSize + (@QuietZone * 2);
+    SET @CanvasPixels   = @CanvasModules * @ModuleSize;
 
     ------------------------------------------------------------------------
-    -- SVG-Kopf
+    -- SVG Header
     ------------------------------------------------------------------------
     SET @Svg =
           '<svg xmlns="http://www.w3.org/2000/svg"'
@@ -3030,61 +2698,38 @@ BEGIN
         + '"/>';
 
     ------------------------------------------------------------------------
-    -- QR-Module erzeugen
+    -- Generate QR Modules
     ------------------------------------------------------------------------
+    DECLARE @Modules VARCHAR(MAX);
 
-   DECLARE @Modules VARCHAR(MAX);
-
-SELECT
-    @Modules =
-        STRING_AGG
-        (
-            CONVERT
+    SELECT
+        @Modules =
+            STRING_AGG
             (
-                VARCHAR(MAX),
-
-                CASE
+                CONVERT
+                (
+                    VARCHAR(MAX),
+                    CASE
                     ----------------------------------------------------------------
-                    -- Datenmodule optional rund
+                    -- Optional round data modules
                     ----------------------------------------------------------------
-                    WHEN @RoundDataModulesOnly = 1
-                         AND [ModuleType] = 'Data'
+                    WHEN @RoundDataModulesOnly = 1 AND [ModuleType] = 'Data'
                     THEN
                           '<circle cx="'
                         + CONVERT
-                          (
-                              VARCHAR(20),
-                              (
-                                  ((CONVERT(FLOAT,[X]) + @QuietZone)
-                                   * @ModuleSize)
-                                  + (@ModuleSize / 2.0)
-                              )
-                          )
+                          (VARCHAR(20), (((CONVERT(FLOAT,[X]) + @QuietZone) * @ModuleSize) + (@ModuleSize / 2.0)))
                         + '" cy="'
                         + CONVERT
-                          (
-                              VARCHAR(20),
-                              (
-                                  ((CONVERT(FLOAT,[Y]) + @QuietZone)
-                                   * @ModuleSize)
-                                  + (@ModuleSize / 2.0)
-                              )
-                          )
+                          (VARCHAR(20),(((CONVERT(FLOAT,[Y]) + @QuietZone) * @ModuleSize) + (@ModuleSize / 2.0)))
                         + '" r="'
                         + CONVERT
-                          (
-                              VARCHAR(20),
-                              @ModuleSize * 0.45
-                          )
+                          (VARCHAR(20), @ModuleSize * 0.45)
                         + '" fill="'
-                        +
-                        CASE
+                        + CASE
                             WHEN [ColorHex] IS NOT NULL
                                 THEN [ColorHex]
-
                             WHEN [IsBlack] = 1
                                 THEN @ForegroundColor
-
                             ELSE
                                 @BackgroundColor
                         END
@@ -3095,32 +2740,19 @@ SELECT
                     ----------------------------------------------------------------
                     ELSE
                           '<rect x="'
-                        + CONVERT
-                          (
-                              VARCHAR(20),
-                              (CONVERT(INT,[X]) + @QuietZone)
-                              * @ModuleSize
-                          )
+                        + CONVERT(VARCHAR(20), (CONVERT(INT,[X]) + @QuietZone) * @ModuleSize)
                         + '" y="'
-                        + CONVERT
-                          (
-                              VARCHAR(20),
-                              (CONVERT(INT,[Y]) + @QuietZone)
-                              * @ModuleSize
-                          )
+                        + CONVERT(VARCHAR(20), (CONVERT(INT,[Y]) + @QuietZone) * @ModuleSize)
                         + '" width="'
                         + CONVERT(VARCHAR(20), @ModuleSize)
                         + '" height="'
                         + CONVERT(VARCHAR(20), @ModuleSize)
                         + '" fill="'
-                        +
-                        CASE
+                        + CASE
                             WHEN [ColorHex] IS NOT NULL
                                 THEN [ColorHex]
-
                             WHEN [IsBlack] = 1
                                 THEN @ForegroundColor
-
                             ELSE
                                 @BackgroundColor
                         END
@@ -3135,20 +2767,21 @@ SELECT
         )
         FROM [QR].[Module]
         WHERE
-               [IsBlack] = 1
-            OR [ColorHex] IS NOT NULL;
+            [IsBlack] = 1 OR [ColorHex] IS NOT NULL;
 
-    SET @Svg =
-          @Svg
-        + ISNULL(@Modules, '')
-        + '</svg>';
-
+    SET @Svg = @Svg + ISNULL(@Modules, '') + '</svg>';
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pInitializeMatrix]                                    ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pInitializeMatrix]
 (
     @VersionNumber TINYINT = 1
@@ -3164,47 +2797,57 @@ BEGIN
 
     IF @MatrixSize <= 0
     BEGIN
-        THROW 50010,
-              'Ungültige QR-Version.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Ungültige QR-Version.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: Invalid QR code version.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     DELETE
     FROM [QR].[Module];
 
-    ;WITH N AS
+    ;WITH [N] AS
     (
-        SELECT 0 AS N
+        SELECT 0 AS [N]
 
         UNION ALL
 
-        SELECT N + 1
-        FROM N
-        WHERE N + 1 < @MatrixSize
+        SELECT [N] + 1
+        FROM [N]
+        WHERE [N] + 1 < @MatrixSize
     )
     INSERT INTO [QR].[Module]
     (
-          X
-        , Y
-        , IsBlack
-        , ModuleType
-        , ColorHex
+          [X]
+        , [Y]
+        , [IsBlack]
+        , [ModuleType]
+        , [ColorHex]
     )
     SELECT
-          X.N
-        , Y.N
+          [X].[N]
+        , [Y].[N]
         , NULL
         , NULL
         , NULL
-    FROM N AS X
-    CROSS JOIN N AS Y
+    FROM [N] AS [X]
+    CROSS JOIN [N] AS [Y]
     OPTION (MAXRECURSION 200);
-
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pPlaceDataBits]                                       ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @Bits:                                                               ###
+-- ###   @VersionNumber:                                                      ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pPlaceDataBits]
 (
       @Bits             VARCHAR(MAX)
@@ -3214,123 +2857,114 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @MatrixSize         INT;
-    DECLARE @ExpectedBits       INT;
-    DECLARE @FreeModuleCount    INT;
-
-    DECLARE @BitPosition        INT = 1;
-    DECLARE @RightX             INT;
-    DECLARE @LeftX              INT;
-
-    DECLARE @Y                  INT;
-    DECLARE @Direction          INT = -1;
-
-    DECLARE @CurrentX           INT;
+    DECLARE @MatrixSize         INTEGER;
+    DECLARE @ExpectedBits       INTEGER;
+    DECLARE @FreeModuleCount    INTEGER;
+    DECLARE @BitPosition        INTEGER = 1;
+    DECLARE @RightX             INTEGER;
+    DECLARE @LeftX              INTEGER;
+    DECLARE @Y                  INTEGER;
+    DECLARE @Direction          INTEGER = -1;
+    DECLARE @CurrentX           INTEGER;
     DECLARE @CurrentBit         BIT;
 
     -------------------------------------------------------------------------
     -- Parameter prüfen
     -------------------------------------------------------------------------
-
-    IF @Bits IS NULL
+    IF @Bits IS NULL OR LEN(@Bits) = 0
     BEGIN
-        THROW 50001,
-              'Der Bitstream darf nicht NULL sein.',
-              1;
-    END;
-
-    IF LEN(@Bits) = 0
-    BEGIN
-        THROW 50002,
-              'Der Bitstream darf nicht leer sein.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Der Bitstream darf nicht NULL sein.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The bitstream must not be NULL.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     IF @Bits LIKE '%[^01]%'
     BEGIN
-        THROW 50003,
-              'Der Bitstream darf nur 0 und 1 enthalten.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Der Bitstream darf nur 0 und 1 enthalten.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The bitstream may contain only 0s and 1s.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     -------------------------------------------------------------------------
-    -- Matrixgröße bestimmen
+    -- Determine the size of the matrix
     -------------------------------------------------------------------------
-
     SELECT
         @MatrixSize = MAX([X]) + 1
     FROM [QR].[Module];
 
     IF @MatrixSize IS NULL
     BEGIN
-        THROW 50004,
-              'Die Matrix wurde noch nicht initialisiert.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Die Matrix wurde noch nicht initialisiert.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: The matrix has not yet been initialized.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     -------------------------------------------------------------------------
-    -- Erwartete Bitanzahl bestimmen
+    -- Determine the expected number of bits
     -------------------------------------------------------------------------
-
     SET @ExpectedBits = LEN(@Bits);
 
-    /* -------------------------------------------------------------------------
-       Freie Datenmodule prüfen
-       ------------------------------------------------------------------------- */
+    -------------------------------------------------------------------------
+    -- Check Available Data Modules
+    -------------------------------------------------------------------------
     SELECT
         @FreeModuleCount = COUNT(*)
-    FROM QR.Module
-    WHERE ModuleType IS NULL;
+    FROM [QR].[Module]
+    WHERE [ModuleType] IS NULL;
 
     IF @FreeModuleCount < @ExpectedBits
     BEGIN
-        THROW 50005,
-              'Zu wenig freie Datenmodule für den Bitstream vorhanden.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Zu wenig freie Datenmodule für den Bitstream vorhanden.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: There are not enough free data modules available for the bitstream.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     -------------------------------------------------------------------------
-    -- Start rechts außen
+    -- Start on the far right
     -------------------------------------------------------------------------
-
     SET @RightX = @MatrixSize - 1;
 
     -------------------------------------------------------------------------
-    -- Zick-Zack-Belegung
+    -- Zigzag Layout
     -------------------------------------------------------------------------
-
     WHILE @RightX > 0
     BEGIN
 
         ---------------------------------------------------------------------
-        -- Timing-Spalte überspringen
+        -- Skip the “Timing” column
         ---------------------------------------------------------------------
-
-        IF @RightX = 6
-            SET @RightX = 5;
-
+        IF @RightX = 6 SET @RightX = 5;
         SET @LeftX = @RightX - 1;
 
         ---------------------------------------------------------------------
-        -- Richtung festlegen
+        -- Set the direction
         ---------------------------------------------------------------------
-
         IF @Direction = -1
             SET @Y = @MatrixSize - 1;
         ELSE
             SET @Y = 0;
 
         ---------------------------------------------------------------------
-        -- Aktuelle Doppelspalte durchlaufen
+        -- Scroll through the current two-column layout
         ---------------------------------------------------------------------
-
         WHILE @Y BETWEEN 0 AND (@MatrixSize - 1)
         BEGIN
 
             -----------------------------------------------------------------
-            -- Rechte Spalte
+            -- Right Column
             -----------------------------------------------------------------
-
             SET @CurrentX = @RightX;
 
             IF EXISTS
@@ -3371,9 +3005,8 @@ BEGIN
             END;
 
             -----------------------------------------------------------------
-            -- Linke Spalte
+            -- Left Column
             -----------------------------------------------------------------
-
             SET @CurrentX = @LeftX;
 
             IF EXISTS
@@ -3417,37 +3050,39 @@ BEGIN
         END;
 
         ---------------------------------------------------------------------
-        -- Nächste Doppelspalte
+        -- Next two-column page
         ---------------------------------------------------------------------
-
-        SET @RightX = @RightX - 2;
-        SET @Direction = @Direction * -1;
+        SET @RightX         = @RightX - 2;
+        SET @Direction      = @Direction * -1;
     END;
 
-    UPDATE QR.Module
+    UPDATE [QR].[Module]
     SET
-          IsBlack    = 0
-        , ModuleType = 'Remainder'
-    WHERE ModuleType IS NULL;
+          [IsBlack]    = 0
+        , [ModuleType] = 'Remainder'
+    WHERE [ModuleType] IS NULL;
 
     DECLARE @ExpectedRemainderBits INT;
 
     SELECT
-        @ExpectedRemainderBits = RemainderBits
-    FROM QR.VersionRemainderBits
-    WHERE VersionNumber = @VersionNumber;
+        @ExpectedRemainderBits = [RemainderBits]
+    FROM [QR].[VersionRemainderBits]
+    WHERE [VersionNumber] = @VersionNumber;
 
     IF
     (
         SELECT COUNT(*)
-        FROM QR.Module
-        WHERE ModuleType = 'Remainder'
+        FROM [QR].[Module]
+        WHERE [ModuleType] = 'Remainder'
     )
     <> @ExpectedRemainderBits
     BEGIN
-        THROW 50009,
-              'Falsche Anzahl Remainder Bits.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Falsche Anzahl Remainder Bits.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: Incorrect number of remainder bits.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     -------------------------------------------------------------------------
@@ -3456,12 +3091,29 @@ BEGIN
 
     IF @BitPosition <= @ExpectedBits
     BEGIN
-        THROW 50008, 'Es konnten nicht alle Bits platziert werden.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Es konnten nicht alle Bits platziert werden.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: Not all bits could be placed.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
 GO
 
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pProjectLogoPattern]                                  ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @LogoName:                                                           ###
+-- ###   @StartX:                                                             ###
+-- ###   @StartY:                                                             ###
+-- ###   @Width:                                                              ###
+-- ###   @Height:                                                             ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pProjectLogoPattern]
 (
       @LogoName VARCHAR(50)
@@ -3474,20 +3126,23 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    DECLARE @LogoWidth  INTEGER;
+    DECLARE @LogoHeight INTEGER;
+
     IF NOT EXISTS
     (
         SELECT 1
-        FROM QR.LogoPattern
-        WHERE LogoName = @LogoName
+        FROM [QR].[LogoPattern]
+        WHERE [LogoName] = @LogoName
     )
     BEGIN
-        DECLARE @ErrorText      NVARCHAR(200);
-        SET @ErrorText = 'Logo ' + @LogoName + ' wurde nicht gefunden.';
-        THROW 50710, @ErrorText,1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Logo ' + @LogoName + N' wurde nicht gefunden.'
+            + CHAR(13) + CHAR(10)
+            + N'Logo ' + @LogoName + N' was not found.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
-
-    DECLARE @LogoWidth  INTEGER;
-    DECLARE @LogoHeight INTEGER;
 
     SELECT
           @LogoWidth  = MAX([X]) + 1
@@ -3497,29 +3152,38 @@ BEGIN
 
     IF @LogoWidth IS NULL OR @LogoHeight IS NULL
     BEGIN
-        THROW 50711, 'Logo besitzt keine gültigen Pixeldaten.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Logo besitzt keine gültigen Pixeldaten.'
+            + CHAR(13) + CHAR(10)
+            + N'The logo does not contain valid pixel data.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     IF @LogoWidth <= 0
        OR @LogoHeight <= 0
     BEGIN
-        THROW 50712, 'Logo besitzt keine gültige Größe.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Logo besitzt keine gültige Größe.'
+            + CHAR(13) + CHAR(10)
+            + N'The logo does not have a valid size.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     DELETE
     FROM [QR].[LogoPlacement]
     WHERE [LogoName] = @LogoName;
 
-    ;WITH TargetCells AS
+    ;WITH [TargetCells] AS
     (
         SELECT
-              X = @StartX + X.N
-            , Y = @StartY + Y.N
-
+              [X] = @StartX + [X].[N]
+            , [Y] = @StartY + [Y].[N]
         FROM
         (
             SELECT TOP (@Width)
-                   ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1 AS N
+                ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) - 1 AS N
             FROM sys.objects
         ) AS X
 
@@ -3542,49 +3206,48 @@ BEGIN
     )
     SELECT
           @LogoName
-
-        , T.X
-        , T.Y
-
-        , FLOOR(TX.SourceX)
-        , FLOOR(TY.SourceY)
-
-        , P.ColorClass
-
-    FROM TargetCells AS T
+        , [T].[X]
+        , [T].[Y]
+        , FLOOR([TX].[SourceX])
+        , FLOOR([TY].[SourceY])
+        , [P].[ColorClass]
+    FROM [TargetCells]                                                                  AS [T]
+    CROSS APPLY
+    (
+        SELECT ((([T].[X] - @StartX) + 0.5) * CONVERT(FLOAT,@LogoWidth) / @Width)       AS [SourceX]
+    )                                                                                   AS [TX]
 
     CROSS APPLY
     (
-        SELECT (((T.X - @StartX) + 0.5) * CONVERT(FLOAT,@LogoWidth) / @Width) AS SourceX
-    ) AS TX
-
-    CROSS APPLY
-    (
-        SELECT (((T.Y - @StartY) + 0.5) * CONVERT(FLOAT,@LogoHeight) / @Height) AS SourceY
-    ) AS TY
-
-    INNER JOIN [QR].[LogoPattern] AS P
+        SELECT ((([T].[Y] - @StartY) + 0.5) * CONVERT(FLOAT,@LogoHeight) / @Height)     AS [SourceY]
+    )                                                                                   AS [TY]
+    INNER JOIN [QR].[LogoPattern]                                                       AS [P]
         ON 1 = 1
-            AND P.LogoName = @LogoName
-            AND P.X =
+            AND [P].[LogoName] = @LogoName
+            AND [P].[X] =
                 CASE
-                    WHEN FLOOR(TX.SourceX) >= @LogoWidth
+                    WHEN FLOOR([TX].[SourceX]) >= @LogoWidth
                         THEN @LogoWidth - 1
-                    ELSE FLOOR(TX.SourceX)
+                    ELSE FLOOR([TX].[SourceX])
                 END
-
-            AND P.Y =
+            AND [P].[Y] =
                 CASE
-                    WHEN FLOOR(TY.SourceY) >= @LogoHeight
+                    WHEN FLOOR([TY].[SourceY]) >= @LogoHeight
                         THEN @LogoHeight - 1
-                    ELSE FLOOR(TY.SourceY)
+                    ELSE FLOOR([TY].[SourceY])
                 END
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pReserveFormatModules]                                ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pReserveFormatModules]
 (
     @VersionNumber TINYINT = 1
@@ -3595,36 +3258,34 @@ BEGIN
 
     DECLARE @MatrixSize INT;
 
-    SET @MatrixSize =
-        QR.fnGetMatrixSize(@VersionNumber);
+    SET @MatrixSize = [QR].[fnGetMatrixSize](@VersionNumber);
 
     IF @MatrixSize <= 0
     BEGIN
-        THROW 50050,
-              'Ungültige QR-Version.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Ungültige QR-Version.'
+            + CHAR(13) + CHAR(10)
+            + N'Invalid QR code version.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     UPDATE [QR].[Module]
     SET
-          IsBlack    = NULL
-        , ModuleType = 'Format'
+          [IsBlack]    = NULL
+        , [ModuleType] = 'Format'
     WHERE
 
-        /* -----------------------------------------------------------
-           Erste Kopie links oben
-           ----------------------------------------------------------- */
-
-        (X = 8 AND Y IN (0,1,2,3,4,5,7,8))
-
+        -- -----------------------------------------------------------
+        -- First copy, top left
+        -- ----------------------------------------------------------- */
+        (X = 8 AND Y IN (0,1,2,3,4,5,7,8))          -- Note: Not 6, because that's where the sync line is
         OR
+        (Y = 8 AND X IN (0,1,2,3,4,5,7,8))          -- Note: Not 6, because that's where the sync line is
 
-        (Y = 8 AND X IN (0,1,2,3,4,5,7,8))
-
-        /* -----------------------------------------------------------
-           Zweite Kopie oben rechts
-           ----------------------------------------------------------- */
-
+        -- -----------------------------------------------------------
+        -- Second copy, top right
+        -- -----------------------------------------------------------
         OR
         (
                 Y = 8
@@ -3632,22 +3293,28 @@ BEGIN
                       AND (@MatrixSize - 1)
         )
 
-        /* -----------------------------------------------------------
-           Zweite Kopie unten links
-           ----------------------------------------------------------- */
-
+        -- -----------------------------------------------------------
+        -- third copy, bottom left
+        -- -----------------------------------------------------------
         OR
         (
                 X = 8
             AND Y BETWEEN (@MatrixSize - 7)
                       AND (@MatrixSize - 1)
         );
-
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pSelectBestMask]                                      ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @ErrorCorrectionLevel:                                               ###
+-- ###   @VersionNumber:                                                      ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSelectBestMask]
     @ErrorCorrectionLevel CHAR(1)       = 'M',
     @VersionNumber        TINYINT       = 1
@@ -3655,34 +3322,31 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    /* ========================================================================
-       Beste QR-Maske bestimmen
+    -- ========================================================================
+    -- Determine the Best QR Mask
+    -- ------------------------------------------------------------------------
+    -- Prerequisites:
+    --     - 208 data modules exist
+    --     - These data modules are still unmasked
+    --     - The format modules are reserved
+    --     - Format modules have IsBlack = NULL
+    --
+    -- Procedure:
+    --     1. Save the original state of the 208 data modules
+    --     2. Test masks 0 through 7
+    --     3. Set the respective format information
+    --     4. Calculate penalty rules 1 through 4
+    --     5. Determine the lowest total penalty
+    --     6. Restore the original data
+    --     7. Apply the winning mask
+    --     8. Set the appropriate format information
+    -- ========================================================================
 
-       Voraussetzung:
-
-           - 208 Data-Module existieren
-           - diese Data-Module sind noch unmaskiert
-           - die Formatmodule sind reserviert
-           - Formatmodule besitzen IsBlack = NULL
-
-       Ablauf:
-
-           1. Originalzustand der 208 Data-Module sichern
-           2. Masken 0 bis 7 testen
-           3. jeweilige Format Information setzen
-           4. Penalty Rules 1 bis 4 berechnen
-           5. niedrigsten Gesamt-Penalty bestimmen
-           6. Originaldaten wiederherstellen
-           7. Gewinner-Maske anwenden
-           8. passende Format Information setzen
-       ======================================================================== */
-
-
-    /* ------------------------------------------------------------------------
-       Matrixzustand pruefen
-       ------------------------------------------------------------------------ */
-    DECLARE @DataModuleCount INT;
-    DECLARE @FormatModuleCount INT;
+    -- ------------------------------------------------------------------------
+    -- Check Matrix State
+    -- ------------------------------------------------------------------------
+    DECLARE @DataModuleCount        INTEGER;
+    DECLARE @FormatModuleCount      INTEGER;
 
     SELECT
         @DataModuleCount = COUNT(*)
@@ -3691,7 +3355,12 @@ BEGIN
 
     IF @DataModuleCount = 0
     BEGIN
-        THROW 50500, 'Es wurden keine Datenmodule gefunden.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Es wurden keine Datenmodule gefunden.'
+            + CHAR(13) + CHAR(10)
+            + N'No data modules were found.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     SELECT
@@ -3702,19 +3371,22 @@ BEGIN
 
     IF @FormatModuleCount <> 30
     BEGIN
-        THROW 50501,
-              'Es muessen exakt 30 reservierte Formatmodule vorhanden sein.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Es muessen exakt 30 reservierte Formatmodule vorhanden sein.'
+            + CHAR(13) + CHAR(10)
+            + N'There must be exactly 30 reserved format modules.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
-    /* ========================================================================
-       Unmaskierten Ausgangszustand sichern
-       ======================================================================== */
 
+    -- ========================================================================
+    -- Save the unmasked initial state
+    -- ======================================================================== 
     DECLARE @OriginalData TABLE
     (
-        [X]       TINYINT NOT NULL,
-        [Y]       TINYINT NOT NULL,
-        [IsBlack] BIT     NOT NULL,
+        [X]                 TINYINT NOT NULL,
+        [Y]                 TINYINT NOT NULL,
+        [IsBlack]           BIT     NOT NULL,
 
         PRIMARY KEY
         (
@@ -3738,40 +3410,43 @@ BEGIN
 
     IF (SELECT COUNT(*) FROM @OriginalData) <> @DataModuleCount
     BEGIN
-        THROW 50502, 'Der unmaskierte Datenzustand konnte nicht vollständig gesichert werden.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Der unmaskierte Datenzustand konnte nicht vollständig gesichert werden.'
+            + CHAR(13) + CHAR(10)
+            + N'The unmasked data state could not be fully backed up.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
-    /* ========================================================================
-       Ergebnisse der acht Kandidaten
-       ======================================================================== */
+    -- ========================================================================
+    -- Results for the eight candidates
+    -- ======================================================================== */
     DECLARE @MaskResults TABLE
     (
-        [MaskPattern]  TINYINT NOT NULL PRIMARY KEY,
-
-        [PenaltyRule1] INT NOT NULL,
-        [PenaltyRule2] INT NOT NULL,
-        [PenaltyRule3] INT NOT NULL,
-        [PenaltyRule4] INT NOT NULL,
-
-        [TotalPenalty] INT NOT NULL
+        [MaskPattern]           TINYINT NOT NULL PRIMARY KEY,
+        [PenaltyRule1]          INTEGER NOT NULL,
+        [PenaltyRule2]          INTEGER NOT NULL,
+        [PenaltyRule3]          INTEGER NOT NULL,
+        [PenaltyRule4]          INTEGER NOT NULL,
+        [TotalPenalty]          INTEGER NOT NULL
     );
 
-    DECLARE @MaskPattern    TINYINT = 0;
-    DECLARE @P1             INTEGER;
-    DECLARE @P2             INTEGER;
-    DECLARE @P3             INTEGER;
-    DECLARE @P4             INTEGER;
-    DECLARE @Total          INTEGER;
+    DECLARE @MaskPattern        TINYINT = 0;
+    DECLARE @P1                 INTEGER;
+    DECLARE @P2                 INTEGER;
+    DECLARE @P3                 INTEGER;
+    DECLARE @P4                 INTEGER;
+    DECLARE @Total              INTEGER;
 
-        /* ========================================================================
-       Masken 0 bis 7 testen
-       ======================================================================== */
+       -- ========================================================================
+       -- Test Masks 0 through 7
+       -- ========================================================================
     WHILE @MaskPattern <= 7
     BEGIN
 
-        /* --------------------------------------------------------------------
-           Originale unmaskierte Daten wiederherstellen
-           -------------------------------------------------------------------- */
+        -- --------------------------------------------------------------------
+        -- Restore original, unmasked data
+        -- --------------------------------------------------------------------
         UPDATE [M]
         SET
             [IsBlack] = O.[IsBlack]
@@ -3783,37 +3458,37 @@ BEGIN
         WHERE
             [M].[ModuleType] IN ('Data', 'Remainder');
 
-        /* --------------------------------------------------------------------
-           Format Information fuer diesen Kandidaten zuruecksetzen
-           -------------------------------------------------------------------- */
+        -- --------------------------------------------------------------------
+        -- Reset Format Information for This Candidate
+        -- --------------------------------------------------------------------
         UPDATE [QR].[Module]
         SET
             [IsBlack] = NULL
         WHERE
             [ModuleType] = 'Format';
 
-        /* --------------------------------------------------------------------
-           Kandidatenmaske anwenden
-           -------------------------------------------------------------------- */
+        -- --------------------------------------------------------------------
+        -- Apply the candidate mask
+        -- --------------------------------------------------------------------
         EXEC [QR].[pApplyMask]
             @MaskPattern = @MaskPattern;
 
-        /* --------------------------------------------------------------------
-           Passende Format Information setzen
-           -------------------------------------------------------------------- */
+        -- --------------------------------------------------------------------
+        -- Set the appropriate format information
+        -- --------------------------------------------------------------------
         EXEC [QR].[pSetFormatInformation]
             @ErrorCorrectionLevel   = @ErrorCorrectionLevel,
             @MaskPattern            = @MaskPattern,
             @VersionNumber          = @VersionNumber;
 
-        /* --------------------------------------------------------------------
-           Penalty berechnen
-           -------------------------------------------------------------------- */
-        SET @P1 = 0;
-        SET @P2 = 0;
-        SET @P3 = 0;
-        SET @P4 = 0;
-        SET @Total = 0;
+        -- --------------------------------------------------------------------
+        -- Calculate Penalty
+        -- --------------------------------------------------------------------
+        SET @P1         = 0;
+        SET @P2         = 0;
+        SET @P3         = 0;
+        SET @P4         = 0;
+        SET @Total      = 0;
 
         EXEC [QR].[pCalculateMaskPenalty]
             @OutPenaltyRule1 = @P1      OUTPUT,
@@ -3823,9 +3498,9 @@ BEGIN
             @OutTotalPenalty = @Total   OUTPUT,
             @ReturnResultSet = 0;
 
-        /* --------------------------------------------------------------------
-           Ergebnis speichern
-           -------------------------------------------------------------------- */
+        -- --------------------------------------------------------------------
+        -- Save Results
+        -- --------------------------------------------------------------------
         INSERT INTO @MaskResults
         (
             [MaskPattern],
@@ -3848,37 +3523,36 @@ BEGIN
         SET @MaskPattern = @MaskPattern + 1;
     END;
 
-        /* ========================================================================
-       Beste Maske bestimmen
-
-       Niedrigster Penalty Score gewinnt.
-
-       Bei identischem Score verwenden wir die kleinere Maskennummer,
-       damit das Ergebnis deterministisch bleibt.
-       ======================================================================== */
-    DECLARE @BestMaskPattern TINYINT;
-    DECLARE @BestPenalty INT;
+    -- ========================================================================
+    -- Determining the Best Mask
+    -- The mask with the lowest penalty score wins.
+    -- If the scores are identical, we use the mask with the smaller number,
+    -- so that the result remains deterministic.
+    -- ========================================================================
+    DECLARE @BestMaskPattern    TINYINT;
+    DECLARE @BestPenalty        INTEGEr;
 
     SELECT TOP (1)
-        @BestMaskPattern = [MaskPattern],
-        @BestPenalty = [TotalPenalty]
+        @BestMaskPattern    = [MaskPattern],
+        @BestPenalty        = [TotalPenalty]
     FROM @MaskResults
     ORDER BY
         [TotalPenalty],
         [MaskPattern];
 
-    /* ========================================================================
-       Unmaskierten Zustand ein letztes Mal herstellen
-       ======================================================================== */
-    UPDATE M
+    -- ========================================================================
+    -- Restore the unmasked state one last time
+    -- ========================================================================
+    UPDATE [M]
     SET
-        [IsBlack] = O.[IsBlack]
-    FROM [QR].[Module] AS M
-    INNER JOIN @OriginalData AS O
-        ON O.[X] = M.[X]
-        AND O.[Y] = M.[Y]
+        [IsBlack] = [O].[IsBlack]
+    FROM [QR].[Module]                                      AS [M]
+    INNER JOIN @OriginalData                                AS [O]
+        ON 1 = 1
+            AND [O].[X] = [M].[X]
+            AND [O].[Y] = [M].[Y]
     WHERE
-        M.[ModuleType] IN ('Data', 'Remainder');
+        [M].[ModuleType] IN ('Data', 'Remainder');
 
     UPDATE [QR].[Module]
     SET
@@ -3886,9 +3560,9 @@ BEGIN
     WHERE
         [ModuleType] = 'Format';
 
-    /* ========================================================================
-       Gewinner-Maske anwenden
-       ======================================================================== */
+    -- ========================================================================
+    -- Apply the Winner Mask
+    -- ========================================================================
     EXEC [QR].[pApplyMask]
         @MaskPattern = @BestMaskPattern;
 
@@ -3897,9 +3571,9 @@ BEGIN
         @MaskPattern            = @BestMaskPattern,
         @VersionNumber          = @VersionNumber;
 
-    /* ========================================================================
-       Abschlusskontrolle
-       ======================================================================== */
+    -- ========================================================================
+    -- Final Inspection
+    --=========================================================================
     IF EXISTS
     (
         SELECT 1
@@ -3907,14 +3581,25 @@ BEGIN
         WHERE [IsBlack] IS NULL
     )
     BEGIN
-        THROW 50503, 'Nach der Maskenauswahl enthaelt die Matrix noch undefinierte Module.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Nach der Maskenauswahl enthaelt die Matrix noch undefinierte Module.'
+            + CHAR(13) + CHAR(10)
+            + N'After selecting the masks, the matrix still contains undefined modules.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pSetDarkModule]                                       ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetDarkModule]
 (
     @VersionNumber TINYINT = 1
@@ -3925,28 +3610,38 @@ BEGIN
 
     DECLARE @DarkModuleY INT;
 
-    SET @DarkModuleY =
-        (4 * @VersionNumber) + 9;
+    SET @DarkModuleY = (4 * @VersionNumber) + 9;
 
     UPDATE [QR].[Module]
     SET
-          IsBlack    = 1
-        , ModuleType = 'Dark'
+          [IsBlack]    = 1
+        , [ModuleType] = 'Dark'
     WHERE
-            X = 8
-        AND Y = @DarkModuleY;
+            [X] = 8
+        AND [Y] = @DarkModuleY;
 
     IF @@ROWCOUNT <> 1
     BEGIN
-        THROW 50040,
-              'Dark Module konnte nicht gesetzt werden.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Dark Module konnte nicht gesetzt werden.'
+            + CHAR(13) + CHAR(10)
+            + N'The Dark Module could not be set.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pSetFinderPattern]                                    ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @StartX:                                                             ###
+-- ###   @StartY:                                                             ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetFinderPattern]
     @StartX     TINYINT,
     @StartY     TINYINT
@@ -3954,8 +3649,8 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- die Finder-Pattern haben je eine Größe von 7x7
-    -- schwarzer Kern, weißes Inneres und schwarzer Rand
+    -- Each Finder pattern measures 7x7
+    -- with a black center, white interior, and black border
     UPDATE [M]
     SET
         [IsBlack] =
@@ -3981,8 +3676,17 @@ BEGIN
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pSetFormatInformation]                                ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @ErrorCorrectionLevel:                                               ###
+-- ###   @MaskPattern:                                                        ###
+-- ###   @VersionNumber:                                                      ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetFormatInformation]
     @ErrorCorrectionLevel   CHAR(1),
     @MaskPattern            TINYINT,
@@ -3991,43 +3695,46 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    /* ========================================================================
-       Format Information fuer QR Version 1-M setzen
-
-       Die 15 Formatbits enthalten:
-
-           Error Correction Level = M
-           Mask Pattern           = 0 bis 7
-           BCH Error Correction
-
-       Die Format Information wird zweimal in die Matrix geschrieben.
-       ======================================================================== */
-
-
+    DECLARE @FormatBits     CHAR(15);
+    DECLARE @MatrixSize     INTEGER;
+    -- ------------------------------------------------------------------------
+    -- Set Format Information for QR Version 1-M
+    -- The 15 format bits contain:
+    --     Error Correction Level = M
+    --     Mask Pattern           = 0 through 7
+    --     BCH Error Correction
+    -- The format information is written twice into the matrix.
+    -- ------------------------------------------------------------------------
     IF @MaskPattern IS NULL
     BEGIN
-        THROW 50400,
-              'Das Mask Pattern darf nicht NULL sein.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Das Mask Pattern darf nicht NULL sein.'
+            + CHAR(13) + CHAR(10)
+            + N'The mask pattern cannot be NULL.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END
-
 
     IF @MaskPattern NOT BETWEEN 0 AND 7
     BEGIN
-        THROW 50401,
-              'Das Mask Pattern muss zwischen 0 und 7 liegen.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Das Mask Pattern muss zwischen 0 und 7 liegen.'
+            + CHAR(13) + CHAR(10)
+            + N'The mask pattern must be between 0 and 7.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
-
-
-    DECLARE @FormatBits CHAR(15);
-    DECLARE @MatrixSize INT;
 
     SET @MatrixSize = [QR].[fnGetMatrixSize](@VersionNumber);
 
     IF @MatrixSize <= 0
     BEGIN
-        THROW 50405, 'Ungültige QR-Version.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Ungültige QR-Version.'
+            + CHAR(13) + CHAR(10)
+            + N'Invalid QR code version.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     SET @FormatBits =
@@ -4037,29 +3744,25 @@ BEGIN
             , @MaskPattern
         );
 
-
     IF @FormatBits IS NULL
         OR LEN(@FormatBits) <> 15
     BEGIN
-        THROW 50402,
-              'Die Format Information konnte nicht erzeugt werden.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Die Format Information konnte nicht erzeugt werden.'
+            + CHAR(13) + CHAR(10)
+            + N'The format information could not be generated.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
-
-    /* ========================================================================
-       Zielpositionen
-
-       BitIndex:
-
-           0 = niederwertigstes Bit des 15-Bit-Formatwertes
-           14 = hoechstwertigstes Bit
-
-       Da fnGetFormatBits_V1_M den String MSB zuerst liefert:
-
-           SUBSTRING(@FormatBits, 15 - BitIndex, 1)
-       ======================================================================== */
-
+    -- --------------------------------------------------------------------------
+    -- Target Positions
+    -- BitIndex:
+    --      0 = least significant bit of the 15-bit format value
+    --      14 = most significant bit
+    --  Since fnGetFormatBits_V1_M returns the string with the MSB first:
+    --      SUBSTRING(@FormatBits, 15 - BitIndex, 1)
+    -- --------------------------------------------------------------------------
     DECLARE @FormatModules TABLE
     (
         [CopyNumber] TINYINT NOT NULL,
@@ -4073,11 +3776,10 @@ BEGIN
             [BitIndex]
        )
     );
-    /* ------------------------------------------------------------------------
-       Erste Kopie:
-       um den Finder oben links
-       ------------------------------------------------------------------------ */
 
+    -- --------------------------------------------------------------------------
+    -- First copy: around the Finder in the upper-left corner
+    -- --------------------------------------------------------------------------
     INSERT INTO @FormatModules
     (
         [CopyNumber],
@@ -4086,79 +3788,58 @@ BEGIN
         [Y]
     )
     VALUES
-        (1,  0,  8,  0),
-        (1,  1,  8,  1),
-        (1,  2,  8,  2),
-        (1,  3,  8,  3),
-        (1,  4,  8,  4),
-        (1,  5,  8,  5),
-        (1,  6,  8,  7),
-        (1,  7,  8,  8),
-
-        (1,  8,  7,  8),
-        (1,  9,  5,  8),
-        (1, 10,  4,  8),
-        (1, 11,  3,  8),
-        (1, 12,  2,  8),
-        (1, 13,  1,  8),
-        (1, 14,  0,  8);
+        (1,  0,  8,  0),        (1,  1,  8,  1),        (1,  2,  8,  2),
+        (1,  3,  8,  3),        (1,  4,  8,  4),        (1,  5,  8,  5),
+        (1,  6,  8,  7),        (1,  7,  8,  8),        (1,  8,  7,  8),
+        (1,  9,  5,  8),        (1, 10,  4,  8),        (1, 11,  3,  8),
+        (1, 12,  2,  8),        (1, 13,  1,  8),        (1, 14,  0,  8);
     
-    /* ------------------------------------------------------------------------
-       Zweite Kopie:        oben rechts und unten links        
-       ------------------------------------------------------------------------ */
-
+    -- --------------------------------------------------------------------------
+    -- Second copy:        top right and bottom left
+    -- --------------------------------------------------------------------------
     INSERT INTO @FormatModules
     (
-          CopyNumber
-        , BitIndex
-        , X
-        , Y
+          [CopyNumber]
+        , [BitIndex]
+        , [X]
+        , [Y]
     )
     VALUES
-          (2, 0, @MatrixSize - 1, 8)
-        , (2, 1, @MatrixSize - 2, 8)
-        , (2, 2, @MatrixSize - 3, 8)
-        , (2, 3, @MatrixSize - 4, 8)
-        , (2, 4, @MatrixSize - 5, 8)
-        , (2, 5, @MatrixSize - 6, 8)
-        , (2, 6, @MatrixSize - 7, 8)
-        , (2, 7, @MatrixSize - 8, 8)
-
-        , (2, 8, 8, @MatrixSize - 7)
-        , (2, 9, 8, @MatrixSize - 6)
-        , (2,10, 8, @MatrixSize - 5)
-        , (2,11, 8, @MatrixSize - 4)
-        , (2,12, 8, @MatrixSize - 3)
-        , (2,13, 8, @MatrixSize - 2)
+          (2, 0, @MatrixSize - 1, 8)        , (2, 1, @MatrixSize - 2, 8)
+        , (2, 2, @MatrixSize - 3, 8)        , (2, 3, @MatrixSize - 4, 8)
+        , (2, 4, @MatrixSize - 5, 8)        , (2, 5, @MatrixSize - 6, 8)
+        , (2, 6, @MatrixSize - 7, 8)        , (2, 7, @MatrixSize - 8, 8)
+        , (2, 8, 8, @MatrixSize - 7)        , (2, 9, 8, @MatrixSize - 6)
+        , (2,10, 8, @MatrixSize - 5)        , (2,11, 8, @MatrixSize - 4)
+        , (2,12, 8, @MatrixSize - 3)        , (2,13, 8, @MatrixSize - 2)
         , (2,14, 8, @MatrixSize - 1);
 
-    DECLARE @ReservedFormatModuleCount INT;
-
+    DECLARE @ReservedFormatModuleCount INTEGER;
 
     SELECT
         @ReservedFormatModuleCount = COUNT(*)
     FROM @FormatModules AS F
-
     INNER JOIN [QR].[Module] AS M
-        ON M.[X] = F.[X]
-        AND M.[Y] = F.[Y]
-
+        ON 1 = 1
+            AND [M].[X] = [F].[X]
+            AND [M].[Y] = [F].[Y]
     WHERE
-        M.[ModuleType] = 'Format';
-
+        [M].[ModuleType] = 'Format';
 
     IF @ReservedFormatModuleCount <> 30
     BEGIN
-        THROW 50403,
-              'Die erwarteten 30 reservierten Formatmodule wurden nicht gefunden.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Die erwarteten 30 reservierten Formatmodule wurden nicht gefunden.'
+            + CHAR(13) + CHAR(10)
+            + N'The expected 30 reserved format modules were not found.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
-    /* ========================================================================
-       Formatbits schreiben
-       ======================================================================== */
-
-    UPDATE M
+    -- --------------------------------------------------------------------------
+    -- Write Format Bits
+    -- --------------------------------------------------------------------------
+    UPDATE [M]
     SET
         [IsBlack] =
             CONVERT
@@ -4167,40 +3848,48 @@ BEGIN
                 SUBSTRING
                 (
                     @FormatBits,
-                    15 - CONVERT(INT, F.[BitIndex]),
+                    15 - CONVERT(INT, [F].[BitIndex]),
                     1
                 )
             )
+    FROM [QR].[Module]                                                  AS [M]
+    INNER JOIN @FormatModules                                           AS [F]
+        ON 1 = 1
+            AND [F].[X] = [M].[X]
+            AND [F].[Y] = [M].[Y];
 
-    FROM [QR].[Module] AS M
-
-    INNER JOIN @FormatModules AS F
-        ON F.[X] = M.[X]
-        AND F.[Y] = M.[Y];
-
-
-    /* ========================================================================
-       Abschlusskontrolle
-       ======================================================================== */
-
+    -- --------------------------------------------------------------------------
+    -- Abschlusskontrolle
+    -- --------------------------------------------------------------------------
     IF EXISTS
     (
         SELECT 1
         FROM [QR].[Module]
-        WHERE
-            [ModuleType] = 'Format'
-            AND [IsBlack] IS NULL
+        WHERE 1 = 1
+            AND [ModuleType]    = 'Format'
+            AND [IsBlack]       IS NULL
     )
     BEGIN
-        THROW 50404, 'Nicht alle Formatmodule wurden gesetzt.', 1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Nicht alle Formatmodule wurden gesetzt.'
+            + CHAR(13) + CHAR(10)
+            + N'Not all format modules have been set.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
 GO
 
-
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pSetSeparator]                                        ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @StartX:                                                             ###
+-- ###   @StartY:                                                             ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetSeparator]
     @StartX     TINYINT,
     @StartY     TINYINT
@@ -4226,9 +3915,15 @@ BEGIN
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Procedure: [QR].[pSetTimingPatterns]                                   ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ### Output Parameters:                                                     ###
+-- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetTimingPatterns]
 (
     @VersionNumber TINYINT = 1
@@ -4239,14 +3934,16 @@ BEGIN
 
     DECLARE @MatrixSize INT;
 
-    SET @MatrixSize =
-        QR.fnGetMatrixSize(@VersionNumber);
+    SET @MatrixSize = [QR].[fnGetMatrixSize](@VersionNumber);
 
     IF @MatrixSize <= 0
     BEGIN
-        THROW 50030,
-              'Ungültige QR-Version.',
-              1;
+        DECLARE @ErrorMessage       NVARCHAR(300);
+        SET @ErrorMessage =
+              N'Ungültige QR-Version.'
+            + CHAR(13) + CHAR(10)
+            + N'Invalid QR code version.'
+        RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     -- Horizontal
@@ -4262,7 +3959,7 @@ BEGIN
             [Y] = 6
         AND [X] BETWEEN 8 AND (@MatrixSize - 9);
 
-    -- Vertikal
+    -- Vertical
     UPDATE [QR].[Module]
     SET
         [IsBlack] =
@@ -4278,53 +3975,69 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER FUNCTION QR.fnGaloisMultiply
+
+
+
+
+
+
+-- ##############################################################################
+-- ### Function: [QR].[fnGaloisMultiply]                                      ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @A:                                                                  ###
+-- ###   @B:                                                                  ###
+-- ##############################################################################
+CREATE OR ALTER FUNCTION [QR].[fnGaloisMultiply]
 (
-      @A INT
-    , @B INT
+      @A            INTEGER
+    , @B            INTEGER
 )
-RETURNS INT
+RETURNS INTEGER
 AS
 BEGIN
 
     IF @A = 0 RETURN 0;
     IF @B = 0 RETURN 0;
 
-    DECLARE
-          @LogA INT
-        , @LogB INT
-        , @Result INT;
+    DECLARE @LogA           INTEGER
+    DECLARE @LogB           INTEGER
+    DECLARE @Result         INTEGER;
 
     SELECT
-        @LogA = LogValue
-    FROM QR.GaloisLog
-    WHERE Value = @A;
+        @LogA = [LogValue]
+    FROM [QR].[GaloisLog]
+    WHERE [Value] = @A;
 
     SELECT
-        @LogB = LogValue
-    FROM QR.GaloisLog
-    WHERE Value = @B;
+        @LogB = [LogValue]
+    FROM [QR].[GaloisLog]
+    WHERE [Value] = @B;
 
     SELECT
-        @Result = Value
-    FROM QR.GaloisExp
-    WHERE Exponent = @LogA + @LogB;
+        @Result = [Value]
+    FROM [QR].[GaloisExp]
+    WHERE [Exponent] = @LogA + @LogB;
 
     RETURN @Result;
 END;
 GO
 
-
-
-
-
-
-
+-- ##############################################################################
+-- ### Function: [QR].[fnBinaryByteToInt]                                     ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @Bits:                                                               ###
+-- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnBinaryByteToInt]
 (
     @Bits CHAR(8)
 )
-RETURNS INT
+RETURNS INTEGER
 AS
 BEGIN
     DECLARE @Value INT;
@@ -4338,12 +4051,18 @@ BEGIN
         + CASE SUBSTRING(@Bits, 6, 1) WHEN '1' THEN   4 ELSE 0 END
         + CASE SUBSTRING(@Bits, 7, 1) WHEN '1' THEN   2 ELSE 0 END
         + CASE SUBSTRING(@Bits, 8, 1) WHEN '1' THEN   1 ELSE 0 END;
-
     RETURN @Value;
 END;
 GO
 
-
+-- ##############################################################################
+-- ### Function: [QR].[fnByteToBinary]                                        ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @Value:                                                              ###
+-- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnByteToBinary]
 (
     @Value INTEGER
@@ -4361,12 +4080,18 @@ BEGIN
         + CASE WHEN @Value &   4 =   4 THEN '1' ELSE '0' END
         + CASE WHEN @Value &   2 =   2 THEN '1' ELSE '0' END
         + CASE WHEN @Value &   1 =   1 THEN '1' ELSE '0' END;
-
 END;
 GO
 
-
-
+-- ##############################################################################
+-- ### Function: [QR].[fnGetFormatBits_V1]                                    ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @ErrorCorrectionLevel:                                               ###
+-- ###   @MaskPattern:                                                        ###
+-- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnGetFormatBits_V1]
 (
     @ErrorCorrectionLevel   CHAR(1),
@@ -4375,67 +4100,35 @@ CREATE OR ALTER FUNCTION [QR].[fnGetFormatBits_V1]
 RETURNS CHAR(15)
 AS
 BEGIN
-    /* ========================================================================
-       QR Format Information
+    -- ------------------------------------------------------------------------
+    -- QR Format Information
+    -- Fixed:                Error Correction Level = M
+    -- Variable:             Mask Pattern = 0 through 7
+    -- Format Data:          EE MMM
+    --     EE  = Error Correction Level
+    --     MMM = Mask Pattern
+    -- For M:                EE = 00
+    -- BCH:                  Generator Polynomial = 0x537
+    -- Final QR Format Mask: 0x5412
+    -- ------------------------------------------------------------------------
+    IF @MaskPattern IS NULL                             RETURN NULL;
+    IF @MaskPattern > 7                                 RETURN NULL;
+    IF @ErrorCorrectionLevel NOT IN ('L','M','Q','H')   RETURN NULL;
 
-       Fest:
-           Error Correction Level = M
+    DECLARE @FormatData         INT;
+    DECLARE @Value              INT;
+    DECLARE @Remainder          INT;
+    DECLARE @Generator          INT = 1335;  -- 0x537
+    DECLARE @FormatMask         INT = 21522; -- 0x5412
+    DECLARE @Bit                INT;
+    DECLARE @FormatValue        INT;
+    DECLARE @Result             CHAR(15);
 
-       Variabel:
-           Mask Pattern = 0 bis 7
-
-       Format Data:
-
-           EE MMM
-
-           EE  = Error Correction Level
-           MMM = Mask Pattern
-
-       Fuer M:
-
-           EE = 00
-
-       BCH:
-           Generatorpolynom = 0x537
-
-       Abschliessende QR-Formatmaske:
-
-           0x5412
-       ======================================================================== */
-
-    IF @MaskPattern IS NULL
-        RETURN NULL;
-
-    IF @MaskPattern > 7
-        RETURN NULL;
-
-    IF @ErrorCorrectionLevel NOT IN ('L','M','Q','H')
-    RETURN NULL;
-
-    DECLARE @FormatData INT;
-
-    DECLARE @Value INT;
-    DECLARE @Remainder INT;
-
-    DECLARE @Generator INT = 1335;  -- 0x537
-    DECLARE @FormatMask INT = 21522; -- 0x5412
-
-    DECLARE @Bit INT;
-    DECLARE @FormatValue INT;
-
-    DECLARE @Result CHAR(15);
-
-
-    /* ------------------------------------------------------------------------
-       5 Format-Datenbits
-
-       Error Correction Level M:
-
-           00
-
-       Damit entsprechen die unteren drei Bits direkt dem Mask Pattern.
-       ------------------------------------------------------------------------ */
-
+    -- ------------------------------------------------------------------------
+    -- 5 Format Data Bits
+    -- Error Correction Level M: 00
+    -- Thus, the lower three bits correspond directly to the mask pattern.
+    -- ------------------------------------------------------------------------
     DECLARE @ECLBits INT;
 
     SET @ECLBits =
@@ -4451,84 +4144,51 @@ BEGIN
 
     SET @FormatData = (@ECLBits * 8) + @MaskPattern;
 
-    /* ------------------------------------------------------------------------
-       Platz fuer 10 BCH-Bits schaffen
-
-           FormatData << 10
-       ------------------------------------------------------------------------ */
-
+    -- ------------------------------------------------------------------------
+    -- Make room for 10 BCH bits
+    --     FormatData << 10
+    -- ------------------------------------------------------------------------
     SET @Value = @FormatData * 1024;
-
     SET @Remainder = @Value;
 
-
-    /* ------------------------------------------------------------------------
-       Polynomdivision ueber GF(2)
-
-       Generator:
-
-           10100110111
-           0x537
-
-       Der Generator besitzt Grad 10.
-
-       Deshalb beginnen wir beim hoechsten moeglichen Bit 14
-       und arbeiten bis Bit 10.
-       ------------------------------------------------------------------------ */
-
+    -- ------------------------------------------------------------------------
+    -- Polynomdivision ueber GF(2)
+    -- ------------------------------------------------------------------------
+    -- Generator:
+    --     10100110111
+    --     0x537
+    -- The generator has a degree of 10.
+    -- Therefore, we start at the highest possible bit, bit 14,
+    -- and work down to bit 10.
+    -- ------------------------------------------------------------------------
     SET @Bit = 14;
-
 
     WHILE @Bit >= 10
     BEGIN
-
         IF (@Remainder & POWER(2, @Bit)) <> 0
         BEGIN
-            SET @Remainder =
-                @Remainder
-                ^
-                (
-                    @Generator
-                    * POWER(2, @Bit - 10)
-                );
+            SET @Remainder = @Remainder ^ (@Generator * POWER(2, @Bit - 10));
         END;
 
-
         SET @Bit = @Bit - 1;
-
     END;
 
+    -- ------------------------------------------------------------------------
+    -- The lower 10 bits are the BCH remainder.
+    -- Format code before QR masking:
+    --     5 data bits + 10 BCH bits    
+    -- ------------------------------------------------------------------------
+    SET @FormatValue =  (@FormatData * 1024) + @Remainder;
 
-    /* ------------------------------------------------------------------------
-       Die unteren 10 Bits sind der BCH-Rest.
+    -- ------------------------------------------------------------------------
+    -- Apply QR-specific format mask: 0x5412
+    -- ------------------------------------------------------------------------
+    SET @FormatValue = @FormatValue ^ @FormatMask;
 
-       Formatcode vor QR-Maskierung:
-
-           5 Datenbits
-           +
-           10 BCH-Bits
-       ------------------------------------------------------------------------ */
-
-    SET @FormatValue =
-          (@FormatData * 1024)
-        + @Remainder;
-
-
-    /* ------------------------------------------------------------------------
-       QR-spezifische Formatmaske anwenden
-
-           0x5412
-       ------------------------------------------------------------------------ */
-
-    SET @FormatValue =
-        @FormatValue ^ @FormatMask;
-
-
-    /* ------------------------------------------------------------------------
-       Numerischen Wert in exakt 15 Bits umwandeln
-       Bit 14 zuerst, Bit 0 zuletzt.
-       ------------------------------------------------------------------------ */
-
+    -- ------------------------------------------------------------------------
+    -- Convert a numerical value to exactly 15 bits
+    -- Bit 14 first, bit 0 last.
+    -- ------------------------------------------------------------------------
     SET @Result =
           CASE WHEN (@FormatValue & 16384) <> 0 THEN '1' ELSE '0' END
         + CASE WHEN (@FormatValue &  8192) <> 0 THEN '1' ELSE '0' END
@@ -4545,15 +4205,19 @@ BEGIN
         + CASE WHEN (@FormatValue &     4) <> 0 THEN '1' ELSE '0' END
         + CASE WHEN (@FormatValue &     2) <> 0 THEN '1' ELSE '0' END
         + CASE WHEN (@FormatValue &     1) <> 0 THEN '1' ELSE '0' END;
-
-
     RETURN @Result;
 END;
 GO
 
-
-
-
+-- ##############################################################################
+-- ### Function: [QR].[fnPadDataBits_V1]                                      ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @DataBits:                                                           ###
+-- ###   @DataCodewords:                                                      ###
+-- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnPadDataBits_V1]
 (
     @DataBits           VARCHAR(MAX),
@@ -4566,7 +4230,7 @@ BEGIN
     DECLARE @MissingBits        INTEGER;
     DECLARE @TerminatorLength   INTEGER;
     DECLARE @BytePaddingLength  INTEGER;
-    DECLARE @UseEC BIT;
+    DECLARE @UseEC              BIT;
 
     SET @Result = @DataBits;
 
@@ -4583,14 +4247,14 @@ BEGIN
         END;
     SET @Result = @Result + REPLICATE('0', @TerminatorLength);
 
-    -- Bis zur Byte-Grenze auffuellen
-    SET @BytePaddingLength = (8 - (LEN(@Result) % 8)) % 8;
-    SET @Result = @Result + REPLICATE('0', @BytePaddingLength);
+    -- Fill to the byte limit
+    SET @BytePaddingLength  = (8 - (LEN(@Result) % 8)) % 8;
+    SET @Result             = @Result + REPLICATE('0', @BytePaddingLength);
 
-    -- Pad Codewords EC und 11
+    -- Pad Codewords EC and 11
     SET @UseEC = 1;
     
-    DECLARE @TargetLength INT;
+    DECLARE @TargetLength   INTEGER;
     SET @TargetLength   = @DataCodewords * 8;
     SET @MissingBits    = @TargetLength - LEN(@Result);
 
@@ -4613,69 +4277,92 @@ BEGIN
 END;
 GO
 
-
-
-
-
-CREATE OR ALTER FUNCTION QR.fnGetMatrixSize
+-- ##############################################################################
+-- ### Function: [QR].[fnGetMatrixSize]                                       ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ### Returns:                                                               ###
+-- ###                                                                        ###
+-- ##############################################################################
+CREATE OR ALTER FUNCTION [QR].[fnGetMatrixSize]
 (
     @VersionNumber TINYINT
 )
-RETURNS INT
+RETURNS INTEGER
 AS
 BEGIN
-    DECLARE @Result INT;
+    DECLARE @Result INTEGER;
 
     SELECT
-        @Result = MatrixSize
-    FROM QR.VersionDefinition
-    WHERE VersionNumber = @VersionNumber;
+        @Result = [MatrixSize]
+    FROM [QR].[VersionDefinition]
+    WHERE [VersionNumber] = @VersionNumber;
 
     RETURN ISNULL(@Result, 0)
 END;
 GO
 
-CREATE OR ALTER FUNCTION QR.fnGetDataCodewords
+-- ##############################################################################
+-- ### Function: [QR].[fnGetMatrixSize]                                       ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ###   @ErrorCorrectionLevel:                                               ###
+-- ##############################################################################
+CREATE OR ALTER FUNCTION [QR].[fnGetDataCodewords]
 (
       @VersionNumber            TINYINT
     , @ErrorCorrectionLevel     CHAR(1)
 )
-RETURNS INT
+RETURNS INTEGER
 AS
 BEGIN
-    DECLARE @Result INT;
+    DECLARE @Result INTEGER;
 
     SELECT
         @Result = DataCodewords
-    FROM QR.VersionCapacity
+    FROM [QR].[VersionCapacity]
     WHERE 1 = 1
-        AND VersionNumber           = @VersionNumber
-        AND ErrorCorrectionLevel    = @ErrorCorrectionLevel;
+        AND [VersionNumber]           = @VersionNumber
+        AND [ErrorCorrectionLevel]    = @ErrorCorrectionLevel;
 
     RETURN @Result;
 END;
 GO
 
-CREATE OR ALTER FUNCTION QR.fnGetEccCodewords
+-- ##############################################################################
+-- ### Function: [QR].[fnGetEccCodewords]                                     ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input Parameters:                                                      ###
+-- ###   @VersionNumber:                                                      ###
+-- ###   @ErrorCorrectionLevel:                                               ###
+-- ##############################################################################
+CREATE OR ALTER FUNCTION [QR].[fnGetEccCodewords]
 (
-      @VersionNumber TINYINT
-    , @ErrorCorrectionLevel CHAR(1)
+      @VersionNumber            TINYINT
+    , @ErrorCorrectionLevel     CHAR(1)
 )
-RETURNS INT
+RETURNS INTEGER
 AS
 BEGIN
 
-    DECLARE @Result INT;
+    DECLARE @Result             INTEGER;
 
     SELECT
-        @Result = EccCodewords
-    FROM QR.VersionCapacity
-    WHERE
-            VersionNumber = @VersionNumber
-        AND ErrorCorrectionLevel = @ErrorCorrectionLevel;
+        @Result = [EccCodewords]
+    FROM [QR].[VersionCapacity]
+    WHERE 1 = 1
+        AND [VersionNumber]         = @VersionNumber
+        AND [ErrorCorrectionLevel]  = @ErrorCorrectionLevel;
 
     RETURN @Result;
-
 END;
 GO
 

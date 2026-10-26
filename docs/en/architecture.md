@@ -1,32 +1,107 @@
-Architecture
-
-The project is divided into the following logical components:
-
-
-
-1. Matrix Initialization
-
-2. Pattern Placement
-   - Finder
-   - Separator
-   - Timing
-   - Alignment
-   - Dark Module
-
-3. Data Encoding
-
-4. Reed-Solomon Error Correction
-
-5. Interleaving
-
-6. Bit Stream Generation
-
-7. Data Placement
-
-8. Mask Selection
-
-9. Format Information
-
-10. Logo Projection
-
-11. SVG Rendering
+﻿Architecture
+Overview
+The T-SQL QR Code Generator implements the complete QR code generation process directly inside Microsoft SQL Server.
+The project intentionally avoids external libraries and performs all required calculations using T-SQL only.
+The resulting QR code can be exported as SVG and enhanced with colorized logo projections.
+________________________________________
+Processing Pipeline
+Input Text
+↓
+Data Encoding
+↓
+Data Codewords
+↓
+Error Correction Codewords
+↓
+Block Distribution
+↓
+Interleaving
+↓
+Final Bit Stream
+↓
+Matrix Placement
+↓
+Mask Evaluation
+↓
+Format Information
+↓
+Logo Projection
+↓
+SVG Rendering
+________________________________________
+Core Components
+Matrix Creation
+Responsible for creating the empty QR matrix and placing all fixed QR structures:
+•	Finder Patterns
+•	Separators
+•	Timing Patterns
+•	Alignment Patterns
+•	Dark Module
+•	Format Information Areas
+________________________________________
+Data Encoding
+The input text is encoded using QR Byte Mode.
+The resulting payload is converted into a binary bit stream and padded according to the QR specification.
+________________________________________
+Reed-Solomon Error Correction
+The project contains a complete Reed-Solomon implementation.
+Components:
+•	Galois Log Table
+•	Galois Exponent Table
+•	Generator Polynomials
+•	ECC Codeword Generation
+No external ECC library is required.
+________________________________________
+Interleaving
+Data codewords and error correction codewords are distributed into blocks and interleaved according to the QR specification.
+This improves resistance against localized damage.
+________________________________________
+Data Placement
+The final bit stream is placed into the QR matrix using the standard zig-zag placement pattern.
+Remaining unused modules become remainder bits.
+________________________________________
+Mask Selection
+All eight QR mask patterns are evaluated.
+For each candidate:
+•	Mask is applied
+•	Format information is generated
+•	Penalty score is calculated
+The best mask (lowest penalty score) is selected automatically.
+________________________________________
+Logo System
+The logo subsystem consists of:
+•	LogoPattern
+•	LogoPlacement
+•	LogoArea
+The largest available free data area inside the QR code is identified automatically.
+Logo pixels are projected into this area and can receive individual color mappings.
+________________________________________
+SVG Rendering
+The final QR matrix is exported as SVG.
+Supported features:
+•	Custom module size
+•	Quiet zone configuration
+•	Rounded data modules
+•	Custom foreground colors
+•	Custom background colors
+•	Multi-color logos
+________________________________________
+Persistence
+Generated SVGs can be stored in the database.
+Stored metadata include:
+•	Creation timestamp
+•	QR version
+•	Encoded text
+•	Logo name
+•	Error correction level
+•	Input hash
+•	SVG hash
+This allows reproducible test runs and historical analysis.
+________________________________________
+Design Goals
+The project was created primarily for:
+•	Education
+•	Conference presentations
+•	Learning T-SQL
+•	Understanding QR internals
+The implementation favors readability and traceability over maximum execution speed.

@@ -1,43 +1,77 @@
-T-SQL QR Code Generator
+# T-SQL QR Code Generator
 
 A QR Code Generator implemented entirely in Microsoft SQL Server T-SQL.
 
+---
 
+## Features
 
-Features
+- QR Code Versions 1-10
+- Reed-Solomon Error Correction
+- Automatic Mask Selection
+- SVG Generation
+- Colorized Logo Support
+- Logo Projection
+- SVG Persistence
 
-QR Code Versions 1-10
+---
 
-Reed-Solomon Error Correction
+## Example Output
 
-Automatic Mask Selection
+### Basic QR Code
 
-SVG Generation
+A minimal Version 1 QR code generated entirely in T-SQL.
 
-Colorized Logo Support
+![Basic QR Code](examples/screenshots/version1-basic.png)
 
-Author
+---
 
-Torsten Ahlemeyer
+### Logo Projection
 
+Automatic logo area detection, logo projection and color mapping.
 
+![Logo Projection](examples/screenshots/version6-logo.png)
 
-GitHub: KurzarmSQLer
+---
 
+### Conference Showcase
 
+Higher QR versions, Reed-Solomon error correction, automatic mask selection,
+logo projection and SVG rendering implemented entirely in T-SQL.
 
-Status
+![Conference Showcase](examples/screenshots/version6-showcase.png)
 
-Work in Progress
+---
+## SVG Sources
 
+The SVG files shown above are included in the repository:
 
+- examples/svg/version1-basic.svg
+- examples/svg/version6-logo.svg
+- examples/svg/version6-showcase.svg
 
+---
 
-License
-This project is licensed under the T-SQL QR Code Generator Educational License.
+## Included Documentation
 
-The project may be used for learning, experimentation, personal projects, and internal company use.
+- Architecture
+- Processing Pipeline
+- Object Catalog
+- Public API
+- Project Goals
+- Roadmap
+- Example Calls
 
-Commercial redistribution, resale, and use as paid training material are prohibited without explicit written permission from the author.
+---
 
-Copyright (c) 2026 Torsten Ahlemeyer GitHub: KurzarmSQLer
+## Repository Structure
+
+```text
+src/
+    Main SQL implementation
+
+docs/
+    Project documentation
+
+examples/
+    Example calls, SVG files and screenshots

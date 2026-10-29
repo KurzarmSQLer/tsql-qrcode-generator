@@ -1,4 +1,5 @@
-Roadmap
+### Roadmap
+
 v0.1
 Conference Edition Single SQL script
 
@@ -19,3 +20,14 @@ Dynamic logo import
 PNG export
 REST API
 Azure App Service deployment
+
+
+### Known Issue
+
+Version 10 currently fails during data placement with:
+
+DE: Falsche Anzahl Remainder Bits.
+EN: Incorrect number of remainder bits.
+
+Status:
+Under investigation.

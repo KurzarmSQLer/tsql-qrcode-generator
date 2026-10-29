@@ -1,0 +1,934 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="588" height="588" viewBox="0 0 588 588" shape-rendering="crispEdges">
+  <rect width="588" height="588" fill="#FFFFFF" />
+  <rect x="48" y="48" width="12" height="12" fill="#000000" />
+  <rect x="60" y="48" width="12" height="12" fill="#000000" />
+  <rect x="72" y="48" width="12" height="12" fill="#000000" />
+  <rect x="84" y="48" width="12" height="12" fill="#000000" />
+  <rect x="96" y="48" width="12" height="12" fill="#000000" />
+  <rect x="108" y="48" width="12" height="12" fill="#000000" />
+  <rect x="120" y="48" width="12" height="12" fill="#000000" />
+  <rect x="144" y="48" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="54" r="5.40" fill="#000000" />
+  <circle cx="174" cy="54" r="5.40" fill="#000000" />
+  <circle cx="186" cy="54" r="5.40" fill="#000000" />
+  <circle cx="198" cy="54" r="5.40" fill="#000000" />
+  <circle cx="210" cy="54" r="5.40" fill="#000000" />
+  <circle cx="234" cy="54" r="5.40" fill="#000000" />
+  <circle cx="270" cy="54" r="5.40" fill="#000000" />
+  <circle cx="330" cy="54" r="5.40" fill="#000000" />
+  <circle cx="342" cy="54" r="5.40" fill="#000000" />
+  <circle cx="354" cy="54" r="5.40" fill="#000000" />
+  <circle cx="366" cy="54" r="5.40" fill="#000000" />
+  <circle cx="378" cy="54" r="5.40" fill="#000000" />
+  <circle cx="414" cy="54" r="5.40" fill="#000000" />
+  <circle cx="438" cy="54" r="5.40" fill="#000000" />
+  <rect x="456" y="48" width="12" height="12" fill="#000000" />
+  <rect x="468" y="48" width="12" height="12" fill="#000000" />
+  <rect x="480" y="48" width="12" height="12" fill="#000000" />
+  <rect x="492" y="48" width="12" height="12" fill="#000000" />
+  <rect x="504" y="48" width="12" height="12" fill="#000000" />
+  <rect x="516" y="48" width="12" height="12" fill="#000000" />
+  <rect x="528" y="48" width="12" height="12" fill="#000000" />
+  <rect x="48" y="60" width="12" height="12" fill="#000000" />
+  <rect x="120" y="60" width="12" height="12" fill="#000000" />
+  <rect x="144" y="60" width="12" height="12" fill="#000000" />
+  <circle cx="198" cy="66" r="5.40" fill="#000000" />
+  <circle cx="246" cy="66" r="5.40" fill="#000000" />
+  <circle cx="258" cy="66" r="5.40" fill="#000000" />
+  <circle cx="270" cy="66" r="5.40" fill="#000000" />
+  <circle cx="282" cy="66" r="5.40" fill="#000000" />
+  <circle cx="330" cy="66" r="5.40" fill="#000000" />
+  <circle cx="342" cy="66" r="5.40" fill="#000000" />
+  <circle cx="354" cy="66" r="5.40" fill="#000000" />
+  <circle cx="366" cy="66" r="5.40" fill="#000000" />
+  <circle cx="378" cy="66" r="5.40" fill="#000000" />
+  <circle cx="390" cy="66" r="5.40" fill="#000000" />
+  <circle cx="414" cy="66" r="5.40" fill="#000000" />
+  <circle cx="426" cy="66" r="5.40" fill="#000000" />
+  <rect x="456" y="60" width="12" height="12" fill="#000000" />
+  <rect x="528" y="60" width="12" height="12" fill="#000000" />
+  <rect x="48" y="72" width="12" height="12" fill="#000000" />
+  <rect x="72" y="72" width="12" height="12" fill="#000000" />
+  <rect x="84" y="72" width="12" height="12" fill="#000000" />
+  <rect x="96" y="72" width="12" height="12" fill="#000000" />
+  <rect x="120" y="72" width="12" height="12" fill="#000000" />
+  <rect x="144" y="72" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="78" r="5.40" fill="#000000" />
+  <circle cx="174" cy="78" r="5.40" fill="#000000" />
+  <circle cx="186" cy="78" r="5.40" fill="#000000" />
+  <circle cx="198" cy="78" r="5.40" fill="#000000" />
+  <circle cx="210" cy="78" r="5.40" fill="#000000" />
+  <circle cx="234" cy="78" r="5.40" fill="#000000" />
+  <circle cx="258" cy="78" r="5.40" fill="#000000" />
+  <circle cx="270" cy="78" r="5.40" fill="#000000" />
+  <circle cx="282" cy="78" r="5.40" fill="#000000" />
+  <circle cx="294" cy="78" r="5.40" fill="#000000" />
+  <circle cx="318" cy="78" r="5.40" fill="#000000" />
+  <circle cx="330" cy="78" r="5.40" fill="#000000" />
+  <circle cx="354" cy="78" r="5.40" fill="#000000" />
+  <circle cx="378" cy="78" r="5.40" fill="#000000" />
+  <circle cx="426" cy="78" r="5.40" fill="#000000" />
+  <circle cx="438" cy="78" r="5.40" fill="#000000" />
+  <rect x="456" y="72" width="12" height="12" fill="#000000" />
+  <rect x="480" y="72" width="12" height="12" fill="#000000" />
+  <rect x="492" y="72" width="12" height="12" fill="#000000" />
+  <rect x="504" y="72" width="12" height="12" fill="#000000" />
+  <rect x="528" y="72" width="12" height="12" fill="#000000" />
+  <rect x="48" y="84" width="12" height="12" fill="#000000" />
+  <rect x="72" y="84" width="12" height="12" fill="#000000" />
+  <rect x="84" y="84" width="12" height="12" fill="#000000" />
+  <rect x="96" y="84" width="12" height="12" fill="#000000" />
+  <rect x="120" y="84" width="12" height="12" fill="#000000" />
+  <circle cx="270" cy="90" r="5.40" fill="#000000" />
+  <circle cx="282" cy="90" r="5.40" fill="#000000" />
+  <circle cx="294" cy="90" r="5.40" fill="#000000" />
+  <circle cx="318" cy="90" r="5.40" fill="#000000" />
+  <circle cx="366" cy="90" r="5.40" fill="#000000" />
+  <circle cx="378" cy="90" r="5.40" fill="#000000" />
+  <circle cx="414" cy="90" r="5.40" fill="#000000" />
+  <circle cx="426" cy="90" r="5.40" fill="#000000" />
+  <rect x="456" y="84" width="12" height="12" fill="#000000" />
+  <rect x="480" y="84" width="12" height="12" fill="#000000" />
+  <rect x="492" y="84" width="12" height="12" fill="#000000" />
+  <rect x="504" y="84" width="12" height="12" fill="#000000" />
+  <rect x="528" y="84" width="12" height="12" fill="#000000" />
+  <rect x="48" y="96" width="12" height="12" fill="#000000" />
+  <rect x="72" y="96" width="12" height="12" fill="#000000" />
+  <rect x="84" y="96" width="12" height="12" fill="#000000" />
+  <rect x="96" y="96" width="12" height="12" fill="#000000" />
+  <rect x="120" y="96" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="102" r="5.40" fill="#000000" />
+  <circle cx="174" cy="102" r="5.40" fill="#000000" />
+  <circle cx="198" cy="102" r="5.40" fill="#000000" />
+  <circle cx="234" cy="102" r="5.40" fill="#000000" />
+  <circle cx="258" cy="102" r="5.40" fill="#000000" />
+  <circle cx="306" cy="102" r="5.40" fill="#000000" />
+  <circle cx="318" cy="102" r="5.40" fill="#000000" />
+  <circle cx="330" cy="102" r="5.40" fill="#000000" />
+  <circle cx="342" cy="102" r="5.40" fill="#000000" />
+  <circle cx="354" cy="102" r="5.40" fill="#000000" />
+  <circle cx="378" cy="102" r="5.40" fill="#000000" />
+  <circle cx="390" cy="102" r="5.40" fill="#000000" />
+  <rect x="456" y="96" width="12" height="12" fill="#000000" />
+  <rect x="480" y="96" width="12" height="12" fill="#000000" />
+  <rect x="492" y="96" width="12" height="12" fill="#000000" />
+  <rect x="504" y="96" width="12" height="12" fill="#000000" />
+  <rect x="528" y="96" width="12" height="12" fill="#000000" />
+  <rect x="48" y="108" width="12" height="12" fill="#000000" />
+  <rect x="120" y="108" width="12" height="12" fill="#000000" />
+  <rect x="144" y="108" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="114" r="5.40" fill="#000000" />
+  <circle cx="174" cy="114" r="5.40" fill="#000000" />
+  <circle cx="186" cy="114" r="5.40" fill="#000000" />
+  <circle cx="198" cy="114" r="5.40" fill="#000000" />
+  <circle cx="210" cy="114" r="5.40" fill="#000000" />
+  <circle cx="222" cy="114" r="5.40" fill="#000000" />
+  <circle cx="234" cy="114" r="5.40" fill="#000000" />
+  <circle cx="246" cy="114" r="5.40" fill="#000000" />
+  <circle cx="258" cy="114" r="5.40" fill="#000000" />
+  <circle cx="270" cy="114" r="5.40" fill="#000000" />
+  <circle cx="294" cy="114" r="5.40" fill="#000000" />
+  <circle cx="306" cy="114" r="5.40" fill="#000000" />
+  <circle cx="342" cy="114" r="5.40" fill="#000000" />
+  <circle cx="414" cy="114" r="5.40" fill="#000000" />
+  <rect x="456" y="108" width="12" height="12" fill="#000000" />
+  <rect x="528" y="108" width="12" height="12" fill="#000000" />
+  <rect x="48" y="120" width="12" height="12" fill="#000000" />
+  <rect x="60" y="120" width="12" height="12" fill="#000000" />
+  <rect x="72" y="120" width="12" height="12" fill="#000000" />
+  <rect x="84" y="120" width="12" height="12" fill="#000000" />
+  <rect x="96" y="120" width="12" height="12" fill="#000000" />
+  <rect x="108" y="120" width="12" height="12" fill="#000000" />
+  <rect x="120" y="120" width="12" height="12" fill="#000000" />
+  <rect x="144" y="120" width="12" height="12" fill="#000000" />
+  <rect x="168" y="120" width="12" height="12" fill="#000000" />
+  <rect x="192" y="120" width="12" height="12" fill="#000000" />
+  <rect x="216" y="120" width="12" height="12" fill="#000000" />
+  <rect x="240" y="120" width="12" height="12" fill="#000000" />
+  <rect x="264" y="120" width="12" height="12" fill="#000000" />
+  <rect x="288" y="120" width="12" height="12" fill="#000000" />
+  <rect x="312" y="120" width="12" height="12" fill="#000000" />
+  <rect x="336" y="120" width="12" height="12" fill="#000000" />
+  <rect x="360" y="120" width="12" height="12" fill="#000000" />
+  <rect x="384" y="120" width="12" height="12" fill="#000000" />
+  <rect x="408" y="120" width="12" height="12" fill="#000000" />
+  <rect x="432" y="120" width="12" height="12" fill="#000000" />
+  <rect x="456" y="120" width="12" height="12" fill="#000000" />
+  <rect x="468" y="120" width="12" height="12" fill="#000000" />
+  <rect x="480" y="120" width="12" height="12" fill="#000000" />
+  <rect x="492" y="120" width="12" height="12" fill="#000000" />
+  <rect x="504" y="120" width="12" height="12" fill="#000000" />
+  <rect x="516" y="120" width="12" height="12" fill="#000000" />
+  <rect x="528" y="120" width="12" height="12" fill="#000000" />
+  <rect x="144" y="132" width="12" height="12" fill="#000000" />
+  <circle cx="174" cy="138" r="5.40" fill="#000000" />
+  <circle cx="186" cy="138" r="5.40" fill="#000000" />
+  <circle cx="246" cy="138" r="5.40" fill="#000000" />
+  <circle cx="258" cy="138" r="5.40" fill="#000000" />
+  <circle cx="270" cy="138" r="5.40" fill="#000000" />
+  <circle cx="282" cy="138" r="5.40" fill="#000000" />
+  <circle cx="294" cy="138" r="5.40" fill="#000000" />
+  <circle cx="306" cy="138" r="5.40" fill="#000000" />
+  <circle cx="330" cy="138" r="5.40" fill="#0F7285" />
+  <circle cx="342" cy="138" r="5.40" fill="#000000" />
+  <circle cx="354" cy="138" r="5.40" fill="#000000" />
+  <circle cx="390" cy="138" r="5.40" fill="#000000" />
+  <circle cx="414" cy="138" r="5.40" fill="#000000" />
+  <circle cx="426" cy="138" r="5.40" fill="#000000" />
+  <rect x="72" y="144" width="12" height="12" fill="#000000" />
+  <rect x="84" y="144" width="12" height="12" fill="#000000" />
+  <rect x="96" y="144" width="12" height="12" fill="#000000" />
+  <rect x="120" y="144" width="12" height="12" fill="#000000" />
+  <rect x="144" y="144" width="12" height="12" fill="#000000" />
+  <circle cx="174" cy="150" r="5.40" fill="#000000" />
+  <circle cx="210" cy="150" r="5.40" fill="#000000" />
+  <circle cx="258" cy="150" r="5.40" fill="#000000" />
+  <circle cx="270" cy="150" r="5.40" fill="#000000" />
+  <circle cx="294" cy="150" r="5.40" fill="#000000" />
+  <circle cx="306" cy="150" r="5.40" fill="#000000" />
+  <circle cx="318" cy="150" r="5.40" fill="#000000" />
+  <circle cx="330" cy="150" r="5.40" fill="#C4D9DD" />
+  <circle cx="354" cy="150" r="5.40" fill="#000000" />
+  <circle cx="366" cy="150" r="5.40" fill="#000000" />
+  <rect x="444" y="144" width="12" height="12" fill="#000000" />
+  <rect x="456" y="144" width="12" height="12" fill="#000000" />
+  <rect x="468" y="144" width="12" height="12" fill="#000000" />
+  <rect x="504" y="144" width="12" height="12" fill="#000000" />
+  <rect x="516" y="144" width="12" height="12" fill="#000000" />
+  <rect x="528" y="144" width="12" height="12" fill="#000000" />
+  <circle cx="78" cy="162" r="5.40" fill="#000000" />
+  <circle cx="90" cy="162" r="5.40" fill="#000000" />
+  <circle cx="114" cy="162" r="5.40" fill="#000000" />
+  <circle cx="150" cy="162" r="5.40" fill="#000000" />
+  <circle cx="174" cy="162" r="5.40" fill="#000000" />
+  <circle cx="186" cy="162" r="5.40" fill="#000000" />
+  <circle cx="210" cy="162" r="5.40" fill="#000000" />
+  <circle cx="234" cy="162" r="5.40" fill="#000000" />
+  <circle cx="258" cy="162" r="5.40" fill="#000000" />
+  <circle cx="282" cy="162" r="5.40" fill="#000000" />
+  <circle cx="294" cy="162" r="5.40" fill="#000000" />
+  <circle cx="318" cy="162" r="5.40" fill="#C4D9DD" />
+  <circle cx="330" cy="162" r="5.40" fill="#C4D9DD" />
+  <circle cx="402" cy="162" r="5.40" fill="#000000" />
+  <circle cx="414" cy="162" r="5.40" fill="#000000" />
+  <circle cx="426" cy="162" r="5.40" fill="#000000" />
+  <circle cx="450" cy="162" r="5.40" fill="#000000" />
+  <circle cx="474" cy="162" r="5.40" fill="#000000" />
+  <circle cx="498" cy="162" r="5.40" fill="#000000" />
+  <rect x="120" y="168" width="12" height="12" fill="#000000" />
+  <circle cx="138" cy="174" r="5.40" fill="#000000" />
+  <circle cx="174" cy="174" r="5.40" fill="#C4D9DD" />
+  <circle cx="186" cy="174" r="5.40" fill="#0F7285" />
+  <circle cx="198" cy="174" r="5.40" fill="#0F7285" />
+  <circle cx="210" cy="174" r="5.40" fill="#0F7285" />
+  <circle cx="222" cy="174" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="174" r="5.40" fill="#0F7285" />
+  <circle cx="246" cy="174" r="5.40" fill="#C4D9DD" />
+  <circle cx="258" cy="174" r="5.40" fill="#0F7285" />
+  <circle cx="270" cy="174" r="5.40" fill="#C4D9DD" />
+  <circle cx="282" cy="174" r="5.40" fill="#C4D9DD" />
+  <circle cx="294" cy="174" r="5.40" fill="#C4D9DD" />
+  <circle cx="306" cy="174" r="5.40" fill="#0F7285" />
+  <circle cx="318" cy="174" r="5.40" fill="#0F7285" />
+  <circle cx="330" cy="174" r="5.40" fill="#C4D9DD" />
+  <circle cx="354" cy="174" r="5.40" fill="#000000" />
+  <circle cx="366" cy="174" r="5.40" fill="#000000" />
+  <circle cx="378" cy="174" r="5.40" fill="#000000" />
+  <circle cx="390" cy="174" r="5.40" fill="#000000" />
+  <circle cx="402" cy="174" r="5.40" fill="#000000" />
+  <circle cx="450" cy="174" r="5.40" fill="#000000" />
+  <circle cx="522" cy="174" r="5.40" fill="#000000" />
+  <circle cx="66" cy="186" r="5.40" fill="#000000" />
+  <circle cx="78" cy="186" r="5.40" fill="#000000" />
+  <circle cx="102" cy="186" r="5.40" fill="#000000" />
+  <circle cx="114" cy="186" r="5.40" fill="#000000" />
+  <circle cx="162" cy="186" r="5.40" fill="#000000" />
+  <circle cx="174" cy="186" r="5.40" fill="#0F7285" />
+  <circle cx="186" cy="186" r="5.40" fill="#0F7285" />
+  <circle cx="198" cy="186" r="5.40" fill="#C4D9DD" />
+  <circle cx="210" cy="186" r="5.40" fill="#C4D9DD" />
+  <circle cx="222" cy="186" r="5.40" fill="#C4D9DD" />
+  <circle cx="234" cy="186" r="5.40" fill="#0F7285" />
+  <circle cx="246" cy="186" r="5.40" fill="#C4D9DD" />
+  <circle cx="258" cy="186" r="5.40" fill="#0F7285" />
+  <circle cx="270" cy="186" r="5.40" fill="#0F7285" />
+  <circle cx="282" cy="186" r="5.40" fill="#C4D9DD" />
+  <circle cx="294" cy="186" r="5.40" fill="#C4D9DD" />
+  <circle cx="306" cy="186" r="5.40" fill="#C4D9DD" />
+  <circle cx="318" cy="186" r="5.40" fill="#C4D9DD" />
+  <circle cx="342" cy="186" r="5.40" fill="#000000" />
+  <circle cx="354" cy="186" r="5.40" fill="#000000" />
+  <circle cx="366" cy="186" r="5.40" fill="#000000" />
+  <circle cx="378" cy="186" r="5.40" fill="#000000" />
+  <circle cx="390" cy="186" r="5.40" fill="#000000" />
+  <circle cx="402" cy="186" r="5.40" fill="#000000" />
+  <circle cx="414" cy="186" r="5.40" fill="#000000" />
+  <circle cx="426" cy="186" r="5.40" fill="#000000" />
+  <circle cx="474" cy="186" r="5.40" fill="#000000" />
+  <circle cx="54" cy="198" r="5.40" fill="#000000" />
+  <circle cx="78" cy="198" r="5.40" fill="#000000" />
+  <circle cx="102" cy="198" r="5.40" fill="#000000" />
+  <rect x="120" y="192" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="198" r="5.40" fill="#C4D9DD" />
+  <circle cx="174" cy="198" r="5.40" fill="#C4D9DD" />
+  <circle cx="198" cy="198" r="5.40" fill="#000000" />
+  <circle cx="222" cy="198" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="198" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="198" r="5.40" fill="#C4D9DD" />
+  <circle cx="258" cy="198" r="5.40" fill="#C4D9DD" />
+  <circle cx="270" cy="198" r="5.40" fill="#000000" />
+  <circle cx="294" cy="198" r="5.40" fill="#000000" />
+  <circle cx="306" cy="198" r="5.40" fill="#000000" />
+  <circle cx="342" cy="198" r="5.40" fill="#000000" />
+  <circle cx="354" cy="198" r="5.40" fill="#000000" />
+  <circle cx="378" cy="198" r="5.40" fill="#000000" />
+  <circle cx="390" cy="198" r="5.40" fill="#000000" />
+  <circle cx="450" cy="198" r="5.40" fill="#000000" />
+  <circle cx="510" cy="198" r="5.40" fill="#000000" />
+  <circle cx="522" cy="198" r="5.40" fill="#000000" />
+  <circle cx="54" cy="210" r="5.40" fill="#000000" />
+  <circle cx="66" cy="210" r="5.40" fill="#000000" />
+  <circle cx="102" cy="210" r="5.40" fill="#000000" />
+  <circle cx="162" cy="210" r="5.40" fill="#000000" />
+  <circle cx="186" cy="210" r="5.40" fill="#000000" />
+  <circle cx="198" cy="210" r="5.40" fill="#000000" />
+  <circle cx="210" cy="210" r="5.40" fill="#000000" />
+  <circle cx="222" cy="210" r="5.40" fill="#000000" />
+  <circle cx="234" cy="210" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="210" r="5.40" fill="#0F7285" />
+  <circle cx="258" cy="210" r="5.40" fill="#000000" />
+  <circle cx="330" cy="210" r="5.40" fill="#000000" />
+  <circle cx="354" cy="210" r="5.40" fill="#000000" />
+  <circle cx="366" cy="210" r="5.40" fill="#000000" />
+  <circle cx="378" cy="210" r="5.40" fill="#000000" />
+  <circle cx="414" cy="210" r="5.40" fill="#000000" />
+  <circle cx="438" cy="210" r="5.40" fill="#000000" />
+  <circle cx="474" cy="210" r="5.40" fill="#000000" />
+  <circle cx="486" cy="210" r="5.40" fill="#000000" />
+  <circle cx="498" cy="210" r="5.40" fill="#000000" />
+  <circle cx="522" cy="210" r="5.40" fill="#000000" />
+  <circle cx="66" cy="222" r="5.40" fill="#000000" />
+  <circle cx="78" cy="222" r="5.40" fill="#000000" />
+  <circle cx="90" cy="222" r="5.40" fill="#000000" />
+  <circle cx="102" cy="222" r="5.40" fill="#000000" />
+  <circle cx="114" cy="222" r="5.40" fill="#000000" />
+  <rect x="120" y="216" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="222" r="5.40" fill="#000000" />
+  <circle cx="174" cy="222" r="5.40" fill="#000000" />
+  <circle cx="210" cy="222" r="5.40" fill="#000000" />
+  <circle cx="222" cy="222" r="5.40" fill="#000000" />
+  <circle cx="234" cy="222" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="222" r="5.40" fill="#C4D9DD" />
+  <circle cx="270" cy="222" r="5.40" fill="#000000" />
+  <circle cx="306" cy="222" r="5.40" fill="#000000" />
+  <circle cx="378" cy="222" r="5.40" fill="#000000" />
+  <circle cx="390" cy="222" r="5.40" fill="#000000" />
+  <circle cx="414" cy="222" r="5.40" fill="#000000" />
+  <circle cx="426" cy="222" r="5.40" fill="#000000" />
+  <circle cx="462" cy="222" r="5.40" fill="#000000" />
+  <circle cx="498" cy="222" r="5.40" fill="#000000" />
+  <circle cx="534" cy="222" r="5.40" fill="#000000" />
+  <circle cx="78" cy="234" r="5.40" fill="#000000" />
+  <circle cx="90" cy="234" r="5.40" fill="#000000" />
+  <circle cx="102" cy="234" r="5.40" fill="#000000" />
+  <circle cx="138" cy="234" r="5.40" fill="#000000" />
+  <circle cx="150" cy="234" r="5.40" fill="#000000" />
+  <circle cx="210" cy="234" r="5.40" fill="#000000" />
+  <circle cx="222" cy="234" r="5.40" fill="#C4D9DD" />
+  <circle cx="234" cy="234" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="234" r="5.40" fill="#0F7285" />
+  <circle cx="258" cy="234" r="5.40" fill="#000000" />
+  <circle cx="270" cy="234" r="5.40" fill="#000000" />
+  <circle cx="282" cy="234" r="5.40" fill="#000000" />
+  <circle cx="294" cy="234" r="5.40" fill="#000000" />
+  <circle cx="318" cy="234" r="5.40" fill="#000000" />
+  <circle cx="330" cy="234" r="5.40" fill="#000000" />
+  <circle cx="342" cy="234" r="5.40" fill="#000000" />
+  <circle cx="378" cy="234" r="5.40" fill="#000000" />
+  <circle cx="426" cy="234" r="5.40" fill="#000000" />
+  <circle cx="438" cy="234" r="5.40" fill="#000000" />
+  <circle cx="450" cy="234" r="5.40" fill="#000000" />
+  <circle cx="486" cy="234" r="5.40" fill="#000000" />
+  <circle cx="498" cy="234" r="5.40" fill="#000000" />
+  <circle cx="522" cy="234" r="5.40" fill="#000000" />
+  <circle cx="534" cy="234" r="5.40" fill="#000000" />
+  <circle cx="78" cy="246" r="5.40" fill="#000000" />
+  <circle cx="114" cy="246" r="5.40" fill="#000000" />
+  <rect x="120" y="240" width="12" height="12" fill="#000000" />
+  <circle cx="138" cy="246" r="5.40" fill="#000000" />
+  <circle cx="174" cy="246" r="5.40" fill="#000000" />
+  <circle cx="186" cy="246" r="5.40" fill="#000000" />
+  <circle cx="210" cy="246" r="5.40" fill="#000000" />
+  <circle cx="222" cy="246" r="5.40" fill="#C4D9DD" />
+  <circle cx="234" cy="246" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="246" r="5.40" fill="#C4D9DD" />
+  <circle cx="306" cy="246" r="5.40" fill="#000000" />
+  <circle cx="318" cy="246" r="5.40" fill="#000000" />
+  <circle cx="330" cy="246" r="5.40" fill="#000000" />
+  <circle cx="342" cy="246" r="5.40" fill="#000000" />
+  <circle cx="354" cy="246" r="5.40" fill="#000000" />
+  <circle cx="378" cy="246" r="5.40" fill="#000000" />
+  <circle cx="414" cy="246" r="5.40" fill="#000000" />
+  <circle cx="426" cy="246" r="5.40" fill="#000000" />
+  <circle cx="438" cy="246" r="5.40" fill="#000000" />
+  <circle cx="450" cy="246" r="5.40" fill="#000000" />
+  <circle cx="486" cy="246" r="5.40" fill="#000000" />
+  <circle cx="510" cy="246" r="5.40" fill="#000000" />
+  <circle cx="534" cy="246" r="5.40" fill="#000000" />
+  <circle cx="138" cy="258" r="5.40" fill="#000000" />
+  <circle cx="174" cy="258" r="5.40" fill="#000000" />
+  <circle cx="186" cy="258" r="5.40" fill="#000000" />
+  <circle cx="222" cy="258" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="258" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="258" r="5.40" fill="#0F7285" />
+  <circle cx="270" cy="258" r="5.40" fill="#000000" />
+  <circle cx="294" cy="258" r="5.40" fill="#000000" />
+  <circle cx="306" cy="258" r="5.40" fill="#000000" />
+  <circle cx="330" cy="258" r="5.40" fill="#000000" />
+  <circle cx="342" cy="258" r="5.40" fill="#000000" />
+  <circle cx="366" cy="258" r="5.40" fill="#000000" />
+  <circle cx="378" cy="258" r="5.40" fill="#000000" />
+  <circle cx="390" cy="258" r="5.40" fill="#D09021" />
+  <circle cx="402" cy="258" r="5.40" fill="#D09021" />
+  <circle cx="450" cy="258" r="5.40" fill="#000000" />
+  <circle cx="462" cy="258" r="5.40" fill="#000000" />
+  <circle cx="474" cy="258" r="5.40" fill="#000000" />
+  <circle cx="486" cy="258" r="5.40" fill="#000000" />
+  <circle cx="522" cy="258" r="5.40" fill="#000000" />
+  <circle cx="534" cy="258" r="5.40" fill="#000000" />
+  <circle cx="66" cy="270" r="5.40" fill="#000000" />
+  <circle cx="102" cy="270" r="5.40" fill="#000000" />
+  <circle cx="114" cy="270" r="5.40" fill="#000000" />
+  <rect x="120" y="264" width="12" height="12" fill="#000000" />
+  <circle cx="138" cy="270" r="5.40" fill="#000000" />
+  <circle cx="162" cy="270" r="5.40" fill="#000000" />
+  <circle cx="198" cy="270" r="5.40" fill="#000000" />
+  <circle cx="222" cy="270" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="270" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="270" r="5.40" fill="#C4D9DD" />
+  <circle cx="270" cy="270" r="5.40" fill="#000000" />
+  <circle cx="318" cy="270" r="5.40" fill="#000000" />
+  <circle cx="342" cy="270" r="5.40" fill="#000000" />
+  <circle cx="354" cy="270" r="5.40" fill="#000000" />
+  <circle cx="378" cy="270" r="5.40" fill="#FCF8F1" />
+  <circle cx="390" cy="270" r="5.40" fill="#FCF8F1" />
+  <circle cx="402" cy="270" r="5.40" fill="#000000" />
+  <circle cx="438" cy="270" r="5.40" fill="#000000" />
+  <circle cx="450" cy="270" r="5.40" fill="#000000" />
+  <circle cx="474" cy="270" r="5.40" fill="#000000" />
+  <circle cx="486" cy="270" r="5.40" fill="#000000" />
+  <circle cx="498" cy="270" r="5.40" fill="#000000" />
+  <circle cx="54" cy="282" r="5.40" fill="#000000" />
+  <circle cx="78" cy="282" r="5.40" fill="#000000" />
+  <circle cx="90" cy="282" r="5.40" fill="#000000" />
+  <circle cx="102" cy="282" r="5.40" fill="#000000" />
+  <circle cx="138" cy="282" r="5.40" fill="#000000" />
+  <circle cx="186" cy="282" r="5.40" fill="#000000" />
+  <circle cx="198" cy="282" r="5.40" fill="#000000" />
+  <circle cx="210" cy="282" r="5.40" fill="#000000" />
+  <circle cx="222" cy="282" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="282" r="5.40" fill="#0F7285" />
+  <circle cx="246" cy="282" r="5.40" fill="#0F7285" />
+  <circle cx="258" cy="282" r="5.40" fill="#000000" />
+  <circle cx="270" cy="282" r="5.40" fill="#000000" />
+  <circle cx="282" cy="282" r="5.40" fill="#000000" />
+  <circle cx="294" cy="282" r="5.40" fill="#000000" />
+  <circle cx="318" cy="282" r="5.40" fill="#000000" />
+  <circle cx="342" cy="282" r="5.40" fill="#000000" />
+  <circle cx="366" cy="282" r="5.40" fill="#FCF8F1" />
+  <circle cx="378" cy="282" r="5.40" fill="#FCF8F1" />
+  <circle cx="390" cy="282" r="5.40" fill="#D09021" />
+  <circle cx="402" cy="282" r="5.40" fill="#000000" />
+  <circle cx="414" cy="282" r="5.40" fill="#000000" />
+  <circle cx="486" cy="282" r="5.40" fill="#000000" />
+  <circle cx="534" cy="282" r="5.40" fill="#000000" />
+  <circle cx="66" cy="294" r="5.40" fill="#000000" />
+  <circle cx="102" cy="294" r="5.40" fill="#000000" />
+  <circle cx="114" cy="294" r="5.40" fill="#000000" />
+  <rect x="120" y="288" width="12" height="12" fill="#000000" />
+  <circle cx="138" cy="294" r="5.40" fill="#000000" />
+  <circle cx="162" cy="294" r="5.40" fill="#000000" />
+  <circle cx="174" cy="294" r="5.40" fill="#000000" />
+  <circle cx="198" cy="294" r="5.40" fill="#000000" />
+  <circle cx="210" cy="294" r="5.40" fill="#000000" />
+  <circle cx="222" cy="294" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="294" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="294" r="5.40" fill="#000000" />
+  <circle cx="270" cy="294" r="5.40" fill="#000000" />
+  <circle cx="282" cy="294" r="5.40" fill="#000000" />
+  <circle cx="294" cy="294" r="5.40" fill="#000000" />
+  <circle cx="330" cy="294" r="5.40" fill="#000000" />
+  <circle cx="342" cy="294" r="5.40" fill="#000000" />
+  <circle cx="354" cy="294" r="5.40" fill="#000000" />
+  <circle cx="366" cy="294" r="5.40" fill="#D09021" />
+  <circle cx="378" cy="294" r="5.40" fill="#FCF8F1" />
+  <circle cx="390" cy="294" r="5.40" fill="#D09021" />
+  <circle cx="438" cy="294" r="5.40" fill="#000000" />
+  <circle cx="486" cy="294" r="5.40" fill="#000000" />
+  <circle cx="498" cy="294" r="5.40" fill="#000000" />
+  <circle cx="78" cy="306" r="5.40" fill="#000000" />
+  <circle cx="150" cy="306" r="5.40" fill="#000000" />
+  <circle cx="174" cy="306" r="5.40" fill="#000000" />
+  <circle cx="198" cy="306" r="5.40" fill="#000000" />
+  <circle cx="222" cy="306" r="5.40" fill="#C4D9DD" />
+  <circle cx="234" cy="306" r="5.40" fill="#0F7285" />
+  <circle cx="294" cy="306" r="5.40" fill="#000000" />
+  <circle cx="306" cy="306" r="5.40" fill="#000000" />
+  <circle cx="354" cy="306" r="5.40" fill="#FCF8F1" />
+  <circle cx="366" cy="306" r="5.40" fill="#D09021" />
+  <circle cx="378" cy="306" r="5.40" fill="#D09021" />
+  <circle cx="390" cy="306" r="5.40" fill="#FCF8F1" />
+  <circle cx="414" cy="306" r="5.40" fill="#000000" />
+  <circle cx="426" cy="306" r="5.40" fill="#000000" />
+  <circle cx="438" cy="306" r="5.40" fill="#000000" />
+  <circle cx="462" cy="306" r="5.40" fill="#000000" />
+  <circle cx="474" cy="306" r="5.40" fill="#000000" />
+  <circle cx="498" cy="306" r="5.40" fill="#000000" />
+  <circle cx="510" cy="306" r="5.40" fill="#000000" />
+  <circle cx="54" cy="318" r="5.40" fill="#000000" />
+  <circle cx="78" cy="318" r="5.40" fill="#000000" />
+  <circle cx="114" cy="318" r="5.40" fill="#000000" />
+  <rect x="120" y="312" width="12" height="12" fill="#000000" />
+  <circle cx="198" cy="318" r="5.40" fill="#000000" />
+  <circle cx="222" cy="318" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="318" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="318" r="5.40" fill="#000000" />
+  <circle cx="270" cy="318" r="5.40" fill="#000000" />
+  <circle cx="282" cy="318" r="5.40" fill="#000000" />
+  <circle cx="294" cy="318" r="5.40" fill="#000000" />
+  <circle cx="306" cy="318" r="5.40" fill="#000000" />
+  <circle cx="318" cy="318" r="5.40" fill="#000000" />
+  <circle cx="342" cy="318" r="5.40" fill="#D09021" />
+  <circle cx="354" cy="318" r="5.40" fill="#D09021" />
+  <circle cx="378" cy="318" r="5.40" fill="#D09021" />
+  <circle cx="390" cy="318" r="5.40" fill="#D09021" />
+  <circle cx="402" cy="318" r="5.40" fill="#000000" />
+  <circle cx="414" cy="318" r="5.40" fill="#000000" />
+  <circle cx="438" cy="318" r="5.40" fill="#000000" />
+  <circle cx="450" cy="318" r="5.40" fill="#000000" />
+  <circle cx="510" cy="318" r="5.40" fill="#000000" />
+  <circle cx="54" cy="330" r="5.40" fill="#000000" />
+  <circle cx="78" cy="330" r="5.40" fill="#000000" />
+  <circle cx="102" cy="330" r="5.40" fill="#000000" />
+  <circle cx="138" cy="330" r="5.40" fill="#000000" />
+  <circle cx="174" cy="330" r="5.40" fill="#000000" />
+  <circle cx="198" cy="330" r="5.40" fill="#000000" />
+  <circle cx="210" cy="330" r="5.40" fill="#C4D9DD" />
+  <circle cx="222" cy="330" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="330" r="5.40" fill="#0F7285" />
+  <circle cx="282" cy="330" r="5.40" fill="#000000" />
+  <circle cx="294" cy="330" r="5.40" fill="#000000" />
+  <circle cx="342" cy="330" r="5.40" fill="#D09021" />
+  <circle cx="354" cy="330" r="5.40" fill="#FCF8F1" />
+  <circle cx="366" cy="330" r="5.40" fill="#000000" />
+  <circle cx="378" cy="330" r="5.40" fill="#D09021" />
+  <circle cx="390" cy="330" r="5.40" fill="#FCF8F1" />
+  <circle cx="426" cy="330" r="5.40" fill="#000000" />
+  <circle cx="438" cy="330" r="5.40" fill="#000000" />
+  <circle cx="474" cy="330" r="5.40" fill="#000000" />
+  <circle cx="498" cy="330" r="5.40" fill="#000000" />
+  <circle cx="510" cy="330" r="5.40" fill="#000000" />
+  <circle cx="534" cy="330" r="5.40" fill="#000000" />
+  <circle cx="54" cy="342" r="5.40" fill="#000000" />
+  <circle cx="90" cy="342" r="5.40" fill="#000000" />
+  <circle cx="114" cy="342" r="5.40" fill="#000000" />
+  <rect x="120" y="336" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="342" r="5.40" fill="#000000" />
+  <circle cx="210" cy="342" r="5.40" fill="#C4D9DD" />
+  <circle cx="222" cy="342" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="342" r="5.40" fill="#C4D9DD" />
+  <circle cx="258" cy="342" r="5.40" fill="#000000" />
+  <circle cx="270" cy="342" r="5.40" fill="#000000" />
+  <circle cx="318" cy="342" r="5.40" fill="#000000" />
+  <circle cx="330" cy="342" r="5.40" fill="#FCF8F1" />
+  <circle cx="342" cy="342" r="5.40" fill="#FCF8F1" />
+  <circle cx="378" cy="342" r="5.40" fill="#D09021" />
+  <circle cx="390" cy="342" r="5.40" fill="#FCF8F1" />
+  <circle cx="402" cy="342" r="5.40" fill="#000000" />
+  <circle cx="426" cy="342" r="5.40" fill="#000000" />
+  <circle cx="438" cy="342" r="5.40" fill="#000000" />
+  <circle cx="450" cy="342" r="5.40" fill="#000000" />
+  <circle cx="474" cy="342" r="5.40" fill="#000000" />
+  <circle cx="486" cy="342" r="5.40" fill="#000000" />
+  <circle cx="66" cy="354" r="5.40" fill="#000000" />
+  <circle cx="102" cy="354" r="5.40" fill="#000000" />
+  <circle cx="114" cy="354" r="5.40" fill="#000000" />
+  <circle cx="138" cy="354" r="5.40" fill="#000000" />
+  <circle cx="150" cy="354" r="5.40" fill="#000000" />
+  <circle cx="162" cy="354" r="5.40" fill="#000000" />
+  <circle cx="174" cy="354" r="5.40" fill="#000000" />
+  <circle cx="186" cy="354" r="5.40" fill="#000000" />
+  <circle cx="210" cy="354" r="5.40" fill="#C4D9DD" />
+  <circle cx="222" cy="354" r="5.40" fill="#0F7285" />
+  <circle cx="234" cy="354" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="354" r="5.40" fill="#000000" />
+  <circle cx="258" cy="354" r="5.40" fill="#000000" />
+  <circle cx="270" cy="354" r="5.40" fill="#000000" />
+  <circle cx="282" cy="354" r="5.40" fill="#000000" />
+  <circle cx="330" cy="354" r="5.40" fill="#FCF8F1" />
+  <circle cx="342" cy="354" r="5.40" fill="#FCF8F1" />
+  <circle cx="378" cy="354" r="5.40" fill="#FCF8F1" />
+  <circle cx="390" cy="354" r="5.40" fill="#D09021" />
+  <circle cx="414" cy="354" r="5.40" fill="#000000" />
+  <circle cx="438" cy="354" r="5.40" fill="#000000" />
+  <circle cx="486" cy="354" r="5.40" fill="#000000" />
+  <circle cx="498" cy="354" r="5.40" fill="#000000" />
+  <circle cx="510" cy="354" r="5.40" fill="#000000" />
+  <circle cx="522" cy="354" r="5.40" fill="#000000" />
+  <circle cx="114" cy="366" r="5.40" fill="#000000" />
+  <rect x="120" y="360" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="366" r="5.40" fill="#000000" />
+  <circle cx="186" cy="366" r="5.40" fill="#000000" />
+  <circle cx="210" cy="366" r="5.40" fill="#0F7285" />
+  <circle cx="222" cy="366" r="5.40" fill="#C4D9DD" />
+  <circle cx="270" cy="366" r="5.40" fill="#000000" />
+  <circle cx="282" cy="366" r="5.40" fill="#000000" />
+  <circle cx="306" cy="366" r="5.40" fill="#000000" />
+  <circle cx="318" cy="366" r="5.40" fill="#FCF8F1" />
+  <circle cx="330" cy="366" r="5.40" fill="#D09021" />
+  <circle cx="342" cy="366" r="5.40" fill="#000000" />
+  <circle cx="354" cy="366" r="5.40" fill="#000000" />
+  <circle cx="366" cy="366" r="5.40" fill="#000000" />
+  <circle cx="378" cy="366" r="5.40" fill="#D09021" />
+  <circle cx="390" cy="366" r="5.40" fill="#FCF8F1" />
+  <circle cx="414" cy="366" r="5.40" fill="#000000" />
+  <circle cx="438" cy="366" r="5.40" fill="#000000" />
+  <circle cx="462" cy="366" r="5.40" fill="#000000" />
+  <circle cx="474" cy="366" r="5.40" fill="#000000" />
+  <circle cx="486" cy="366" r="5.40" fill="#000000" />
+  <circle cx="498" cy="366" r="5.40" fill="#000000" />
+  <circle cx="534" cy="366" r="5.40" fill="#000000" />
+  <circle cx="90" cy="378" r="5.40" fill="#000000" />
+  <circle cx="114" cy="378" r="5.40" fill="#000000" />
+  <circle cx="150" cy="378" r="5.40" fill="#000000" />
+  <circle cx="162" cy="378" r="5.40" fill="#000000" />
+  <circle cx="174" cy="378" r="5.40" fill="#000000" />
+  <circle cx="210" cy="378" r="5.40" fill="#C4D9DD" />
+  <circle cx="222" cy="378" r="5.40" fill="#C4D9DD" />
+  <circle cx="246" cy="378" r="5.40" fill="#000000" />
+  <circle cx="294" cy="378" r="5.40" fill="#000000" />
+  <circle cx="306" cy="378" r="5.40" fill="#000000" />
+  <circle cx="318" cy="378" r="5.40" fill="#FCF8F1" />
+  <circle cx="330" cy="378" r="5.40" fill="#FCF8F1" />
+  <circle cx="378" cy="378" r="5.40" fill="#D09021" />
+  <circle cx="390" cy="378" r="5.40" fill="#D09021" />
+  <circle cx="450" cy="378" r="5.40" fill="#000000" />
+  <circle cx="462" cy="378" r="5.40" fill="#000000" />
+  <circle cx="486" cy="378" r="5.40" fill="#000000" />
+  <circle cx="498" cy="378" r="5.40" fill="#000000" />
+  <circle cx="522" cy="378" r="5.40" fill="#000000" />
+  <circle cx="534" cy="378" r="5.40" fill="#000000" />
+  <circle cx="54" cy="390" r="5.40" fill="#000000" />
+  <circle cx="90" cy="390" r="5.40" fill="#000000" />
+  <rect x="120" y="384" width="12" height="12" fill="#000000" />
+  <circle cx="138" cy="390" r="5.40" fill="#000000" />
+  <circle cx="150" cy="390" r="5.40" fill="#000000" />
+  <circle cx="162" cy="390" r="5.40" fill="#000000" />
+  <circle cx="174" cy="390" r="5.40" fill="#000000" />
+  <circle cx="210" cy="390" r="5.40" fill="#0F7285" />
+  <circle cx="222" cy="390" r="5.40" fill="#C4D9DD" />
+  <circle cx="258" cy="390" r="5.40" fill="#000000" />
+  <circle cx="270" cy="390" r="5.40" fill="#000000" />
+  <circle cx="294" cy="390" r="5.40" fill="#000000" />
+  <circle cx="306" cy="390" r="5.40" fill="#D09021" />
+  <circle cx="318" cy="390" r="5.40" fill="#FCF8F1" />
+  <circle cx="378" cy="390" r="5.40" fill="#D09021" />
+  <circle cx="390" cy="390" r="5.40" fill="#FCF8F1" />
+  <circle cx="402" cy="390" r="5.40" fill="#FCF8F1" />
+  <circle cx="414" cy="390" r="5.40" fill="#000000" />
+  <circle cx="438" cy="390" r="5.40" fill="#000000" />
+  <circle cx="462" cy="390" r="5.40" fill="#000000" />
+  <circle cx="474" cy="390" r="5.40" fill="#000000" />
+  <circle cx="498" cy="390" r="5.40" fill="#000000" />
+  <circle cx="534" cy="390" r="5.40" fill="#000000" />
+  <rect x="48" y="396" width="12" height="12" fill="#000000" />
+  <circle cx="90" cy="402" r="5.40" fill="#000000" />
+  <circle cx="102" cy="402" r="5.40" fill="#000000" />
+  <circle cx="138" cy="402" r="5.40" fill="#000000" />
+  <circle cx="150" cy="402" r="5.40" fill="#000000" />
+  <circle cx="162" cy="402" r="5.40" fill="#000000" />
+  <circle cx="174" cy="402" r="5.40" fill="#000000" />
+  <circle cx="210" cy="402" r="5.40" fill="#C4D9DD" />
+  <circle cx="222" cy="402" r="5.40" fill="#0F7285" />
+  <circle cx="246" cy="402" r="5.40" fill="#000000" />
+  <circle cx="258" cy="402" r="5.40" fill="#000000" />
+  <circle cx="270" cy="402" r="5.40" fill="#000000" />
+  <circle cx="282" cy="402" r="5.40" fill="#000000" />
+  <circle cx="294" cy="402" r="5.40" fill="#000000" />
+  <circle cx="306" cy="402" r="5.40" fill="#D09021" />
+  <circle cx="318" cy="402" r="5.40" fill="#D09021" />
+  <circle cx="342" cy="402" r="5.40" fill="#000000" />
+  <circle cx="354" cy="402" r="5.40" fill="#000000" />
+  <circle cx="378" cy="402" r="5.40" fill="#D09021" />
+  <circle cx="390" cy="402" r="5.40" fill="#D09021" />
+  <circle cx="402" cy="402" r="5.40" fill="#D09021" />
+  <circle cx="450" cy="402" r="5.40" fill="#000000" />
+  <circle cx="474" cy="402" r="5.40" fill="#000000" />
+  <circle cx="486" cy="402" r="5.40" fill="#000000" />
+  <circle cx="498" cy="402" r="5.40" fill="#000000" />
+  <circle cx="510" cy="402" r="5.40" fill="#000000" />
+  <rect x="48" y="408" width="12" height="12" fill="#000000" />
+  <circle cx="78" cy="414" r="5.40" fill="#000000" />
+  <rect x="120" y="408" width="12" height="12" fill="#000000" />
+  <circle cx="174" cy="414" r="5.40" fill="#000000" />
+  <circle cx="210" cy="414" r="5.40" fill="#0F7285" />
+  <circle cx="222" cy="414" r="5.40" fill="#C4D9DD" />
+  <circle cx="258" cy="414" r="5.40" fill="#000000" />
+  <circle cx="270" cy="414" r="5.40" fill="#000000" />
+  <circle cx="282" cy="414" r="5.40" fill="#FCF8F1" />
+  <circle cx="294" cy="414" r="5.40" fill="#FCF8F1" />
+  <circle cx="306" cy="414" r="5.40" fill="#D09021" />
+  <circle cx="342" cy="414" r="5.40" fill="#000000" />
+  <circle cx="354" cy="414" r="5.40" fill="#000000" />
+  <circle cx="378" cy="414" r="5.40" fill="#FCF8F1" />
+  <circle cx="390" cy="414" r="5.40" fill="#FCF8F1" />
+  <circle cx="402" cy="414" r="5.40" fill="#D09021" />
+  <circle cx="438" cy="414" r="5.40" fill="#000000" />
+  <circle cx="450" cy="414" r="5.40" fill="#000000" />
+  <circle cx="474" cy="414" r="5.40" fill="#000000" />
+  <circle cx="486" cy="414" r="5.40" fill="#000000" />
+  <circle cx="510" cy="414" r="5.40" fill="#000000" />
+  <circle cx="522" cy="414" r="5.40" fill="#000000" />
+  <rect x="48" y="420" width="12" height="12" fill="#000000" />
+  <circle cx="78" cy="426" r="5.40" fill="#000000" />
+  <circle cx="90" cy="426" r="5.40" fill="#000000" />
+  <circle cx="102" cy="426" r="5.40" fill="#000000" />
+  <circle cx="114" cy="426" r="5.40" fill="#000000" />
+  <circle cx="174" cy="426" r="5.40" fill="#000000" />
+  <circle cx="186" cy="426" r="5.40" fill="#000000" />
+  <circle cx="198" cy="426" r="5.40" fill="#000000" />
+  <circle cx="210" cy="426" r="5.40" fill="#0F7285" />
+  <circle cx="222" cy="426" r="5.40" fill="#C4D9DD" />
+  <circle cx="234" cy="426" r="5.40" fill="#000000" />
+  <circle cx="258" cy="426" r="5.40" fill="#D09021" />
+  <circle cx="270" cy="426" r="5.40" fill="#FCF8F1" />
+  <circle cx="282" cy="426" r="5.40" fill="#D09021" />
+  <circle cx="294" cy="426" r="5.40" fill="#FCF8F1" />
+  <circle cx="306" cy="426" r="5.40" fill="#FCF8F1" />
+  <circle cx="318" cy="426" r="5.40" fill="#FCF8F1" />
+  <circle cx="330" cy="426" r="5.40" fill="#FCF8F1" />
+  <circle cx="342" cy="426" r="5.40" fill="#D09021" />
+  <circle cx="354" cy="426" r="5.40" fill="#D09021" />
+  <circle cx="366" cy="426" r="5.40" fill="#D09021" />
+  <circle cx="378" cy="426" r="5.40" fill="#FCF8F1" />
+  <circle cx="390" cy="426" r="5.40" fill="#D09021" />
+  <circle cx="402" cy="426" r="5.40" fill="#D09021" />
+  <circle cx="414" cy="426" r="5.40" fill="#000000" />
+  <circle cx="450" cy="426" r="5.40" fill="#000000" />
+  <circle cx="474" cy="426" r="5.40" fill="#000000" />
+  <circle cx="486" cy="426" r="5.40" fill="#000000" />
+  <circle cx="498" cy="426" r="5.40" fill="#000000" />
+  <rect x="48" y="432" width="12" height="12" fill="#000000" />
+  <rect x="120" y="432" width="12" height="12" fill="#000000" />
+  <circle cx="138" cy="438" r="5.40" fill="#000000" />
+  <circle cx="162" cy="438" r="5.40" fill="#000000" />
+  <circle cx="186" cy="438" r="5.40" fill="#000000" />
+  <circle cx="198" cy="438" r="5.40" fill="#C4D9DD" />
+  <circle cx="210" cy="438" r="5.40" fill="#0F7285" />
+  <circle cx="222" cy="438" r="5.40" fill="#0F7285" />
+  <circle cx="246" cy="438" r="5.40" fill="#000000" />
+  <circle cx="258" cy="438" r="5.40" fill="#D09021" />
+  <circle cx="270" cy="438" r="5.40" fill="#FCF8F1" />
+  <circle cx="282" cy="438" r="5.40" fill="#FCF8F1" />
+  <circle cx="294" cy="438" r="5.40" fill="#FCF8F1" />
+  <circle cx="306" cy="438" r="5.40" fill="#D09021" />
+  <circle cx="318" cy="438" r="5.40" fill="#FCF8F1" />
+  <circle cx="330" cy="438" r="5.40" fill="#FCF8F1" />
+  <circle cx="342" cy="438" r="5.40" fill="#FCF8F1" />
+  <circle cx="354" cy="438" r="5.40" fill="#D09021" />
+  <circle cx="366" cy="438" r="5.40" fill="#FCF8F1" />
+  <circle cx="378" cy="438" r="5.40" fill="#FCF8F1" />
+  <circle cx="390" cy="438" r="5.40" fill="#D09021" />
+  <circle cx="402" cy="438" r="5.40" fill="#FCF8F1" />
+  <rect x="432" y="432" width="12" height="12" fill="#000000" />
+  <rect x="444" y="432" width="12" height="12" fill="#000000" />
+  <rect x="456" y="432" width="12" height="12" fill="#000000" />
+  <rect x="468" y="432" width="12" height="12" fill="#000000" />
+  <rect x="480" y="432" width="12" height="12" fill="#000000" />
+  <circle cx="510" cy="438" r="5.40" fill="#000000" />
+  <circle cx="522" cy="438" r="5.40" fill="#000000" />
+  <rect x="144" y="444" width="12" height="12" fill="#000000" />
+  <circle cx="174" cy="450" r="5.40" fill="#000000" />
+  <circle cx="198" cy="450" r="5.40" fill="#000000" />
+  <circle cx="210" cy="450" r="5.40" fill="#0F7285" />
+  <circle cx="246" cy="450" r="5.40" fill="#000000" />
+  <circle cx="282" cy="450" r="5.40" fill="#D09021" />
+  <circle cx="294" cy="450" r="5.40" fill="#D09021" />
+  <circle cx="306" cy="450" r="5.40" fill="#000000" />
+  <circle cx="318" cy="450" r="5.40" fill="#000000" />
+  <circle cx="330" cy="450" r="5.40" fill="#000000" />
+  <circle cx="354" cy="450" r="5.40" fill="#000000" />
+  <circle cx="378" cy="450" r="5.40" fill="#000000" />
+  <circle cx="390" cy="450" r="5.40" fill="#FCF8F1" />
+  <circle cx="402" cy="450" r="5.40" fill="#FCF8F1" />
+  <circle cx="414" cy="450" r="5.40" fill="#000000" />
+  <rect x="432" y="444" width="12" height="12" fill="#000000" />
+  <rect x="480" y="444" width="12" height="12" fill="#000000" />
+  <circle cx="498" cy="450" r="5.40" fill="#000000" />
+  <circle cx="510" cy="450" r="5.40" fill="#000000" />
+  <circle cx="522" cy="450" r="5.40" fill="#000000" />
+  <rect x="48" y="456" width="12" height="12" fill="#000000" />
+  <rect x="60" y="456" width="12" height="12" fill="#000000" />
+  <rect x="72" y="456" width="12" height="12" fill="#000000" />
+  <rect x="84" y="456" width="12" height="12" fill="#000000" />
+  <rect x="96" y="456" width="12" height="12" fill="#000000" />
+  <rect x="108" y="456" width="12" height="12" fill="#000000" />
+  <rect x="120" y="456" width="12" height="12" fill="#000000" />
+  <circle cx="174" cy="462" r="5.40" fill="#000000" />
+  <circle cx="198" cy="462" r="5.40" fill="#000000" />
+  <circle cx="210" cy="462" r="5.40" fill="#000000" />
+  <circle cx="246" cy="462" r="5.40" fill="#000000" />
+  <circle cx="258" cy="462" r="5.40" fill="#000000" />
+  <circle cx="282" cy="462" r="5.40" fill="#FCF8F1" />
+  <circle cx="294" cy="462" r="5.40" fill="#FCF8F1" />
+  <circle cx="306" cy="462" r="5.40" fill="#000000" />
+  <circle cx="318" cy="462" r="5.40" fill="#000000" />
+  <circle cx="330" cy="462" r="5.40" fill="#000000" />
+  <circle cx="342" cy="462" r="5.40" fill="#000000" />
+  <circle cx="354" cy="462" r="5.40" fill="#000000" />
+  <circle cx="378" cy="462" r="5.40" fill="#000000" />
+  <circle cx="390" cy="462" r="5.40" fill="#D09021" />
+  <circle cx="402" cy="462" r="5.40" fill="#FCF8F1" />
+  <circle cx="414" cy="462" r="5.40" fill="#000000" />
+  <rect x="432" y="456" width="12" height="12" fill="#000000" />
+  <rect x="456" y="456" width="12" height="12" fill="#000000" />
+  <rect x="480" y="456" width="12" height="12" fill="#000000" />
+  <circle cx="510" cy="462" r="5.40" fill="#000000" />
+  <rect x="48" y="468" width="12" height="12" fill="#000000" />
+  <rect x="120" y="468" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="474" r="5.40" fill="#000000" />
+  <circle cx="174" cy="474" r="5.40" fill="#000000" />
+  <circle cx="198" cy="474" r="5.40" fill="#000000" />
+  <circle cx="210" cy="474" r="5.40" fill="#000000" />
+  <circle cx="234" cy="474" r="5.40" fill="#000000" />
+  <circle cx="246" cy="474" r="5.40" fill="#000000" />
+  <circle cx="258" cy="474" r="5.40" fill="#000000" />
+  <circle cx="270" cy="474" r="5.40" fill="#D09021" />
+  <circle cx="282" cy="474" r="5.40" fill="#FCF8F1" />
+  <circle cx="342" cy="474" r="5.40" fill="#000000" />
+  <circle cx="366" cy="474" r="5.40" fill="#000000" />
+  <circle cx="378" cy="474" r="5.40" fill="#000000" />
+  <circle cx="390" cy="474" r="5.40" fill="#FCF8F1" />
+  <circle cx="402" cy="474" r="5.40" fill="#FCF8F1" />
+  <circle cx="414" cy="474" r="5.40" fill="#FCF8F1" />
+  <circle cx="426" cy="474" r="5.40" fill="#000000" />
+  <rect x="432" y="468" width="12" height="12" fill="#000000" />
+  <rect x="480" y="468" width="12" height="12" fill="#000000" />
+  <circle cx="498" cy="474" r="5.40" fill="#000000" />
+  <circle cx="510" cy="474" r="5.40" fill="#000000" />
+  <circle cx="522" cy="474" r="5.40" fill="#000000" />
+  <rect x="48" y="480" width="12" height="12" fill="#000000" />
+  <rect x="72" y="480" width="12" height="12" fill="#000000" />
+  <rect x="84" y="480" width="12" height="12" fill="#000000" />
+  <rect x="96" y="480" width="12" height="12" fill="#000000" />
+  <rect x="120" y="480" width="12" height="12" fill="#000000" />
+  <rect x="144" y="480" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="486" r="5.40" fill="#000000" />
+  <circle cx="174" cy="486" r="5.40" fill="#000000" />
+  <circle cx="198" cy="486" r="5.40" fill="#000000" />
+  <circle cx="222" cy="486" r="5.40" fill="#000000" />
+  <circle cx="258" cy="486" r="5.40" fill="#000000" />
+  <circle cx="270" cy="486" r="5.40" fill="#FCF8F1" />
+  <circle cx="282" cy="486" r="5.40" fill="#D09021" />
+  <circle cx="294" cy="486" r="5.40" fill="#000000" />
+  <circle cx="318" cy="486" r="5.40" fill="#000000" />
+  <circle cx="330" cy="486" r="5.40" fill="#000000" />
+  <circle cx="366" cy="486" r="5.40" fill="#000000" />
+  <circle cx="378" cy="486" r="5.40" fill="#000000" />
+  <circle cx="390" cy="486" r="5.40" fill="#FCF8F1" />
+  <circle cx="402" cy="486" r="5.40" fill="#FCF8F1" />
+  <circle cx="414" cy="486" r="5.40" fill="#D09021" />
+  <circle cx="426" cy="486" r="5.40" fill="#000000" />
+  <rect x="432" y="480" width="12" height="12" fill="#000000" />
+  <rect x="444" y="480" width="12" height="12" fill="#000000" />
+  <rect x="456" y="480" width="12" height="12" fill="#000000" />
+  <rect x="468" y="480" width="12" height="12" fill="#000000" />
+  <rect x="480" y="480" width="12" height="12" fill="#000000" />
+  <circle cx="522" cy="486" r="5.40" fill="#000000" />
+  <rect x="48" y="492" width="12" height="12" fill="#000000" />
+  <rect x="72" y="492" width="12" height="12" fill="#000000" />
+  <rect x="84" y="492" width="12" height="12" fill="#000000" />
+  <rect x="96" y="492" width="12" height="12" fill="#000000" />
+  <rect x="120" y="492" width="12" height="12" fill="#000000" />
+  <rect x="144" y="492" width="12" height="12" fill="#000000" />
+  <circle cx="210" cy="498" r="5.40" fill="#000000" />
+  <circle cx="222" cy="498" r="5.40" fill="#000000" />
+  <circle cx="234" cy="498" r="5.40" fill="#000000" />
+  <circle cx="258" cy="498" r="5.40" fill="#000000" />
+  <circle cx="270" cy="498" r="5.40" fill="#D09021" />
+  <circle cx="282" cy="498" r="5.40" fill="#D09021" />
+  <circle cx="294" cy="498" r="5.40" fill="#000000" />
+  <circle cx="330" cy="498" r="5.40" fill="#000000" />
+  <circle cx="342" cy="498" r="5.40" fill="#000000" />
+  <circle cx="354" cy="498" r="5.40" fill="#000000" />
+  <circle cx="378" cy="498" r="5.40" fill="#000000" />
+  <circle cx="390" cy="498" r="5.40" fill="#D09021" />
+  <circle cx="402" cy="498" r="5.40" fill="#D09021" />
+  <circle cx="414" cy="498" r="5.40" fill="#FCF8F1" />
+  <circle cx="438" cy="498" r="5.40" fill="#000000" />
+  <circle cx="474" cy="498" r="5.40" fill="#000000" />
+  <circle cx="486" cy="498" r="5.40" fill="#000000" />
+  <rect x="48" y="504" width="12" height="12" fill="#000000" />
+  <rect x="72" y="504" width="12" height="12" fill="#000000" />
+  <rect x="84" y="504" width="12" height="12" fill="#000000" />
+  <rect x="96" y="504" width="12" height="12" fill="#000000" />
+  <rect x="120" y="504" width="12" height="12" fill="#000000" />
+  <rect x="144" y="504" width="12" height="12" fill="#000000" />
+  <circle cx="234" cy="510" r="5.40" fill="#000000" />
+  <circle cx="246" cy="510" r="5.40" fill="#000000" />
+  <circle cx="270" cy="510" r="5.40" fill="#FCF8F1" />
+  <circle cx="282" cy="510" r="5.40" fill="#FCF8F1" />
+  <circle cx="294" cy="510" r="5.40" fill="#000000" />
+  <circle cx="318" cy="510" r="5.40" fill="#000000" />
+  <circle cx="354" cy="510" r="5.40" fill="#000000" />
+  <circle cx="366" cy="510" r="5.40" fill="#000000" />
+  <circle cx="402" cy="510" r="5.40" fill="#D09021" />
+  <circle cx="414" cy="510" r="5.40" fill="#FCF8F1" />
+  <circle cx="426" cy="510" r="5.40" fill="#D09021" />
+  <circle cx="438" cy="510" r="5.40" fill="#000000" />
+  <circle cx="474" cy="510" r="5.40" fill="#000000" />
+  <circle cx="486" cy="510" r="5.40" fill="#000000" />
+  <circle cx="498" cy="510" r="5.40" fill="#000000" />
+  <circle cx="522" cy="510" r="5.40" fill="#000000" />
+  <rect x="48" y="516" width="12" height="12" fill="#000000" />
+  <rect x="120" y="516" width="12" height="12" fill="#000000" />
+  <circle cx="174" cy="522" r="5.40" fill="#000000" />
+  <circle cx="210" cy="522" r="5.40" fill="#000000" />
+  <circle cx="222" cy="522" r="5.40" fill="#000000" />
+  <circle cx="234" cy="522" r="5.40" fill="#000000" />
+  <circle cx="246" cy="522" r="5.40" fill="#000000" />
+  <circle cx="258" cy="522" r="5.40" fill="#000000" />
+  <circle cx="270" cy="522" r="5.40" fill="#FCF8F1" />
+  <circle cx="282" cy="522" r="5.40" fill="#D09021" />
+  <circle cx="330" cy="522" r="5.40" fill="#000000" />
+  <circle cx="390" cy="522" r="5.40" fill="#000000" />
+  <circle cx="402" cy="522" r="5.40" fill="#FCF8F1" />
+  <circle cx="414" cy="522" r="5.40" fill="#FCF8F1" />
+  <circle cx="426" cy="522" r="5.40" fill="#FCF8F1" />
+  <circle cx="438" cy="522" r="5.40" fill="#000000" />
+  <circle cx="474" cy="522" r="5.40" fill="#000000" />
+  <circle cx="522" cy="522" r="5.40" fill="#000000" />
+  <rect x="48" y="528" width="12" height="12" fill="#000000" />
+  <rect x="60" y="528" width="12" height="12" fill="#000000" />
+  <rect x="72" y="528" width="12" height="12" fill="#000000" />
+  <rect x="84" y="528" width="12" height="12" fill="#000000" />
+  <rect x="96" y="528" width="12" height="12" fill="#000000" />
+  <rect x="108" y="528" width="12" height="12" fill="#000000" />
+  <rect x="120" y="528" width="12" height="12" fill="#000000" />
+  <circle cx="162" cy="534" r="5.40" fill="#000000" />
+  <circle cx="246" cy="534" r="5.40" fill="#000000" />
+  <circle cx="270" cy="534" r="5.40" fill="#FCF8F1" />
+  <circle cx="282" cy="534" r="5.40" fill="#000000" />
+  <circle cx="294" cy="534" r="5.40" fill="#000000" />
+  <circle cx="306" cy="534" r="5.40" fill="#000000" />
+  <circle cx="318" cy="534" r="5.40" fill="#000000" />
+  <circle cx="330" cy="534" r="5.40" fill="#000000" />
+  <circle cx="342" cy="534" r="5.40" fill="#000000" />
+  <circle cx="366" cy="534" r="5.40" fill="#000000" />
+  <circle cx="402" cy="534" r="5.40" fill="#D09021" />
+  <circle cx="414" cy="534" r="5.40" fill="#FCF8F1" />
+  <circle cx="426" cy="534" r="5.40" fill="#000000" />
+  <circle cx="450" cy="534" r="5.40" fill="#000000" />
+  <circle cx="486" cy="534" r="5.40" fill="#000000" />
+  <circle cx="498" cy="534" r="5.40" fill="#000000" />
+</svg>

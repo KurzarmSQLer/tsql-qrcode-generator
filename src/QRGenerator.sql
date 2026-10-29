@@ -764,6 +764,8 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pBuildDataBlocks]
 (
@@ -866,6 +868,8 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetAlignmentPattern]
 (
@@ -910,6 +914,8 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetAlignmentPatterns]
 (
@@ -963,6 +969,8 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pBuildGaloisTables]
 AS
@@ -1030,6 +1038,8 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ###                                                                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pApplyLogoColors]
 (
@@ -1070,6 +1080,8 @@ GO
 -- ### Masking is an XOR operation --> If the mask condition is false:        ###
 -- ### the module remains unchanged;                                          ###
 -- ### If the mask condition is true: 0 -> 1, 1 -> 0                          ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pApplyMask]
     @MaskPattern TINYINT
@@ -1077,9 +1089,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
+    DECLARE @ErrorMessage NVARCHAR(MAX)
+
     IF @MaskPattern IS NULL
     BEGIN
-        DECLARE @ErrorMessage NVARCHAR(MAX)
         SET @ErrorMessage =
               N'DE: Das Mask Pattern darf nicht NULL sein.'
             + CHAR(13) + CHAR(10)
@@ -1089,7 +1102,6 @@ BEGIN
 
     IF @MaskPattern NOT BETWEEN 0 AND 7
     BEGIN
-        DECLARE @ErrorMessage NVARCHAR(MAX)
         SET @ErrorMessage =
               N'DE: Das Mask Pattern muss zwischen 0 und 7 liegen.'
             + CHAR(13) + CHAR(10)
@@ -1099,7 +1111,7 @@ BEGIN
 
     -- Ensure that the data has already been entered
     ------------------------------------------------------------------------
-    DECLARE @TotalDataBits INT;
+    DECLARE @TotalDataBits      INTEGER;
 
     SELECT
         @TotalDataBits = COUNT(*)
@@ -1108,7 +1120,6 @@ BEGIN
 
     IF @TotalDataBits = 0
     BEGIN
-        DECLARE @ErrorMessage NVARCHAR(MAX)
         SET @ErrorMessage =
               N'DE: Keine Datenmodule vorhanden.'
             + CHAR(13) + CHAR(10)
@@ -1163,6 +1174,8 @@ GO
 -- ### Masking is an XOR operation --> If the mask condition is false:        ###
 -- ### the module remains unchanged;                                          ###
 -- ### If the mask condition is true: 0 -> 1, 1 -> 0                          ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCalculateMaskPenalty]
     @OutPenaltyRule1 INT OUTPUT,
@@ -1295,7 +1308,6 @@ BEGIN
 
             IF @CurrentColor IS NULL
             BEGIN
-                DECLARE @ErrorMessage NVARCHAR(MAX)
                 SET @ErrorMessage =
                       N'DE: Die Matrix enthaelt noch Module ohne Farbwert.'
                     + CHAR(13) + CHAR(10)
@@ -1541,6 +1553,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ### ---------------------------------------------------------------------- ###
@@ -1579,6 +1592,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                public                                       ###
 -- ### Input parameters:                                                      ###
 -- ###   @Text:                                                               ###
 -- ###   @LogoName:                                                           ###
@@ -1613,6 +1627,20 @@ BEGIN
 
     DECLARE @DataBitStream      VARCHAR(MAX)
     DECLARE @FinalBitStream     VARCHAR(MAX);
+
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM QR.GaloisLog
+    )
+    OR NOT EXISTS
+    (
+        SELECT 1
+        FROM QR.GaloisExp
+    )
+    BEGIN
+        EXEC QR.pBuildGaloisTables;
+    END;
 
     ------------------------------------------------
     -- QR erzeugen
@@ -1665,35 +1693,47 @@ BEGIN
     ------------------------------------------------
     -- Logo
     ------------------------------------------------
+    IF NULLIF(@LogoName, '') IS NOT NULL
+    BEGIN
 
-    -- '8 LargestLogoArea';
-    EXEC [QR].[pDetermineLargestLogoArea];
+        -- '8 LargestLogoArea';
+        EXEC [QR].[pDetermineLargestLogoArea];
 
-    DECLARE
-          @StartX       INTEGER
-        , @StartY       INTEGER
-        , @Width        INTEGER
-        , @Height       INTEGER;
+        DECLARE
+              @StartX       INTEGER
+            , @StartY       INTEGER
+            , @Width        INTEGER
+            , @Height       INTEGER;
 
-    SELECT
-          @StartX = [StartX]
-        , @StartY = [StartY]
-        , @Width  = [Width]
-        , @Height = [Height]
-    FROM [QR].[LogoArea]
-    WHERE [AreaName] = 'LargestFreeRectangle';
+        SELECT
+              @StartX = [StartX]
+            , @StartY = [StartY]
+            , @Width  = [Width]
+            , @Height = [Height]
+        FROM [QR].[LogoArea]
+        WHERE [AreaName] = 'LargestFreeRectangle';
 
-    -- '9 ProjectLogo';
-    EXEC [QR].[pProjectLogoPattern]
-          @LogoName
-        , @StartX
-        , @StartY
-        , @Width
-        , @Height;
+        IF @Width IS NULL
+           OR @Height IS NULL
+        BEGIN
+            THROW 50000,
+                  'DE: Es konnte kein Logo-Bereich ermittelt werden.
+        EN: No logo area could be determined.',
+                  1;
+        END;
 
-    -- '10 ApplyColors';
-    EXEC [QR].[pApplyLogoColors]
-         @LogoName;
+        -- '9 ProjectLogo';
+        EXEC [QR].[pProjectLogoPattern]
+              @LogoName
+            , @StartX
+            , @StartY
+            , @Width
+            , @Height;
+
+        -- '10 ApplyColors';
+        EXEC [QR].[pApplyLogoColors]
+             @LogoName;
+    END
 
     ------------------------------------------------
     -- SVG
@@ -1755,7 +1795,9 @@ GO
 -- ### Purpose:                                                               ###
 -- ###     Encodes the input text into QR byte mode and generates the padded  ###
 -- ###     QR data bit stream.                                                ###
--- ### Parameters:                                                            ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
+-- ### Input Parameters:                                                      ###
 -- ###     @Text                  Input text                                  ###
 -- ###     @VersionNumber         QR version                                  ###
 -- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
@@ -1880,7 +1922,7 @@ BEGIN
         SET @ErrorMessage60002 =
               N'DE: Unerwartete Bitlänge im DataBitStream.'
             + CHAR(13) + CHAR(10)
-            + N'EN: Unexpected bit length in the DataBitStream.'
+            + N'EN: Unexpected bit length in the DataBitStream.';
         THROW 60001, @ErrorMessage60001, 1;
     END
 END;
@@ -1890,7 +1932,9 @@ GO
 -- ### Procedure: [QR].[pCreateDataCodewords]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ### Parameters:                                                            ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
+-- ### Input Parameters:                                                      ###
 -- ###     @DataBitStream         Generated bit stream                        ###
 -- ###     @VersionNumber         QR version                                  ###
 -- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
@@ -1950,7 +1994,8 @@ GO
 -- ### Procedure: [QR].[pInterleaveCodewords]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ### Parameters:                                                            ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pInterleaveCodewords]
 AS
@@ -2025,7 +2070,8 @@ GO
 -- ### Procedure: [QR].[pInterleaveCodewords]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ### Parameters:                                                            ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateEccForBlock]
 (
@@ -2056,6 +2102,7 @@ BEGIN
           [Position]            INTEGER                 PRIMARY KEY
         , [Coefficient]         INTEGER     NOT NULL
     );
+
 
     INSERT INTO @Generator
     (
@@ -2139,6 +2186,16 @@ BEGIN
         FROM @Remainder
         WHERE [Position] = 0;
 
+
+        IF @DataValue IS NULL
+BEGIN
+    THROW 79993,
+          'DE: DataValue ist NULL.
+EN: DataValue is NULL.',
+          1;
+END;
+
+
         SET @Factor = @DataValue ^ @FirstRemainder;
 
         INSERT INTO @Shift
@@ -2175,6 +2232,39 @@ BEGIN
             FROM @Generator
             WHERE [Position] = @GeneratorPosition;
 
+
+            IF @Factor IS NULL
+            BEGIN
+                THROW 79991,
+                      'DE: Factor ist NULL.
+            EN: Factor is NULL.',
+                      1;
+            END;
+
+            IF @GeneratorCoefficient IS NULL
+            BEGIN
+                THROW 79992,
+                      'DE: GeneratorCoefficient ist NULL.
+            EN: GeneratorCoefficient is NULL.',
+                      1;
+            END;
+
+            IF @Factor IS NULL
+            BEGIN
+                THROW 79996,
+                      'DE: Factor ist NULL.
+            EN: Factor is NULL.',
+                      1;
+            END;
+
+            IF @GeneratorCoefficient IS NULL
+            BEGIN
+                THROW 79997,
+                      'DE: GeneratorCoefficient ist NULL.
+            EN: GeneratorCoefficient is NULL.',
+                      1;
+            END;
+
             SET @Product =
                 [QR].[fnGaloisMultiply]
                 (
@@ -2189,6 +2279,24 @@ BEGIN
                 [Position] = @GeneratorPosition - 1;
 
             DECLARE @NewValue INT;
+
+
+            IF @OldValue IS NULL
+BEGIN
+    THROW 79994,
+          'DE: OldValue ist NULL.
+EN: OldValue is NULL.',
+          1;
+END;
+
+IF @Product IS NULL
+BEGIN
+    THROW 79995,
+          'DE: Product ist NULL.
+EN: Product is NULL.',
+          1;
+END;
+
 
             SET @NewValue = @OldValue ^ @Product;
 
@@ -2210,11 +2318,10 @@ BEGIN
         FROM @Remainder
     ) <> @EccCodewords
     BEGIN
-        DECLARE @ErrorMessage NVARCHAR(MAX)
         SET @ErrorMessage =
               N'DE: Falsche Anzahl ECC-Codewords erzeugt.'
             + CHAR(13) + CHAR(10)
-            + N'EN: An incorrect number of ECC codewords was generated.'
+            + N'EN: An incorrect number of ECC codewords was generated.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -2237,7 +2344,9 @@ GO
 -- ### Procedure: [QR].[pCreateEccBlocks]                                     ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ### Parameters:                                                            ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
+-- ### Input Parameters:                                                      ###
 -- ###     @VersionNumber         QR version                                  ###
 -- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
 -- ##############################################################################
@@ -2276,6 +2385,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ###   @ErrorCorrectionLevel:  'L', 'M', 'Q' or 'H'                         ###
@@ -2350,7 +2460,6 @@ BEGIN
 
     IF LEN(@FinalBitStream) <> @ExpectedBits
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'FinalBitStream besitzt '
             + CAST(LEN(@FinalBitStream) AS NVARCHAR(10))
@@ -2361,7 +2470,7 @@ BEGIN
             + N'EN: FinalBitStream has '
             + CAST(LEN(@FinalBitStream) AS NVARCHAR(10))
             + N'bits instead of '
-            + CAST(@ExpectedBits AS NVARCHAR(10))
+            + CAST(@ExpectedBits AS NVARCHAR(10));
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
@@ -2372,6 +2481,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                public                                       ###
 -- ### Input Parameters:                                                      ###
 -- ###   @Text:                                                               ###
 -- ###   @VersionNumber:                                                      ###
@@ -2437,6 +2547,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @LogoName:                                                           ###
 -- ### Output Parameters:                                                     ###
@@ -2460,6 +2571,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ### Output Parameters:                                                     ###
 -- ##############################################################################
@@ -2573,6 +2685,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @ModuleSize:                                                         ###
 -- ###   @QuietZone:                                                          ###
@@ -2610,11 +2723,10 @@ BEGIN
 
     IF @QuietZone < 0
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'QuietZone darf nicht negativ sein.'
             + CHAR(13) + CHAR(10)
-            + N'EN: QuietZone must not be negative.'
+            + N'EN: QuietZone must not be negative.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -2630,11 +2742,10 @@ BEGIN
 
     IF @QrSize IS NULL
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Die QR-Matrix ist leer.'
             + CHAR(13) + CHAR(10)
-            + N'EN: The QR matrix is empty.'
+            + N'EN: The QR matrix is empty.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -2644,11 +2755,10 @@ BEGIN
         FROM [QR].[Module]
     ) <> (@QrSize * @QrSize)
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Die QR-Matrix ist unvollständig.'
             + CHAR(13) + CHAR(10)
-            + N'EN: The QR matrix is incomplete.'
+            + N'EN: The QR matrix is incomplete.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -2659,11 +2769,10 @@ BEGIN
         WHERE [IsBlack] IS NULL
     )
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Die QR-Matrix enthält noch undefinierte Module.'
             + CHAR(13) + CHAR(10)
-            + N'EN: The QR matrix still contains undefined modules.'
+            + N'EN: The QR matrix still contains undefined modules.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -2778,6 +2887,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ### Output Parameters:                                                     ###
@@ -2843,6 +2953,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @Bits:                                                               ###
 -- ###   @VersionNumber:                                                      ###
@@ -2867,13 +2978,13 @@ BEGIN
     DECLARE @Direction          INTEGER = -1;
     DECLARE @CurrentX           INTEGER;
     DECLARE @CurrentBit         BIT;
+    DECLARE @ErrorMessage       NVARCHAR(300);
 
     -------------------------------------------------------------------------
     -- Parameter prüfen
     -------------------------------------------------------------------------
     IF @Bits IS NULL OR LEN(@Bits) = 0
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Der Bitstream darf nicht NULL sein.'
             + CHAR(13) + CHAR(10)
@@ -2883,7 +2994,6 @@ BEGIN
 
     IF @Bits LIKE '%[^01]%'
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Der Bitstream darf nur 0 und 1 enthalten.'
             + CHAR(13) + CHAR(10)
@@ -2900,11 +3010,10 @@ BEGIN
 
     IF @MatrixSize IS NULL
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Die Matrix wurde noch nicht initialisiert.'
             + CHAR(13) + CHAR(10)
-            + N'EN: The matrix has not yet been initialized.'
+            + N'EN: The matrix has not yet been initialized.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -2923,11 +3032,10 @@ BEGIN
 
     IF @FreeModuleCount < @ExpectedBits
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Zu wenig freie Datenmodule für den Bitstream vorhanden.'
             + CHAR(13) + CHAR(10)
-            + N'EN: There are not enough free data modules available for the bitstream.'
+            + N'EN: There are not enough free data modules available for the bitstream.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3077,11 +3185,10 @@ BEGIN
     )
     <> @ExpectedRemainderBits
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Falsche Anzahl Remainder Bits.'
             + CHAR(13) + CHAR(10)
-            + N'EN: Incorrect number of remainder bits.'
+            + N'EN: Incorrect number of remainder bits.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3091,11 +3198,10 @@ BEGIN
 
     IF @BitPosition <= @ExpectedBits
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Es konnten nicht alle Bits platziert werden.'
             + CHAR(13) + CHAR(10)
-            + N'EN: Not all bits could be placed.'
+            + N'EN: Not all bits could be placed.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
@@ -3106,6 +3212,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @LogoName:                                                           ###
 -- ###   @StartX:                                                             ###
@@ -3152,22 +3259,20 @@ BEGIN
 
     IF @LogoWidth IS NULL OR @LogoHeight IS NULL
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Logo besitzt keine gültigen Pixeldaten.'
             + CHAR(13) + CHAR(10)
-            + N'The logo does not contain valid pixel data.'
+            + N'The logo does not contain valid pixel data.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
     IF @LogoWidth <= 0
        OR @LogoHeight <= 0
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Logo besitzt keine gültige Größe.'
             + CHAR(13) + CHAR(10)
-            + N'The logo does not have a valid size.'
+            + N'The logo does not have a valid size.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3244,6 +3349,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ### Output Parameters:                                                     ###
@@ -3310,6 +3416,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @ErrorCorrectionLevel:                                               ###
 -- ###   @VersionNumber:                                                      ###
@@ -3371,11 +3478,10 @@ BEGIN
 
     IF @FormatModuleCount <> 30
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Es muessen exakt 30 reservierte Formatmodule vorhanden sein.'
             + CHAR(13) + CHAR(10)
-            + N'There must be exactly 30 reserved format modules.'
+            + N'There must be exactly 30 reserved format modules.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3410,11 +3516,10 @@ BEGIN
 
     IF (SELECT COUNT(*) FROM @OriginalData) <> @DataModuleCount
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Der unmaskierte Datenzustand konnte nicht vollständig gesichert werden.'
             + CHAR(13) + CHAR(10)
-            + N'The unmasked data state could not be fully backed up.'
+            + N'The unmasked data state could not be fully backed up.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3581,11 +3686,10 @@ BEGIN
         WHERE [IsBlack] IS NULL
     )
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Nach der Maskenauswahl enthaelt die Matrix noch undefinierte Module.'
             + CHAR(13) + CHAR(10)
-            + N'After selecting the masks, the matrix still contains undefined modules.'
+            + N'After selecting the masks, the matrix still contains undefined modules.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
@@ -3596,6 +3700,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ### Output Parameters:                                                     ###
@@ -3637,6 +3742,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @StartX:                                                             ###
 -- ###   @StartY:                                                             ###
@@ -3681,6 +3787,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @ErrorCorrectionLevel:                                               ###
 -- ###   @MaskPattern:                                                        ###
@@ -3697,6 +3804,7 @@ BEGIN
 
     DECLARE @FormatBits     CHAR(15);
     DECLARE @MatrixSize     INTEGER;
+    DECLARE @ErrorMessage   NVARCHAR(300);
     -- ------------------------------------------------------------------------
     -- Set Format Information for QR Version 1-M
     -- The 15 format bits contain:
@@ -3707,7 +3815,6 @@ BEGIN
     -- ------------------------------------------------------------------------
     IF @MaskPattern IS NULL
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Das Mask Pattern darf nicht NULL sein.'
             + CHAR(13) + CHAR(10)
@@ -3717,11 +3824,10 @@ BEGIN
 
     IF @MaskPattern NOT BETWEEN 0 AND 7
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Das Mask Pattern muss zwischen 0 und 7 liegen.'
             + CHAR(13) + CHAR(10)
-            + N'The mask pattern must be between 0 and 7.'
+            + N'The mask pattern must be between 0 and 7.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3729,11 +3835,10 @@ BEGIN
 
     IF @MatrixSize <= 0
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Ungültige QR-Version.'
             + CHAR(13) + CHAR(10)
-            + N'Invalid QR code version.'
+            + N'Invalid QR code version.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3747,11 +3852,10 @@ BEGIN
     IF @FormatBits IS NULL
         OR LEN(@FormatBits) <> 15
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Die Format Information konnte nicht erzeugt werden.'
             + CHAR(13) + CHAR(10)
-            + N'The format information could not be generated.'
+            + N'The format information could not be generated.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3828,11 +3932,10 @@ BEGIN
 
     IF @ReservedFormatModuleCount <> 30
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Die erwarteten 30 reservierten Formatmodule wurden nicht gefunden.'
             + CHAR(13) + CHAR(10)
-            + N'The expected 30 reserved format modules were not found.'
+            + N'The expected 30 reserved format modules were not found.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 
@@ -3870,11 +3973,10 @@ BEGIN
             AND [IsBlack]       IS NULL
     )
     BEGIN
-        DECLARE @ErrorMessage       NVARCHAR(300);
         SET @ErrorMessage =
               N'Nicht alle Formatmodule wurden gesetzt.'
             + CHAR(13) + CHAR(10)
-            + N'Not all format modules have been set.'
+            + N'Not all format modules have been set.';
         RAISERROR (@ErrorMessage, 16, 1)
     END;
 END;
@@ -3885,6 +3987,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @StartX:                                                             ###
 -- ###   @StartY:                                                             ###
@@ -3920,6 +4023,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ### Output Parameters:                                                     ###
@@ -3986,6 +4090,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @A:                                                                  ###
 -- ###   @B:                                                                  ###
@@ -4030,6 +4135,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @Bits:                                                               ###
 -- ##############################################################################
@@ -4060,6 +4166,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @Value:                                                              ###
 -- ##############################################################################
@@ -4088,6 +4195,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @ErrorCorrectionLevel:                                               ###
 -- ###   @MaskPattern:                                                        ###
@@ -4214,6 +4322,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @DataBits:                                                           ###
 -- ###   @DataCodewords:                                                      ###
@@ -4282,6 +4391,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ### Returns:                                                               ###
@@ -4310,6 +4420,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ###   @ErrorCorrectionLevel:                                               ###
@@ -4340,6 +4451,7 @@ GO
 -- ##############################################################################
 -- ### Purpose:                                                               ###
 -- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
 -- ###   @VersionNumber:                                                      ###
 -- ###   @ErrorCorrectionLevel:                                               ###
@@ -4384,4 +4496,17 @@ FROM (
 -- Liste der letzten generierten QR-Codes
 SELECT TOP(20)
 FROM [QR].[vGeneratedSvgHistory]
+
+
+DECLARE @Svg VARCHAR(MAX);
+
+EXEC QR.pCreateColoredQrCode
+      @Text                 = 'Hello World'
+    , @LogoName             = 'TA'
+    , @VersionNumber        = 1
+    , @ErrorCorrectionLevel = 'M'
+    , @Svg                  = @Svg OUTPUT;
+
+    SELECT @Svg
+
 */

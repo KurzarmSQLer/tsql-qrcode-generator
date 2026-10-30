@@ -786,11 +786,41 @@ FROM [V]
 OPTION(MAXRECURSION 40);
 GO
 
+-- ##############################################################################
+-- ### Table: [QR].[VersionInformation]                                       ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Stores the BCH-protected QR version information bit strings for all    ###
+-- ### supported QR versions that require explicit version information.       ###
+-- ###                                                                        ###
+-- ### The values are written into the dedicated version-information areas    ###
+-- ### of the QR matrix for versions 7 and above.                             ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### [x] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
+-- ##############################################################################
+CREATE TABLE [QR].[VersionInformation]
+(
+      [VersionNumber]      TINYINT        NOT NULL
+    , [VersionBits]        CHAR(18)       NOT NULL
 
+    CONSTRAINT [PK_QR_VersionInformation]
+        PRIMARY KEY ([VersionNumber])
+);
 
-
-
-
+INSERT INTO [QR].[VersionInformation]
+(
+      [VersionNumber]
+    , [VersionBits]
+)
+VALUES
+      (7 ,'000111110010010100')
+    , (8 ,'001000010110111100')
+    , (9 ,'001001101010011001')
+    , (10,'001010010011010011');
+GO
 
 
 
@@ -849,7 +879,168 @@ GO
 
 
 
+-- ##############################################################################
+-- ### Procedure: [QR].[pSetVersionInformation]                               ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Writes BCH-protected QR version information into the reserved          ###
+-- ### version-information areas of the QR matrix.                            ###
+-- ###                                                                        ###
+-- ### Version information is required only for QR versions 7 and higher.     ###
+-- ###                                                                        ###
+-- ### The same 18-bit version-information value is written twice             ###
+-- ### according to the QR specification:                                     ###
+-- ###                                                                        ###
+-- ###   - Top-right version area                                             ###
+-- ###   - Bottom-left version area                                           ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Dependencies:                                                          ###
+-- ###   [QR].[VersionInformation]                                            ###
+-- ###   [QR].[Module]                                                        ###
+-- ##############################################################################
+CREATE OR ALTER PROCEDURE [QR].[pSetVersionInformation]
+(
+    @VersionNumber TINYINT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
+    IF @VersionNumber < 7
+        RETURN;
+
+    DECLARE
+          @MatrixSize    INT
+        , @VersionBits   CHAR(18)
+        , @BitPosition   INT
+        , @Bit           BIT;
+
+    --------------------------------------------------------------------------
+    -- Matrix size
+    --------------------------------------------------------------------------
+    SELECT
+        @MatrixSize = MAX([X]) + 1
+    FROM [QR].[Module];
+
+    --------------------------------------------------------------------------
+    -- Version information bits
+    --------------------------------------------------------------------------
+    SELECT
+        @VersionBits = [VersionBits]
+    FROM [QR].[VersionInformation]
+    WHERE [VersionNumber] = @VersionNumber;
+
+    IF @VersionBits IS NULL
+    BEGIN
+        THROW 50000,
+              'DE: Keine Versionsinformation vorhanden.
+EN: No version information available.',
+              1;
+    END;
+
+    --------------------------------------------------------------------------
+    -- Top Right
+    --
+    -- 18 bits
+    -- 3 columns × 6 rows
+    --------------------------------------------------------------------------
+    SET @BitPosition = 1;
+
+    DECLARE
+          @X INT
+        , @Y INT;
+
+    SET @X = @MatrixSize - 11;
+
+    WHILE @X <= @MatrixSize - 9
+    BEGIN
+        SET @Y = 0;
+
+        WHILE @Y <= 5
+        BEGIN
+
+            SET @Bit =
+                CONVERT
+                (
+                    BIT,
+                    SUBSTRING
+                    (
+                        @VersionBits,
+                        @BitPosition,
+                        1
+                    )
+                );
+
+            UPDATE [QR].[Module]
+            SET
+                  [IsBlack] = @Bit
+                , [ModuleType] = 'Version'
+            WHERE
+                    [X] = @X
+                AND [Y] = @Y;
+
+            SET @BitPosition += 1;
+            SET @Y += 1;
+
+        END;
+
+        SET @X += 1;
+    END;
+
+    --------------------------------------------------------------------------
+    -- Bottom Left
+    --
+    -- Same 18 bits written a second time
+    -- 6 columns × 3 rows
+    --------------------------------------------------------------------------
+    SET @BitPosition = 1;
+
+    SET @Y = @MatrixSize - 11;
+
+    WHILE @Y <= @MatrixSize - 9
+    BEGIN
+        SET @X = 0;
+
+        WHILE @X <= 5
+        BEGIN
+
+            SET @Bit =
+                CONVERT
+                (
+                    BIT,
+                    SUBSTRING
+                    (
+                        @VersionBits,
+                        @BitPosition,
+                        1
+                    )
+                );
+
+            UPDATE [QR].[Module]
+            SET
+                  [IsBlack] = @Bit
+                , [ModuleType] = 'Version'
+            WHERE
+                    [X] = @X
+                AND [Y] = @Y;
+
+            SET @BitPosition += 1;
+            SET @X += 1;
+
+        END;
+
+        SET @Y += 1;
+    END;
+END;
+GO
 
 
 -- ##############################################################################
@@ -1700,9 +1891,14 @@ GO
 -- ### placement.                                                             ###
 -- ### The procedure places all fixed QR structures defined by the            ###
 -- ### specification.                                                         ###
--- ### Internally calls procedures responsible for finder patterns,           ###
--- ### separators, timing patterns, alignment patterns, format areas and      ###
--- ### the dark module.                                                       ###
+-- ### Internally calls procedures responsible for:                           ###
+-- ###   - Finder patterns                                                    ###
+-- ###   - Separators                                                         ###
+-- ###   - Timing patterns                                                    ###
+-- ###   - Alignment patterns                                                 ###
+-- ###   - Format information areas                                           ###
+-- ###   - Version information areas                                          ###
+-- ###   - Dark module                                                        ###
 -- ### ---------------------------------------------------------------------- ###
 -- ### API Level:                      Internal                               ###
 -- ### ---------------------------------------------------------------------- ###
@@ -1737,6 +1933,8 @@ BEGIN
     EXEC [QR].[pSetAlignmentPatterns] @VersionNumber = @VersionNumber;
     EXEC [QR].[pSetDarkModule]        @VersionNumber = @VersionNumber;
     EXEC [QR].[pReserveFormatModules] @VersionNumber = @VersionNumber;
+
+    EXEC [QR].[pReserveVersionModules]     @VersionNumber = @VersionNumber;
 END;
 GO
 
@@ -1822,15 +2020,15 @@ BEGIN
         , @VersionNumber            = @VersionNumber
 
     -- '4 ECC';
-    EXEC QR.pBuildDataBlocks
+    EXEC [QR].[pBuildDataBlocks]
           @VersionNumber            = @VersionNumber
         , @ErrorCorrectionLevel     = @ErrorCorrectionLevel 
 
-    EXEC QR.pCreateEccBlocks
+    EXEC [QR].[pCreateEccBlocks]
           @VersionNumber            = @VersionNumber
         , @ErrorCorrectionLevel     = @ErrorCorrectionLevel 
 
-    EXEC QR.pInterleaveCodewords;
+    EXEC [QR].[pInterleaveCodewords];
 
     -- '5 FinalBitStream';
     EXEC [QR].[pCreateFinalBitStream]
@@ -2724,6 +2922,9 @@ BEGIN
     EXEC QR.pCreateBaseMatrix
         @VersionNumber = @VersionNumber;
 
+    EXEC [QR].[pSetVersionInformation]
+        @VersionNumber = @VersionNumber;
+
     EXEC [QR].[pCreateDataBitStream]
         @Text                   = @Text,
         @VersionNumber          = @VersionNumber,
@@ -3259,7 +3460,7 @@ BEGIN
     DECLARE @MatrixSize         INTEGER;
     DECLARE @ExpectedBits       INTEGER;
     DECLARE @FreeModuleCount    INTEGER;
-    DECLARE @BitPosition        INTEGER = 1;
+    DECLARE @BitPosition        INTEGER =  1;
     DECLARE @RightX             INTEGER;
     DECLARE @LeftX              INTEGER;
     DECLARE @Y                  INTEGER;
@@ -4429,8 +4630,71 @@ GO
 
 
 
+-- ##############################################################################
+-- ### Procedure: [QR].[pReserveVersionModules]                               ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Reserves the matrix locations required for QR version information.     ###
+-- ###                                                                        ###
+-- ### Version information exists only for QR versions 7 and higher.          ###
+-- ###                                                                        ###
+-- ### Two dedicated version-information areas are reserved:                  ###
+-- ###                                                                        ###
+-- ###   - Top-right  (3 × 6 modules)                                         ###
+-- ###   - Bottom-left (6 × 3 modules)                                        ###
+-- ###                                                                        ###
+-- ### Reserved modules are protected from later payload placement.           ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
+-- ##############################################################################
+CREATE OR ALTER PROCEDURE [QR].[pReserveVersionModules]
+(
+    @VersionNumber TINYINT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
 
+    IF @VersionNumber < 7
+        RETURN;
 
+    DECLARE @MatrixSize INTEGER;
+
+    SELECT
+        @MatrixSize = MAX([X]) + 1
+    FROM [QR].[Module];
+
+    --------------------------------------------------------------------------
+    -- Top Right
+    --------------------------------------------------------------------------
+
+    UPDATE [QR].[Module]
+    SET
+          [IsBlack]    = 0
+        , [ModuleType] = 'Version'
+    WHERE
+            [X] BETWEEN @MatrixSize - 11 AND @MatrixSize - 9
+        AND [Y] BETWEEN 0 AND 5;
+
+    --------------------------------------------------------------------------
+    -- Bottom Left
+    --------------------------------------------------------------------------
+
+    UPDATE [QR].[Module]
+    SET
+          [IsBlack]    = 0
+        , [ModuleType] = 'Version'
+    WHERE
+            [X] BETWEEN 0 AND 5
+        AND [Y] BETWEEN @MatrixSize - 11 AND @MatrixSize - 9;
+END;
+GO
 
 
 -- ##############################################################################
@@ -4882,7 +5146,7 @@ FROM (
 
 
 -- Liste der letzten generierten QR-Codes
-SELECT TOP(20)
+SELECT TOP(20) *
 FROM [QR].[vGeneratedSvgHistory]
 
 

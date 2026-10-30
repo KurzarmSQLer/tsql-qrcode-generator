@@ -18,7 +18,6 @@
 USE [Kopfnuesse]
 GO
 
--- Schema anlegen, um diese Objekte sauber von anderen Aufgaben der Kopfnussreihe zu trennen
 IF SCHEMA_ID(N'QR') IS NULL
     EXEC(N'CREATE SCHEMA [QR]');
 GO
@@ -27,12 +26,15 @@ GO
 -- ### Table: [QR].[DataCodeword]                                             ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores QR data codewords generated from the encoded payload bit        ###
+-- ### stream before distribution into Reed-Solomon blocks.                   ###
 -- ###                                                                        ###
+-- ### Each record represents a single 8-bit data codeword.                   ###
 -- ### ---------------------------------------------------------------------- ###
 -- ### [x] standard           [ ] initial filling     [x] stable              ###
--- ### [ ] self-versioned     [ ] truncate            [ ] experimenta         ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
 -- ### [ ] system-versioned   [x] complete rebuild    [ ] deprecated          ###
--- ###                                                [ ] internal            ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[DataCodeword];
 GO
@@ -50,11 +52,13 @@ GO
 -- ### Table: [QR].[GeneratedSvg]                                             ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ###                                                                        ###
+-- ### Stores generated SVG documents together with metadata, hashes and      ###
+-- ### historical information useful for testing and analysis.                ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [ ] complete rebuild              ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [ ] internal            ###
 -- ##############################################################################
 IF OBJECT_ID('QR.GeneratedSvg') IS NULL
 BEGIN
@@ -81,11 +85,14 @@ GO
 -- ### Table: [QR].[InterleavedCodeword]                                      ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores data and ECC codewords after QR interleaving.                   ###
 -- ###                                                                        ###
+-- ### The resulting sequence is used to construct the final QR bit stream.   ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [x] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[InterleavedCodeword];
 GO
@@ -103,11 +110,15 @@ GO
 -- ### Table: [QR].[DataBlock]                                                ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores data codewords distributed into QR specification data blocks.   ###
 -- ###                                                                        ###
+-- ### The block structure depends on QR version and error correction level.  ###
+-- ### These blocks serve as input for Reed-Solomon ECC generation.           ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [x] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[DataBlock];
 GO
@@ -128,11 +139,16 @@ CREATE TABLE [QR].[DataBlock]
 -- ### Table: [QR].[EccBlock]                                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores Reed-Solomon error correction codewords generated for each      ###
+-- ### QR data block.                                                         ###
 -- ###                                                                        ###
+-- ### The contents of this table are later interleaved with data codewords   ###
+-- ### before placement into the QR matrix.                                   ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [x] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[EccBlock];
 GO
@@ -153,11 +169,13 @@ CREATE TABLE [QR].[EccBlock]
 -- ### Table: [QR].[Module]                                                   ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ###                                                                        ###
+-- ### Central QR matrix. Stores all modules and their rendering metadata.    ###
+-- ### The complete QR generation process operates on this table.             ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [x] complete rebuild    [ ] deprecated          ###
+-- ###                                                [ ] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[Module];
 GO
@@ -177,11 +195,17 @@ GO
 -- ### Table: [QR].[LogoArea]                                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores candidate logo placement areas detected inside the QR matrix.   ###
 -- ###                                                                        ###
+-- ### The currently preferred area is identified by the name                 ###
+-- ### 'LargestFreeRectangle'.                                                ###
+-- ###                                                                        ###
+-- ### The area information is used by logo projection and scaling.           ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [ ] complete rebuild              ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [x] complete rebuild    [ ] deprecated          ###
+-- ###                                                [ ] internal            ###
 -- ##############################################################################
 IF OBJECT_ID('QR.LogoArea') IS NULL
 BEGIN
@@ -205,11 +229,16 @@ GO
 -- ### Table: [QR].[GeneratorPolynomial]                                      ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores Reed-Solomon generator polynomials for the supported ECC        ###
+-- ### lengths.                                                               ###
 -- ###                                                                        ###
+-- ### These coefficients are used during ECC generation to calculate         ###
+-- ### QR error correction codewords.                                         ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [X] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [ ] complete rebuild              ###
+-- ### [ ] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 IF OBJECT_ID('QR.GeneratorPolynomial') IS NULL
 BEGIN
@@ -362,11 +391,16 @@ GO
 -- ### Table: [QR].[GaloisExp]                                                ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Lookup table containing exponent values for GF(256) arithmetic.        ###
 -- ###                                                                        ###
+-- ### The table is used together with [QR].[GaloisLog] to implement          ###
+-- ### efficient finite-field multiplication required by Reed-Solomon         ###
+-- ### error correction.                                                      ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [ ] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[GaloisExp];
 GO
@@ -384,11 +418,17 @@ GO
 -- ### Table: [QR].[GaloisLog]                                                ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Lookup table containing logarithmic values for GF(256) arithmetic.     ###
 -- ###                                                                        ###
+-- ### The table is used to replace expensive finite-field multiplication     ###
+-- ### operations by logarithmic addition.                                    ###
+-- ###                                                                        ###
+-- ### Used by Reed-Solomon error correction generation.                      ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [ ] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[GaloisLog];
 GO
@@ -406,11 +446,16 @@ GO
 -- ### Table: [QR].[AlignmentPatternPosition]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores the alignment pattern coordinates for all supported QR          ###
+-- ### versions.                                                              ###
 -- ###                                                                        ###
+-- ### The coordinates are used during matrix construction to place           ###
+-- ### alignment patterns according to the QR specification.                  ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [x] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [ ] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[AlignmentPatternPosition]
 GO
@@ -450,11 +495,16 @@ GO
 -- ### Table: [QR].[VersionRemainderBits]                                     ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores the number of remainder bits defined by the QR specification    ###
+-- ### for each supported version.                                            ###
 -- ###                                                                        ###
+-- ### Remainder bits occupy otherwise unused modules and are validated       ###
+-- ### during matrix population.                                              ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [x] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [ ] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[VersionRemainderBits]
 GO
@@ -474,6 +524,22 @@ VALUES  (1 ,0), (2 ,7), (3 ,7), (4 ,7), ( 5, 7)
        ,(6 ,7), (7 ,0), (8 ,0), (9 ,0), (10, 0);
 GO
 
+-- ##############################################################################
+-- ### Table: [QR].[LogoPattern]                                              ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Stores imported logo pixels including their original color             ###
+-- ### information. Only visible pixels are stored. Transparent               ###
+-- ### background pixels are ignored during import.                           ###
+-- ###                                                                        ###
+-- ### The table represents the source image for logo projection into         ###
+-- ### the QR matrix.                                                         ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [ ] internal            ###
+-- ##############################################################################
 IF OBJECT_ID('QR.LogoPattern') IS NULL
 BEGIN
     CREATE TABLE [QR].[LogoPattern]
@@ -498,11 +564,15 @@ GO
 -- ### Table: [QR].[LogoPlacement]                                            ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores the mapping between source logo pixels and their projected      ###
+-- ### destination coordinates inside the QR matrix.                          ###
 -- ###                                                                        ###
+-- ### The table represents the result of the logo projection process.        ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [x] complete rebuild    [ ] deprecated          ###
+-- ###                                                [ ] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[LogoPlacement];
 GO
@@ -530,11 +600,16 @@ GO
 -- ### Table: [QR].[ErrorCorrectionLevel]                                     ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores the supported QR error correction levels and their associated   ###
+-- ### codeword capacities.                                                   ###
 -- ###                                                                        ###
+-- ### The table serves as a central lookup and validation source for         ###
+-- ### QR error correction levels.                                            ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [ ] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [x] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [ ] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[ErrorCorrectionLevel];
 GO
@@ -558,11 +633,16 @@ GO
 -- ### Table: [QR].[VersionCapacity]                                          ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores QR payload capacities for all supported QR versions and         ###
+-- ### error correction levels.                                               ###
 -- ###                                                                        ###
+-- ### The table is used to validate input payloads and determine whether     ###
+-- ### a text can be encoded using the selected QR version and ECC level.     ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [x] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [ ] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[VersionCapacity];
 GO
@@ -607,11 +687,16 @@ GO
 -- ### Table: [QR].[VersionBlockStructure]                                    ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Defines the QR block layout for each version and error correction      ###
+-- ### level.                                                                 ###
 -- ###                                                                        ###
+-- ### The information stored here controls the distribution of data          ###
+-- ### codewords into Reed-Solomon blocks and the subsequent ECC generation.  ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [x] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [ ] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[VersionBlockStructure];
 GO
@@ -651,11 +736,16 @@ GO
 -- ### Table: [QR].[VersionDefinition]                                        ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Stores general QR version metadata.                                    ###
 -- ###                                                                        ###
+-- ### Each record describes the characteristics of a specific QR version,    ###
+-- ### including matrix dimensions and structural information required        ###
+-- ### throughout the QR generation process.                                  ###
 -- ### ---------------------------------------------------------------------- ###
--- ###    [x] standard                      [x] initial filling               ###
--- ###    [ ] self-versioned                [ ] truncate                      ###
--- ###    [ ] system-versioned              [x] complete rebuild              ###
+-- ### [ ] standard           [x] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [x] internal            ###
 -- ##############################################################################
 DROP TABLE IF EXISTS [QR].[VersionDefinition];
 GO
@@ -705,12 +795,15 @@ GO
 
 
 
-
 -- ##############################################################################
 -- ### View: [QR].[vGeneratedSvgHistory]                                      ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ###                                                                        ###
+-- ### Provides a convenient view of generated SVG documents together with    ###
+-- ### their associated metadata. The view is intended for reporting,         ###
+-- ### testing, debugging and history analysis.                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Derived from:             [QR].[GeneratedSvg]                          ###
 -- ##############################################################################
 CREATE OR ALTER VIEW [QR].[vGeneratedSvgHistory]
 AS
@@ -732,10 +825,10 @@ GO
 -- ### View: [QR].[vLogoCandidates]                                           ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ###                                                                        ###
+-- ### Identifies candidate regions that may be suitable for logo placement   ###
+-- ### inside the QR matrix. Used during automatic logo area detection.       ###
 -- ### ---------------------------------------------------------------------- ###
--- ### Derived from:                                                          ###
--- ###    [QR].[Module]                                                       ###
+-- ### Derived from:                [QR].[Module]                             ###
 -- ##############################################################################
 CREATE OR ALTER VIEW [QR].[vLogoCandidates]
 AS
@@ -763,9 +856,19 @@ GO
 -- ### Procedure: [QR].[pBuildDataBlocks]                                     ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Distributes generated data codewords into QR specification blocks      ###
+-- ### according to the selected version and ECC level.                       ###
 -- ###                                                                        ###
+-- ### The resulting block structure is stored in [QR].[DataBlock].           ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### @ErrorCorrectionLevel:        QR error correction level (L, M, Q or H) ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pBuildDataBlocks]
 (
@@ -861,15 +964,22 @@ BEGIN
 END;
 GO
 
-
-
 -- ##############################################################################
 -- ### Procedure: [QR].[pSetAlignmentPattern]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ###                                                                        ###
+-- ### Places a single alignment pattern at a specified matrix position.      ###
+-- ### Alignment patterns improve readability and distortion tolerance for    ###
+-- ### larger QR versions.                                                    ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @CenterX:                     Horizontal center position               ###
+-- ### @CenterY:                     Vertical center position                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetAlignmentPattern]
 (
@@ -913,9 +1023,16 @@ GO
 -- ### Procedure: [QR].[pSetAlignmentPatterns]                                ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ###                                                                        ###
+-- ### Places all alignment patterns required by the selected QR version.     ###
+-- ### Coordinates are obtained from [QR].[AlignmentPatternPosition].         ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetAlignmentPatterns]
 (
@@ -968,9 +1085,21 @@ GO
 -- ### Procedure: [QR].[pBuildGaloisTables]                                   ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Creates and populates the Galois lookup tables used for Reed-Solomon   ###
+-- ### error correction calculations.                                         ###
 -- ###                                                                        ###
+-- ### The procedure fills [QR].[GaloisLog] and [QR].[GaloisExp].             ###
+-- ###                                                                        ###
+-- ### This procedure only needs to be executed when the lookup tables are    ###
+-- ### missing or empty.                                                      ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:                     Internal                                ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### None                                                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pBuildGaloisTables]
 AS
@@ -1037,9 +1166,17 @@ GO
 -- ### Procedure: [QR].[pApplyLogoColors]                                     ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ###                                                                        ###
+-- ### Applies logo-specific color information to projected logo modules      ###
+-- ### inside the QR matrix. Colors are taken from [QR].[LogoPattern] and     ###
+-- ### transferred to matching modules in [QR].[Module].                      ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:               Internal                                      ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @LogoName:               Logo identifier stored in [QR].[LogoPattern]  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pApplyLogoColors]
 (
@@ -1071,17 +1208,18 @@ GO
 -- ##############################################################################
 -- ### Procedure: [QR].[pApplyMask]                                           ###
 -- ##############################################################################
--- ### Input parameters:  @MaskPattern = 0 to 7                               ###
--- ### ---------------------------------------------------------------------- ###
 -- ### Purpose:                                                               ###
--- ### Only modules with [ModuleType] = ‘Data’ are masked.                    ###
--- ### This leaves the following unchanged: Finder Pattern, Separators,       ###
--- ### Timing Pattern, Dark Module, Format Information                        ###
--- ### Masking is an XOR operation --> If the mask condition is false:        ###
--- ### the module remains unchanged;                                          ###
--- ### If the mask condition is true: 0 -> 1, 1 -> 0                          ###
+-- ### Applies one of the eight QR mask patterns to all data modules.         ###
+-- ### Structural QR modules remain unchanged.                                ###
+-- ### Masking is implemented as an XOR operation.                            ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:                  Internal                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @MaskPattern:               Mask pattern number (0-7)                  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pApplyMask]
     @MaskPattern TINYINT
@@ -1159,23 +1297,29 @@ GO
 -- ##############################################################################
 -- ### Procedure: [QR].[pCalculateMaskPenalty]                                ###
 -- ##############################################################################
--- ### Input parameters:   @ReturnResultSet:                                  ###
--- ### ---------------------------------------------------------------------- ###
--- ###  Output parameters: @OutPenaltyRule1:                                  ###
--- ###                     @OutPenaltyRule2:                                  ###
--- ###                     @OutPenaltyRule3:                                  ###
--- ###                     @OutPenaltyRule4:                                  ###
--- ###                     @OutTotalPenalty:                                  ###
--- ### ---------------------------------------------------------------------- ###
 -- ### Purpose:                                                               ###
--- ### Only modules with [ModuleType] = ‘Data’ are masked.                    ###
--- ### This leaves the following unchanged: Finder Pattern, Separators,       ###
--- ### Timing Pattern, Dark Module, Format Information                        ###
--- ### Masking is an XOR operation --> If the mask condition is false:        ###
--- ### the module remains unchanged;                                          ###
--- ### If the mask condition is true: 0 -> 1, 1 -> 0                          ###
+-- ### Calculates QR mask penalty scores according to the QR specification.   ###
+-- ###                                                                        ###
+-- ### All four QR penalty rules are evaluated and combined into a total      ###
+-- ### penalty score. Lower scores indicate higher visual quality and         ###
+-- ### improved scanability.                                                  ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:               Internal                                      ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @ReturnResultSet:        Controls whether the calculated penalty       ###
+-- ###                          values are additionally returned as a result  ###
+-- ###                          set.                                          ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### @OutPenaltyRule1:        Penalty score for rule 1 (runs of identical   ###
+-- ###                          modules)                                      ###
+-- ### @OutPenaltyRule2:        Penalty score for rule 2 (2x2 module blocks)  ###
+-- ### @OutPenaltyRule3:        Penalty score for rule 3 (finder-like         ###
+-- ###                          patterns)                                     ###
+-- ### @OutPenaltyRule4:        Penalty score for rule 4 (black/white module  ###
+-- ###                          ratio)                                        ###
+-- ### @OutTotalPenalty:        Sum of all penalty rules                      ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCalculateMaskPenalty]
     @OutPenaltyRule1 INT OUTPUT,
@@ -1552,12 +1696,21 @@ GO
 -- ### Procedure: [QR].[pCreateBaseMatrix]                                    ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Creates the complete QR matrix framework required before payload       ###
+-- ### placement.                                                             ###
+-- ### The procedure places all fixed QR structures defined by the            ###
+-- ### specification.                                                         ###
+-- ### Internally calls procedures responsible for finder patterns,           ###
+-- ### separators, timing patterns, alignment patterns, format areas and      ###
+-- ### the dark module.                                                       ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:                      Internal                               ###
+-- ### ---------------------------------------------------------------------- ###
 -- ### Input parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
+-- ### @VersionNumber:                 QR version number                      ###
 -- ### ---------------------------------------------------------------------- ###
--- ###  Output parameters:                                                    ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateBaseMatrix]
     @VersionNumber              TINYINT = 1
@@ -1591,22 +1744,27 @@ GO
 -- ### Procedure: [QR].[pCreateColoredQrCode]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Creates a complete QR code including logo projection, color mapping    ###
+-- ### and SVG rendering. This procedure represents the primary public API    ###
+-- ### of the project.                                                        ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                public                                       ###
+-- ### API Level:             Public                                          ###
+-- ### ---------------------------------------------------------------------- ###
 -- ### Input parameters:                                                      ###
--- ###   @Text:                                                               ###
--- ###   @LogoName:                                                           ###
--- ###   @VersionNumber:                                                      ###
--- ###   @ErrorCorrectionLevel:                                               ###
--- ###   @ModuleSize:                                                         ###
--- ###   @QuietZone:                                                          ###
--- ###   @ForegroundColor:                                                    ###
--- ###   @BackgroundColor:                                                    ###
--- ###   @RoundDataModulesOnly:                                               ###
--- ###   @VersionNumber:                                                      ###
+-- ### @Text:                 Text to be encoded into the QR code.            ###
+-- ### @LogoName:             Name of the logo stored in [QR].[LogoPattern].  ###
+-- ###                        NULL disables logo projection.                  ###
+-- ### @ErrorCorrectionLevel: QR error correction level (L, M, Q or H)        ###
+-- ### @ModuleSize:           Module size in SVG pixels.                      ###
+-- ### @QuietZone:            Number of quiet-zone modules surrounding        ###
+-- ###                        the QR code.                                    ###
+-- ### @ForegroundColor:      Default color of dark QR modules                ###
+-- ### @BackgroundColor:      Background color of the SVG document            ###
+-- ### @RoundDataModulesOnly: Enables rounded rendering of data modules       ###
+-- ### @VersionNumber:        QR version number                               ###
 -- ### ---------------------------------------------------------------------- ###
 -- ### Output parameters:                                                     ###
--- ###   @SVG:                                                                ###
+-- ### @Svg:                       Generated SVG document                     ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateColoredQrCode]
 (
@@ -1793,15 +1951,26 @@ GO
 -- ### Procedure: [QR].[pCreateDataBitStream]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
--- ###     Encodes the input text into QR byte mode and generates the padded  ###
--- ###     QR data bit stream.                                                ###
+-- ### Encodes the input payload using QR Byte Mode and generates the         ###
+-- ### complete QR data bit stream.                                           ###
+-- ###                                                                        ###
+-- ### The procedure performs:                                                ###
+-- ###   - Mode indicator creation                                            ###
+-- ###   - Character count indicator generation                               ###
+-- ###   - Payload encoding                                                   ###
+-- ###   - Terminator insertion                                               ###
+-- ###   - Bit padding                                                        ###
+-- ###   - Pad codeword generation                                            ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###     @Text                  Input text                                  ###
--- ###     @VersionNumber         QR version                                  ###
--- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
--- ###     @DataBitStream         Generated bit stream                        ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @Text:                        Text to be encoded                       ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### @ErrorCorrectionLevel:        QR error correction level (L, M, Q or H) ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### @DataBitStream:               Generated QR payload bit stream          ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateDataBitStream]
 (
@@ -1932,12 +2101,21 @@ GO
 -- ### Procedure: [QR].[pCreateDataCodewords]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Splits the QR data bit stream into 8-bit codewords and stores them     ###
+-- ### in [QR].[DataCodeword].                                                ###
+-- ###                                                                        ###
+-- ### The resulting data codewords form the basis for block distribution     ###
+-- ### and Reed-Solomon ECC generation.                                       ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###     @DataBitStream         Generated bit stream                        ###
--- ###     @VersionNumber         QR version                                  ###
--- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
+-- ### API Level:                       Internal                              ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @DataBitStream:               QR payload bit stream                    ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### @ErrorCorrectionLevel:        QR error correction level (L, M, Q or H) ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateDataCodewords]
 (
@@ -1994,8 +2172,17 @@ GO
 -- ### Procedure: [QR].[pInterleaveCodewords]                                 ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Interleaves data codewords and Reed-Solomon error correction           ###
+-- ### codewords according to the QR specification.                           ###
+-- ### The result is stored in [QR].[InterleavedCodeword].                    ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:                      Internal                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### None                                                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pInterleaveCodewords]
 AS
@@ -2067,11 +2254,25 @@ END;
 GO
 
 -- ##############################################################################
--- ### Procedure: [QR].[pInterleaveCodewords]                                 ###
+-- ### Procedure: [QR].[pCreateEccForBlock]                                   ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Generates Reed-Solomon error correction codewords for a single QR      ###
+-- ### data block.                                                            ###
+-- ###                                                                        ###
+-- ### The procedure performs polynomial division using the corresponding     ###
+-- ### generator polynomial and stores the resulting ECC codewords in         ###
+-- ### [QR].[EccBlock].                                                       ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
+-- ### API Level:                   Internal                                  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @BlockNumber:                Data block to process                     ###
+-- ### @VersionNumber:              QR version number                         ###
+-- ### @ErrorCorrectionLevel:       QR error correction level (L, M, Q or H)  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateEccForBlock]
 (
@@ -2344,11 +2545,19 @@ GO
 -- ### Procedure: [QR].[pCreateEccBlocks]                                     ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Creates Reed-Solomon error correction codewords for all data blocks    ###
+-- ### belonging to the selected QR version and ECC level.                    ###
+-- ###                                                                        ###
+-- ### Internally calls [QR].[pCreateEccForBlock] for each block.             ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###     @VersionNumber         QR version                                  ###
--- ###     @ErrorCorrectionLevel  'L', 'M', 'Q' or 'H'                        ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### @ErrorCorrectionLevel:        QR error correction level (L, M, Q or H) ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateEccBlocks]
 (
@@ -2384,13 +2593,20 @@ GO
 -- ### Procedure: [QR].[pCreateFinalBitStream]                                ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Converts the interleaved codeword sequence into the final QR bit       ###
+-- ### stream ready for matrix placement.                                     ###
+-- ### The procedure appends version-specific remainder bits as required      ###
+-- ### by the QR specification.                                               ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
--- ###   @ErrorCorrectionLevel:  'L', 'M', 'Q' or 'H'                         ###
--- ### Output Parameters:                                                     ###
--- ###   @FinalBitStream:                                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### @ErrorCorrectionLevel:        QR error correction level (L, M, Q or H) ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### @FinalBitStream:              Final QR bit stream ready for matrix     ###
+-- ###                               placement.                               ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateFinalBitStream]
 (
@@ -2480,14 +2696,17 @@ GO
 -- ### Procedure: [QR].[pCreateQrCode]                                        ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Creates a QR matrix according to the QR specification.                 ###
+-- ### No logo projection or SVG generation is performed.                     ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                public                                       ###
--- ### Input Parameters:                                                      ###
--- ###   @Text:                                                               ###
--- ###   @VersionNumber:                                                      ###
--- ###   @ErrorCorrectionLevel:  'L', 'M', 'Q' or 'H'                         ###
--- ### Output Parameters:                                                     ###
--- ###   @FinalBitStream:                                                     ###
+-- ### API Level:             Public                                          ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @Text:                 Text to be encoded                              ###
+-- ### @VersionNumber:        QR version number.                              ###
+-- ### @ErrorCorrectionLevel: QR error correction level (L, M, Q or H)        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:     None                                            ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pCreateQrCode]
 (
@@ -2546,11 +2765,21 @@ GO
 -- ### Procedure: [QR].[pDeleteLogoPattern]                                   ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Deletes all pixels belonging to the specified logo from                ###
+-- ### [QR].[LogoPattern].                                                    ###
+-- ###                                                                        ###
+-- ### This procedure is typically used before importing an updated           ###
+-- ### version of a logo or when removing obsolete logo definitions.          ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
+-- ### API Level:                                                             ###
+-- ###   Public                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
 -- ###   @LogoName:                                                           ###
--- ### Output Parameters:                                                     ###
+-- ###     Name of the logo to be deleted.                                    ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ###   None                                                                 ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pDeleteLogoPattern]
 (
@@ -2570,10 +2799,40 @@ GO
 -- ### Procedure: [QR].[pDetermineLargestLogoArea]                            ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Identifies the largest rectangular area inside the QR matrix that can  ###
+-- ### be used for logo placement without overwriting structural QR elements. ###
+-- ###                                                                        ###
+-- ### The procedure analyzes the current QR matrix and determines the        ###
+-- ### largest available free rectangle suitable for logo projection.         ###
+-- ###                                                                        ###
+-- ### The resulting area definition is stored in [QR].[LogoArea].            ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                                                             ###
+-- ###   Internal                                                             ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ###   None                                                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ###   None                                                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Generated Data:                                                        ###
+-- ###   [QR].[LogoArea]                                                      ###
+-- ###     AreaName                                                           ###
+-- ###     StartX                                                             ###
+-- ###     StartY                                                             ###
+-- ###     EndX                                                               ###
+-- ###     EndY                                                               ###
+-- ###     Width                                                              ###
+-- ###     Height                                                             ###
+-- ###     Area                                                               ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Notes:                                                                 ###
+-- ###   The preferred placement area is stored using the area name           ###
+-- ###   'LargestFreeRectangle'.                                              ###
+-- ###                                                                        ###
+-- ###   The resulting coordinates are later consumed by                      ###
+-- ###   [QR].[pProjectLogoPattern].                                          ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pDetermineLargestLogoArea]
 AS
@@ -2684,16 +2943,30 @@ GO
 -- ### Procedure: [QR].[pGenerateSvg]                                         ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Generates the final SVG representation of the QR matrix.               ###
+-- ###                                                                        ###
+-- ### Supports:                                                              ###
+-- ###   - Custom module sizes                                                ###
+-- ###   - Quiet zones                                                        ###
+-- ###   - Rounded data modules                                               ###
+-- ###   - Custom foreground colors                                           ###
+-- ###   - Custom background colors                                           ###
+-- ###   - Multi-color logo rendering                                         ###
+-- ###                                                                        ###
+-- ### The generated SVG is returned as a Unicode string.                     ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @ModuleSize:                                                         ###
--- ###   @QuietZone:                                                          ###
--- ###   @ForegroundColor:                                                    ###
--- ###   @BackgroundColor:                                                    ###
--- ###   @RoundDataModulesOnly:                                               ###
--- ### Output Parameters:                                                     ###
--- ###   @Svg:                                                                ###
+-- ### API Level:                   Internal                                  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @ModuleSize:                 Module size in SVG pixels                 ###
+-- ### @QuietZone:                  Width of the surrounding quiet zone       ###
+-- ###                              measured in modules.                      ###
+-- ### @ForegroundColor:            Default color of dark QR modules          ###
+-- ### @BackgroundColor:            SVG background color                      ###
+-- ### @RoundDataModulesOnly:       Enables rounded rendering of data modules ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### @Svg:                        Generated SVG document                    ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pGenerateSvg]
 (
@@ -2886,11 +3159,19 @@ GO
 -- ### Procedure: [QR].[pInitializeMatrix]                                    ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Creates an empty QR matrix for the selected version.                   ###
+-- ### The procedure initializes [QR].[Module] and creates one record for     ###
+-- ### every matrix coordinate.                                               ###
+-- ### All modules are initially marked as undefined and are populated by     ###
+-- ### subsequent matrix construction procedures.                             ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                     Internal                                ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @VersionNumber:                QR version number                       ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pInitializeMatrix]
 (
@@ -2952,12 +3233,19 @@ GO
 -- ### Procedure: [QR].[pPlaceDataBits]                                       ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Places the final QR payload bit stream into the matrix.                ###
+-- ### The procedure follows the standard QR zig-zag placement algorithm      ###
+-- ### and skips all modules reserved for structural information.             ###
+-- ### Remainder-bit validation is also performed.                            ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @Bits:                                                               ###
--- ###   @VersionNumber:                                                      ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @Bits:                        Final QR payload bit stream              ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pPlaceDataBits]
 (
@@ -3211,15 +3499,22 @@ GO
 -- ### Procedure: [QR].[pProjectLogoPattern]                                  ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Projects a logo stored in [QR].[LogoPattern] into the selected         ###
+-- ### logo area of the QR matrix. The logo is automatically scaled to fit    ###
+-- ### the target area while preserving the original aspect ratio. Source     ###
+-- ### pixels are written to [QR].[LogoPlacement].                            ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @LogoName:                                                           ###
--- ###   @StartX:                                                             ###
--- ###   @StartY:                                                             ###
--- ###   @Width:                                                              ###
--- ###   @Height:                                                             ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:               Internal                                      ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @LogoName:               Logo identifier stored in [QR].[LogoPattern]  ###
+-- ### @StartX:                 Left boundary of the target area              ###
+-- ### @StartY:                 Upper boundary of the target area             ###
+-- ### @Width:                  Width of the target area                      ###
+-- ### @Height:                 Height of the target area                     ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pProjectLogoPattern]
 (
@@ -3348,11 +3643,16 @@ GO
 -- ### Procedure: [QR].[pReserveFormatModules]                                ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Reserves matrix locations required for QR format information.          ###
+-- ### Reserved modules are protected from later payload placement.           ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### None                                                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pReserveFormatModules]
 (
@@ -3415,12 +3715,19 @@ GO
 -- ### Procedure: [QR].[pSelectBestMask]                                      ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Evaluates all eight QR mask patterns and selects the mask with the     ###
+-- ### lowest penalty score.                                                  ###
+-- ### After selection, the corresponding format information is written       ###
+-- ### to the QR matrix.                                                      ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @ErrorCorrectionLevel:                                               ###
--- ###   @VersionNumber:                                                      ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                  Internal                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @ErrorCorrectionLevel:      QR error correction level                  ###
+-- ### @VersionNumber:             QR version number                          ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSelectBestMask]
     @ErrorCorrectionLevel CHAR(1)       = 'M',
@@ -3699,11 +4006,17 @@ GO
 -- ### Procedure: [QR].[pSetDarkModule]                                       ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Places the mandatory dark module defined by the QR specification.      ###
+-- ### The dark module is located at a fixed position and is present in all   ###
+-- ### QR versions.                                                           ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetDarkModule]
 (
@@ -3741,12 +4054,18 @@ GO
 -- ### Procedure: [QR].[pSetFinderPattern]                                    ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Places a QR finder pattern at the specified matrix position.           ###
+-- ### Finder patterns allow scanners to detect orientation and position      ###
+-- ### of the QR code.                                                        ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @StartX:                                                             ###
--- ###   @StartY:                                                             ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                  Internal                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @StartX:                    Left coordinate of the finder pattern      ###
+-- ### @StartY:                    Upper coordinate of the finder pattern     ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetFinderPattern]
     @StartX     TINYINT,
@@ -3786,13 +4105,22 @@ GO
 -- ### Procedure: [QR].[pSetFormatInformation]                                ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Writes QR format information into reserved matrix locations.           ###
+-- ###                                                                        ###
+-- ### Format information contains:                                           ###
+-- ###   - Error correction level                                             ###
+-- ###   - Selected mask pattern                                              ###
+-- ###                                                                        ###
+-- ### The procedure is executed after mask selection.                        ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @ErrorCorrectionLevel:                                               ###
--- ###   @MaskPattern:                                                        ###
--- ###   @VersionNumber:                                                      ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @ErrorCorrectionLevel:        QR error correction level                ###
+-- ### @MaskPattern:                 Selected mask pattern (0-7)              ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetFormatInformation]
     @ErrorCorrectionLevel   CHAR(1),
@@ -3864,7 +4192,7 @@ BEGIN
     -- BitIndex:
     --      0 = least significant bit of the 15-bit format value
     --      14 = most significant bit
-    --  Since fnGetFormatBits_V1_M returns the string with the MSB first:
+    --  Since fnGetFormatBits_V1 returns the string with the MSB first:
     --      SUBSTRING(@FormatBits, 15 - BitIndex, 1)
     -- --------------------------------------------------------------------------
     DECLARE @FormatModules TABLE
@@ -3986,12 +4314,27 @@ GO
 -- ### Procedure: [QR].[pSetSeparator]                                        ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Places the separator modules surrounding a QR finder pattern.          ###
+-- ###                                                                        ###
+-- ### Separators form a one-module-wide white border around each finder      ###
+-- ### pattern and prevent adjacent QR structures from interfering with       ###
+-- ### reliable pattern detection during scanning.                            ###
+-- ###                                                                        ###
+-- ### Separator modules are defined by the QR specification and are          ###
+-- ### considered fixed structural elements of the QR matrix.                 ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @StartX:                                                             ###
--- ###   @StartY:                                                             ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:           Internal                                          ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:                                                      ###
+-- ### @StartX:             Left coordinate of the associated finder pattern  ###
+-- ### @StartY:             Upper coordinate of the associated finder pattern ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Notes:                                                                 ###
+-- ###   The separator is placed around the corresponding finder pattern      ###
+-- ###   and reserves matrix cells that must not be used for payload data.    ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetSeparator]
     @StartX     TINYINT,
@@ -4022,11 +4365,16 @@ GO
 -- ### Procedure: [QR].[pSetTimingPatterns]                                   ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Places the horizontal and vertical timing patterns.                    ###
+-- ### Timing patterns allow scanners to determine module spacing and         ###
+-- ### matrix alignment.                                                      ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
--- ### Input Parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
--- ### Output Parameters:                                                     ###
+-- ### API Level:                    Internal                                 ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Input parameters:             None                                     ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Output parameters:                                                     ###
+-- ### None                                                                   ###
 -- ##############################################################################
 CREATE OR ALTER PROCEDURE [QR].[pSetTimingPatterns]
 (
@@ -4089,11 +4437,17 @@ GO
 -- ### Function: [QR].[fnGaloisMultiply]                                      ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Multiplies two values in the finite field GF(256).                     ###
+-- ###                                                                        ###
+-- ### The implementation uses logarithmic and exponent lookup tables         ###
+-- ### instead of direct polynomial multiplication.                           ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
--- ###   @A:                                                                  ###
--- ###   @B:                                                                  ###
+-- ### @A:                          First operand                             ###
+-- ### @B:                          Second operand                            ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Returns:                                                               ###
+-- ### Product of @A and @B in GF(256)                                        ###
 -- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnGaloisMultiply]
 (
@@ -4134,10 +4488,12 @@ GO
 -- ### Function: [QR].[fnBinaryByteToInt]                                     ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Converts an 8-bit binary string into its integer representation.       ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
--- ###   @Bits:                                                               ###
+-- ### @Binary:                    8-bit binary string                        ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Returns:                    Integer value between 0 and 255            ###
 -- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnBinaryByteToInt]
 (
@@ -4165,10 +4521,13 @@ GO
 -- ### Function: [QR].[fnByteToBinary]                                        ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Converts a numeric byte value into an 8-bit binary string.             ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
--- ###   @Value:                                                              ###
+-- ### @Value:                      Byte value between 0 and 255              ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Returns:                                                               ###
+-- ### 8-bit binary representation                                            ###
 -- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnByteToBinary]
 (
@@ -4194,11 +4553,19 @@ GO
 -- ### Function: [QR].[fnGetFormatBits_V1]                                    ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Generates the 15-bit QR format information string for the specified    ###
+-- ### error correction level and mask pattern.                               ###
+-- ###                                                                        ###
+-- ### The generated value contains BCH error protection as required by the   ###
+-- ### QR specification and is written into the reserved format information   ###
+-- ### modules of the QR matrix.                                              ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
--- ###   @ErrorCorrectionLevel:                                               ###
--- ###   @MaskPattern:                                                        ###
+-- ### @ErrorCorrectionLevel:        QR error correction level (L, M, Q or H) ###
+-- ### @MaskPattern:                 Selected mask pattern (0-7)              ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Returns:                                                               ###
+-- ### Complete QR format information bit string                              ###
 -- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnGetFormatBits_V1]
 (
@@ -4321,11 +4688,23 @@ GO
 -- ### Function: [QR].[fnPadDataBits_V1]                                      ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Applies QR payload padding according to the QR specification.          ###
+-- ###                                                                        ###
+-- ### The function appends:                                                  ###
+-- ###   - Terminator bits                                                    ###
+-- ###   - Zero padding bits                                                  ###
+-- ###   - Alternating pad codewords                                          ###
+-- ###                                                                        ###
+-- ### until the required payload size for the selected QR version and        ###
+-- ### error correction level has been reached.                               ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
--- ###   @DataBits:                                                           ###
--- ###   @DataCodewords:                                                      ###
+-- ### @BitStream:                   Encoded QR payload bit stream            ###
+-- ### @VersionNumber:               QR version number                        ###
+-- ### @ErrorCorrectionLevel:        QR error correction level (L, M, Q or H) ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Returns:                                                               ###
+-- ###   Fully padded QR payload bit stream.                                  ###
 -- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnPadDataBits_V1]
 (
@@ -4390,12 +4769,13 @@ GO
 -- ### Function: [QR].[fnGetMatrixSize]                                       ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Returns the QR matrix size for a given version.                        ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
+-- ### @VersionNumber:               QR version number.                       ###
+-- ### ---------------------------------------------------------------------- ###
 -- ### Returns:                                                               ###
--- ###                                                                        ###
+-- ### Matrix size in modules.                                                ###
 -- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnGetMatrixSize]
 (
@@ -4416,14 +4796,18 @@ END;
 GO
 
 -- ##############################################################################
--- ### Function: [QR].[fnGetMatrixSize]                                       ###
+-- ### Function: [QR].[fnGetDataCodewords]                                    ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Returns the number of QR data codewords for a given version and        ###
+-- ### error correction level.                                                ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
--- ###   @ErrorCorrectionLevel:                                               ###
+-- ### @VersionNumber:              QR version number                         ###
+-- ### @ErrorCorrectionLevel:       QR error correction level (L, M, Q or H)  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Returns:                                                               ###
+-- ### Number of data codewords.                                              ###
 -- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnGetDataCodewords]
 (
@@ -4450,11 +4834,15 @@ GO
 -- ### Function: [QR].[fnGetEccCodewords]                                     ###
 -- ##############################################################################
 -- ### Purpose:                                                               ###
+-- ### Returns the number of Reed-Solomon error correction codewords for      ###
+-- ### a given QR version and ECC level.                                      ###
 -- ### ---------------------------------------------------------------------- ###
--- ### API Level:                internal                                     ###
 -- ### Input Parameters:                                                      ###
--- ###   @VersionNumber:                                                      ###
--- ###   @ErrorCorrectionLevel:                                               ###
+-- ### @VersionNumber:            QR version number                           ###
+-- ### @ErrorCorrectionLevel:     QR error correction level (L, M, Q or H)    ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Returns:                                                               ###
+-- ### Number of ECC codewords                                                ###
 -- ##############################################################################
 CREATE OR ALTER FUNCTION [QR].[fnGetEccCodewords]
 (

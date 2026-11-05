@@ -801,6 +801,9 @@ GO
 -- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
 -- ###                                                [x] internal            ###
 -- ##############################################################################
+DROP TABLE IF EXISTS [QR].[VersionInformation]
+GO
+
 CREATE TABLE [QR].[VersionInformation]
 (
       [VersionNumber]      TINYINT        NOT NULL
@@ -920,19 +923,18 @@ BEGIN
     DECLARE
           @MatrixSize    INT
         , @VersionBits   CHAR(18)
-        , @BitPosition   INT
-        , @Bit           BIT;
+        , @ErrorMessage  NVARCHAR(300);
 
-    --------------------------------------------------------------------------
-    -- Matrix size
-    --------------------------------------------------------------------------
+    -------------------------------------------------------------------------
+    -- Matrix Size
+    -------------------------------------------------------------------------
     SELECT
         @MatrixSize = MAX([X]) + 1
     FROM [QR].[Module];
 
-    --------------------------------------------------------------------------
-    -- Version information bits
-    --------------------------------------------------------------------------
+    -------------------------------------------------------------------------
+    -- Version Bits
+    -------------------------------------------------------------------------
     SELECT
         @VersionBits = [VersionBits]
     FROM [QR].[VersionInformation]
@@ -940,108 +942,231 @@ BEGIN
 
     IF @VersionBits IS NULL
     BEGIN
-        THROW 50000,
-              'DE: Keine Versionsinformation vorhanden.
-EN: No version information available.',
-              1;
+        SET @ErrorMessage =
+              N'DE: Keine Versionsinformation vorhanden.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: No version information available.';
+        RAISERROR (@ErrorMessage,16,1);
     END;
 
-    --------------------------------------------------------------------------
+    -------------------------------------------------------------------------
+    -- Version Module Mapping
+    --
+    -- BitIndex:
+    --      0 = Least Significant Version Bit
+    --      17 = Most Significant Version Bit
+    --
+    -- VersionBits are stored MSB-first.
+    -------------------------------------------------------------------------
+    DECLARE @VersionModules TABLE
+    (
+          [CopyNumber] TINYINT NOT NULL
+        , [BitIndex]   TINYINT NOT NULL
+        , [X]          TINYINT NOT NULL
+        , [Y]          TINYINT NOT NULL
+
+        , PRIMARY KEY
+          (
+              [CopyNumber]
+            , [BitIndex]
+          )
+    );
+
+    -------------------------------------------------------------------------
     -- Top Right
-    --
-    -- 18 bits
-    -- 3 columns × 6 rows
-    --------------------------------------------------------------------------
-    SET @BitPosition = 1;
+    -------------------------------------------------------------------------
+    INSERT INTO @VersionModules
+    (
+          [CopyNumber]
+        , [BitIndex]
+        , [X]
+        , [Y]
+    )
+    VALUES
+          (1,  0, @MatrixSize - 11, 0)
+        , (1,  1, @MatrixSize - 10, 0)
+        , (1,  2, @MatrixSize -  9, 0)
 
-    DECLARE
-          @X INT
-        , @Y INT;
+        , (1,  3, @MatrixSize - 11, 1)
+        , (1,  4, @MatrixSize - 10, 1)
+        , (1,  5, @MatrixSize -  9, 1)
 
-    SET @X = @MatrixSize - 11;
+        , (1,  6, @MatrixSize - 11, 2)
+        , (1,  7, @MatrixSize - 10, 2)
+        , (1,  8, @MatrixSize -  9, 2)
 
-    WHILE @X <= @MatrixSize - 9
-    BEGIN
-        SET @Y = 0;
+        , (1,  9, @MatrixSize - 11, 3)
+        , (1, 10, @MatrixSize - 10, 3)
+        , (1, 11, @MatrixSize -  9, 3)
 
-        WHILE @Y <= 5
-        BEGIN
+        , (1, 12, @MatrixSize - 11, 4)
+        , (1, 13, @MatrixSize - 10, 4)
+        , (1, 14, @MatrixSize -  9, 4)
 
-            SET @Bit =
-                CONVERT
-                (
-                    BIT,
-                    SUBSTRING
-                    (
-                        @VersionBits,
-                        @BitPosition,
-                        1
-                    )
-                );
+        , (1, 15, @MatrixSize - 11, 5)
+        , (1, 16, @MatrixSize - 10, 5)
+        , (1, 17, @MatrixSize -  9, 5);
 
-            UPDATE [QR].[Module]
-            SET
-                  [IsBlack] = @Bit
-                , [ModuleType] = 'Version'
-            WHERE
-                    [X] = @X
-                AND [Y] = @Y;
-
-            SET @BitPosition += 1;
-            SET @Y += 1;
-
-        END;
-
-        SET @X += 1;
-    END;
-
-    --------------------------------------------------------------------------
+    -------------------------------------------------------------------------
     -- Bottom Left
-    --
-    -- Same 18 bits written a second time
-    -- 6 columns × 3 rows
-    --------------------------------------------------------------------------
-    SET @BitPosition = 1;
+    -------------------------------------------------------------------------
+    INSERT INTO @VersionModules
+    (
+          [CopyNumber]
+        , [BitIndex]
+        , [X]
+        , [Y]
+    )
+    VALUES
+          (2,  0, 0, @MatrixSize - 11)
+        , (2,  1, 1, @MatrixSize - 11)
+        , (2,  2, 2, @MatrixSize - 11)
 
-    SET @Y = @MatrixSize - 11;
+        , (2,  3, 0, @MatrixSize - 10)
+        , (2,  4, 1, @MatrixSize - 10)
+        , (2,  5, 2, @MatrixSize - 10)
 
-    WHILE @Y <= @MatrixSize - 9
-    BEGIN
-        SET @X = 0;
+        , (2,  6, 0, @MatrixSize -  9)
+        , (2,  7, 1, @MatrixSize -  9)
+        , (2,  8, 2, @MatrixSize -  9)
 
-        WHILE @X <= 5
-        BEGIN
+        , (2,  9, 3, @MatrixSize - 11)
+        , (2, 10, 4, @MatrixSize - 11)
+        , (2, 11, 5, @MatrixSize - 11)
 
-            SET @Bit =
-                CONVERT
+        , (2, 12, 3, @MatrixSize - 10)
+        , (2, 13, 4, @MatrixSize - 10)
+        , (2, 14, 5, @MatrixSize - 10)
+
+        , (2, 15, 3, @MatrixSize -  9)
+        , (2, 16, 4, @MatrixSize -  9)
+        , (2, 17, 5, @MatrixSize -  9);
+
+    -------------------------------------------------------------------------
+    -- Write Version Bits
+    -------------------------------------------------------------------------
+    UPDATE M
+    SET
+        [IsBlack] =
+            CONVERT
+            (
+                BIT,
+                SUBSTRING
                 (
-                    BIT,
-                    SUBSTRING
-                    (
-                        @VersionBits,
-                        @BitPosition,
-                        1
-                    )
-                );
+                    @VersionBits,
+                    18 - V.[BitIndex],
+                    1
+                )
+            ),
+        [ModuleType] = 'Version'
+    FROM [QR].[Module] M
+    INNER JOIN @VersionModules V
+        ON  V.[X] = M.[X]
+        AND V.[Y] = M.[Y];
 
-            UPDATE [QR].[Module]
-            SET
-                  [IsBlack] = @Bit
-                , [ModuleType] = 'Version'
-            WHERE
-                    [X] = @X
-                AND [Y] = @Y;
-
-            SET @BitPosition += 1;
-            SET @X += 1;
-
-        END;
-
-        SET @Y += 1;
+    -------------------------------------------------------------------------
+    -- Validation
+    -------------------------------------------------------------------------
+    IF EXISTS
+    (
+        SELECT 1
+        FROM [QR].[Module]
+        WHERE
+                [ModuleType] = 'Version'
+            AND [IsBlack] IS NULL
+    )
+    BEGIN
+        SET @ErrorMessage =
+              N'DE: Nicht alle Versionsmodule wurden gesetzt.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: Not all version modules have been set.';
+        RAISERROR (@ErrorMessage,16,1);
     END;
 END;
 GO
 
+
+
+
+-- ##############################################################################
+-- ### Table: [QR].[Configuration]                                            ###
+-- ##############################################################################
+-- ### Purpose:                                                               ###
+-- ### Stores project-wide configuration settings that influence QR code      ###
+-- ### generation behavior.                                                   ###
+-- ###                                                                        ###
+-- ### Configuration entries are evaluated during matrix construction, logo   ###
+-- ### placement, rendering and export operations.                            ###
+-- ###                                                                        ###
+-- ### New configuration options should be added without requiring structural ###
+-- ### database changes.                                                      ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### [x] standard           [ ] initial filling     [x] stable              ###
+-- ### [ ] self-versioned     [ ] truncate            [ ] experimental        ###
+-- ### [ ] system-versioned   [ ] complete rebuild    [ ] deprecated          ###
+-- ###                                                [ ] internal            ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Key Structure:                                                         ###
+-- ###                                                                        ###
+-- ### ConfigurationKey                                                       ###
+-- ###   Unique setting identifier.                                           ###
+-- ###                                                                        ###
+-- ### ConfigurationValue                                                     ###
+-- ###   String representation of the setting value.                          ###
+-- ###   Interpretation depends on the corresponding key.                     ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Initial Settings:                                                      ###
+-- ###                                                                        ###
+-- ### ProtectAlignmentPatterns                                               ###
+-- ###   1 = Alignment patterns are protected during logo placement.          ###
+-- ###       (STRICT mode)                                                    ###
+-- ###                                                                        ###
+-- ###   0 = Alignment patterns may be covered by logos.                      ###
+-- ###       (RELAXED mode)                                                   ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Notes:                                                                 ###
+-- ###                                                                        ###
+-- ### Alignment pattern protection only affects logo placement.              ###
+-- ###                                                                        ###
+-- ### The following QR code structures are always protected and can never    ###
+-- ### be overwritten by logo projection:                                     ###
+-- ###                                                                        ###
+-- ### - Finder Patterns                                                      ###
+-- ### - Separators                                                           ###
+-- ### - Timing Patterns                                                      ###
+-- ### - Dark Module                                                          ###
+-- ### - Format Information                                                   ###
+-- ### - Version Information                                                  ###
+-- ### ---------------------------------------------------------------------- ###
+-- ### Related Documentation:                                                 ###
+-- ###                                                                        ###
+-- ### docs/qr-code-structure.md                                              ###
+-- ### docs/logo-placement-modes.md                                           ###
+-- ##############################################################################
+DROP TABLE IF EXISTS [QR].[Configuration]
+GO
+
+CREATE TABLE [QR].[Configuration]
+(
+    [ConfigurationKey]   VARCHAR(100) NOT NULL,
+    [ConfigurationValue] VARCHAR(100) NOT NULL,
+
+    CONSTRAINT PK_QR_Configuration
+        PRIMARY KEY ([ConfigurationKey])
+);
+GO
+
+INSERT INTO [QR].[Configuration]
+(
+      [ConfigurationKey]
+    , [ConfigurationValue]
+)
+VALUES
+(
+      'ProtectAlignmentPatterns'
+    , '1'
+);
+GO
 
 -- ##############################################################################
 -- ### Procedure: [QR].[pBuildDataBlocks]                                     ###
@@ -1206,7 +1331,8 @@ BEGIN
     FROM [QR].[Module]                  AS [M]
     WHERE
             [M].[X] BETWEEN @CenterX - 2 AND @CenterX + 2
-        AND [M].[Y] BETWEEN @CenterY - 2 AND @CenterY + 2;
+        AND [M].[Y] BETWEEN @CenterY - 2 AND @CenterY + 2
+        AND [M].[ModuleType] IS NULL;
 END;
 GO
 
@@ -2036,6 +2162,9 @@ BEGIN
         , @VersionNumber            = @VersionNumber
         , @FinalBitStream           = @FinalBitStream OUTPUT;
 
+    EXEC [QR].[pSetVersionInformation]
+        @VersionNumber = @VersionNumber;
+
     -- '6 PlaceDataBits';
     EXEC [QR].[pPlaceDataBits]
          @Bits                      = @FinalBitStream,
@@ -2634,34 +2763,38 @@ END;
 
             IF @Factor IS NULL
             BEGIN
-                THROW 79991,
-                      'DE: Factor ist NULL.
-            EN: Factor is NULL.',
-                      1;
+                SET @ErrorMessage =
+                      N'DE: Factor ist NULL.'
+                    + CHAR(13) + CHAR(10)
+                    + N'EN: Factor is NULL.';
+                RAISERROR (@ErrorMessage, 16, 1)
             END;
 
             IF @GeneratorCoefficient IS NULL
             BEGIN
-                THROW 79992,
-                      'DE: GeneratorCoefficient ist NULL.
-            EN: GeneratorCoefficient is NULL.',
-                      1;
+                SET @ErrorMessage =
+                      N'DE: GeneratorCoefficient ist NULL.'
+                    + CHAR(13) + CHAR(10)
+                    + N'EN: GeneratorCoefficient is NULL.';
+                RAISERROR (@ErrorMessage, 16, 1)
             END;
 
             IF @Factor IS NULL
             BEGIN
-                THROW 79996,
-                      'DE: Factor ist NULL.
-            EN: Factor is NULL.',
-                      1;
+                SET @ErrorMessage =
+                      N'DE: Factor ist NULL.'
+                    + CHAR(13) + CHAR(10)
+                    + N'EN: Factor is NULL.';
+                RAISERROR (@ErrorMessage, 16, 1)
             END;
 
             IF @GeneratorCoefficient IS NULL
             BEGIN
-                THROW 79997,
-                      'DE: GeneratorCoefficient ist NULL.
-            EN: GeneratorCoefficient is NULL.',
-                      1;
+                SET @ErrorMessage =
+                      N'DE: GeneratorCoefficient ist NULL.'
+                    + CHAR(13) + CHAR(10)
+                    + N'EN: GeneratorCoefficient is NULL.';
+                RAISERROR (@ErrorMessage, 16, 1)
             END;
 
             SET @Product =
@@ -2681,21 +2814,22 @@ END;
 
 
             IF @OldValue IS NULL
-BEGIN
-    THROW 79994,
-          'DE: OldValue ist NULL.
-EN: OldValue is NULL.',
-          1;
-END;
+            BEGIN
+                SET @ErrorMessage =
+                      N'DE: OldValue ist NULL.'
+                    + CHAR(13) + CHAR(10)
+                    + N'EN: OldValue is NULL.';
+                RAISERROR (@ErrorMessage, 16, 1)
+            END;
 
-IF @Product IS NULL
-BEGIN
-    THROW 79995,
-          'DE: Product ist NULL.
-EN: Product is NULL.',
-          1;
-END;
-
+            IF @Product IS NULL
+            BEGIN
+                SET @ErrorMessage =
+                      N'DE: Product ist NULL.'
+                    + CHAR(13) + CHAR(10)
+                    + N'EN: Product is NULL.';
+                RAISERROR (@ErrorMessage, 16, 1)
+            END;
 
             SET @NewValue = @OldValue ^ @Product;
 
@@ -2919,6 +3053,32 @@ BEGIN
     DECLARE @DataBitStream  VARCHAR(MAX);
     DECLARE @FinalBitStream VARCHAR(MAX);
 
+    IF NOT EXISTS (SELECT 1 FROM [QR].[GaloisLog])
+       OR NOT EXISTS (SELECT 1 FROM [QR].[GaloisExp])
+    BEGIN
+        EXEC [QR].[pBuildGaloisTables];
+    END;
+
+    DECLARE @EccCodewords INT;
+
+    SET @EccCodewords =
+        [QR].[fnGetEccCodewords]
+        (
+              @VersionNumber
+            , @ErrorCorrectionLevel
+        );
+
+    IF NOT EXISTS
+    (
+        SELECT 1
+        FROM [QR].[GeneratorPolynomial]
+        WHERE [EccCodewords] = @EccCodewords
+    )
+    BEGIN
+        EXEC [QR].[pBuildGeneratorPolynomial]
+             @EccCodewords = @EccCodewords;
+    END;
+
     EXEC QR.pCreateBaseMatrix
         @VersionNumber = @VersionNumber;
 
@@ -3040,17 +3200,25 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @BestStartX         INTEGER = NULL
-    DECLARE @BestStartY         INTEGER = NULL
-    DECLARE @BestEndX           INTEGER = NULL
-    DECLARE @BestEndY           INTEGER = NULL
-    DECLARE @BestArea           INTEGER = 0;
-    DECLARE @StartX             INTEGER
-    DECLARE @StartY             INTEGER
-    DECLARE @EndX               INTEGER
-    DECLARE @EndY               INTEGER
-    DECLARE @Area               INTEGER
-    DECLARE @MatrixSize         INTEGER;
+    DECLARE @BestStartX                 INTEGER = NULL
+    DECLARE @BestStartY                 INTEGER = NULL
+    DECLARE @BestEndX                   INTEGER = NULL
+    DECLARE @BestEndY                   INTEGER = NULL
+    DECLARE @BestArea                   INTEGER = 0;
+    DECLARE @StartX                     INTEGER
+    DECLARE @StartY                     INTEGER
+    DECLARE @EndX                       INTEGER
+    DECLARE @EndY                       INTEGER
+    DECLARE @Area                       INTEGER
+    DECLARE @MatrixSize                 INTEGER;
+    DECLARE @ProtectAlignmentPatterns   BIT;
+
+    SELECT
+        @ProtectAlignmentPatterns =
+            TRY_CAST([ConfigurationValue] AS BIT)
+    FROM [QR].[Configuration]
+    WHERE [ConfigurationKey] =
+          'ProtectAlignmentPatterns';
 
     SELECT
         @MatrixSize = MAX([X]) + 1
@@ -3080,9 +3248,24 @@ BEGIN
                         SELECT 1
                         FROM [QR].[Module]
                         WHERE 1 = 1
-                           AND [X] BETWEEN @StartX AND @EndX
-                           AND [Y] BETWEEN @StartY AND @EndY
-                           AND [ModuleType] <> 'Data'
+                            AND [X] BETWEEN @StartX AND @EndX
+                            AND [Y] BETWEEN @StartY AND @EndY
+                            AND
+                            (
+                                   [ModuleType] IN
+                                   (
+                                        'Finder',
+                                        'Separator',
+                                        'Timing',
+                                        'Format',
+                                        'Version',
+                                        'DarkModule'
+                                   )
+                                OR (
+                                        @ProtectAlignmentPatterns   = 1
+                                    AND [ModuleType]                = 'Alignment'
+                                   )
+                            )
                     )
                     BEGIN
                         SET @Area =
@@ -3675,7 +3858,7 @@ BEGIN
     <> @ExpectedRemainderBits
     BEGIN
         SET @ErrorMessage =
-              N'Falsche Anzahl Remainder Bits.'
+              N'DE: Falsche Anzahl Remainder Bits.'
             + CHAR(13) + CHAR(10)
             + N'EN: Incorrect number of remainder bits.';
         RAISERROR (@ErrorMessage, 16, 1)
@@ -4134,6 +4317,7 @@ BEGIN
         );
 
         SET @MaskPattern = @MaskPattern + 1;
+
     END;
 
     -- ========================================================================
@@ -4471,6 +4655,7 @@ BEGIN
     -- --------------------------------------------------------------------------
     -- Write Format Bits
     -- --------------------------------------------------------------------------
+    
     UPDATE [M]
     SET
         [IsBlack] =
@@ -5130,35 +5315,3 @@ BEGIN
 END;
 GO
 
-
-
-
-
-
-
-/*
-SELECT CAST([Inhalt] AS XML) AS VollstaendigerText
-FROM (
-        SELECT TOP 1 [SVG].[SvgContent]         AS [Inhalt]
-        FROM [QR].[GeneratedSvg]                AS [SVG]
-        ORDER BY [SVG].[CreatedAt] DESC
-    ) AS Dummy
-
-
--- Liste der letzten generierten QR-Codes
-SELECT TOP(20) *
-FROM [QR].[vGeneratedSvgHistory]
-
-
-DECLARE @Svg VARCHAR(MAX);
-
-EXEC QR.pCreateColoredQrCode
-      @Text                 = 'Hello World'
-    , @LogoName             = 'TA'
-    , @VersionNumber        = 1
-    , @ErrorCorrectionLevel = 'M'
-    , @Svg                  = @Svg OUTPUT;
-
-    SELECT @Svg
-
-*/

@@ -16,6 +16,15 @@ A QR Code Generator implemented entirely in Microsoft SQL Server T-SQL.
 
 ---
 
+## Documentation
+
+- docs/qr-code-structure.md
+- docs/logoimport.md
+- docs/known-issues.md
+- CHANGELOG.md
+
+---
+
 ## Example Output
 
 ### Basic QR Code
@@ -66,7 +75,6 @@ The SVG files shown above are included in the repository:
 
 ## Repository Structure
 
-```text
 src/
     Main SQL implementation
 
@@ -75,3 +83,31 @@ docs/
 
 examples/
     Example calls, SVG files and screenshots
+
+## Project Design Decisions
+
+The T-SQL QR Code Generator intentionally protects all critical QR Code structures:
+
+- Finder Patterns
+- Separators
+- Timing Patterns
+- Dark Module
+- Format Information
+- Version Information
+
+Alignment Pattern protection is configurable.
+
+This design allows users to choose between:
+
+- STRICT mode for maximum standards compliance
+- RELAXED mode for larger logo placement areas
+
+Practical testing has shown that many modern QR Code readers can successfully decode QR Codes with partially covered Alignment Patterns when sufficient error correction is used.
+
+## Development Resources
+
+See:
+
+- docs/qr-code-structure.md
+- docs/logo-placement-modes.md
+- docs/qr-development-tools.md

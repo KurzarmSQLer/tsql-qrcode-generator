@@ -109,3 +109,38 @@ First public release of the project.
 - SVG generation
 - Logo projection
 - SVG persistence
+
+## v0.3
+
+### Added
+
+- Introduced configuration table [QR].[Configuration].
+- Added configurable Alignment Pattern protection.
+- Added STRICT and RELAXED logo placement modes.
+- Added technical documentation:
+  - docs/qr-code-structure.md
+
+### Changed
+
+- Logo area calculation no longer requires Alignment Pattern protection.
+- Largest logo area can now expand across Alignment Patterns when configured.
+
+## [Unreleased]
+
+### Fixed
+
+#### QR Code Generation
+
+Fixed version-information placement for QR versions 7 and higher.
+
+The version-information bits were previously written using an incorrect coordinate mapping, resulting in non-decodable QR codes despite otherwise correct payload, ECC and masking.
+
+The implementation now follows the bit-placement behavior of the Nayuki QR Code Generator reference implementation.
+
+#### Reed-Solomon Initialization
+
+Improved robustness of QR generation by ensuring required lookup structures are initialized before ECC generation:
+
+- GaloisLog
+- GaloisExp
+- GeneratorPolynomial

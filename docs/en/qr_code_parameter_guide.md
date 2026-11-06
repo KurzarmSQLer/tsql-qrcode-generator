@@ -131,3 +131,26 @@ These payloads require considerably more storage capacity than ASCII text.
 
 
 
+# Which Settings Should I Use?
+
+| Scenario | Recommended ECL | Recommended Version Strategy |
+|-----------|-----------|-----------|
+| Numeric Identifier | L | Automatic |
+| Serial Number | M | Automatic |
+| Website URL | M | Automatic |
+| Business Document Reference | M | Automatic |
+| JSON Payload | M or Q | Automatic |
+| Printed Product Label | Q | Automatic |
+| Industrial Asset Label | H | Automatic |
+| Fixed Layout Template | M or Q | Fixed Version |
+| Capacity Testing | L | Fixed Version 40 |
+
+In most business applications the recommended starting point is:
+
+```sql
+EXEC [QR].[pCreateQrCode]
+     @Text                 = @Payload,
+     @ErrorCorrectionLevel = 'M';
+```
+
+This configuration usually provides the best balance between capacity, size and robustness.

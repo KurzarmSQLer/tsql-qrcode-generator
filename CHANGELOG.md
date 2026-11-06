@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2026-11-06
+
+### Added
+
+- Complete QR Code generation engine
+- Reed-Solomon error correction support
+- SVG renderer
+- QR matrix comparison utilities
+- Regression test framework
+
+### Documentation
+
+- Coding Standards
+- Validation Against Nayuki
+- QR Code Parameter Guide
+
+### Validation
+
+- Matrix output validated against reference implementation by Nayuki
+- Scanability verified
+- 
 ---
 
 # v0.2

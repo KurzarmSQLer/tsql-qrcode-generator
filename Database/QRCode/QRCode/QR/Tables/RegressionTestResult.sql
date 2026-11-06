@@ -1,0 +1,26 @@
+﻿CREATE TABLE [QR].[RegressionTestResult] (
+    [ExecutionId]          UNIQUEIDENTIFIER NOT NULL,
+    [ExecutionTimestamp]   DATETIME2 (3)    NOT NULL,
+    [TestName]             VARCHAR (100)    NOT NULL,
+    [InputText]            VARCHAR (MAX)    NOT NULL,
+    [VersionNumber]        TINYINT          NOT NULL,
+    [ErrorCorrectionLevel] CHAR (1)         NOT NULL,
+    [MatrixSize]           INT              NOT NULL,
+    [ExpectedModuleCount]  INT              NOT NULL,
+    [ActualModuleCount]    INT              NOT NULL,
+    [NullModuleCount]      INT              NOT NULL,
+    [DarkModuleCount]      INT              NOT NULL,
+    [FormatModuleCount]    INT              NOT NULL,
+    [VersionModuleCount]   INT              NOT NULL,
+    [DifferenceCount]      INT              NULL,
+    [FirstDifferenceX]     INT              NULL,
+    [FirstDifferenceY]     INT              NULL,
+    [DurationMilliseconds] INT              NULL,
+    [Success]              BIT              NOT NULL,
+    [Details]              NVARCHAR (2000)  NULL,
+    [TestStatus]           VARCHAR (20)     NOT NULL,
+    [ErrorNumber]          INT              NULL,
+    [ErrorMessage]         NVARCHAR (MAX)   NULL,
+    CONSTRAINT [PK_RegressionTestResult] PRIMARY KEY CLUSTERED ([ExecutionId] ASC)
+);
+

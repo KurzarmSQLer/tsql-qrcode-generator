@@ -1,0 +1,3 @@
+﻿CREATE SCHEMA [QR]
+    AUTHORIZATION [dbo];
+

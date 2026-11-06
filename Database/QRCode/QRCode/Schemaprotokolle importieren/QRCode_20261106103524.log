@@ -1,0 +1,88 @@
+06.11.2026 23:35:24	Dieses Protokoll enthält Informationen über den Importvorgang eines Schemas in das Projekt "QRCode" auf dem Computer "TAH-MAIN" durch den Benutzer "Torst".
+06.11.2026 23:35:24	Der Import des Datenbankschemas wurde gestartet.
+06.11.2026 23:35:29	Datenbankanmeldeinformationen werden ermittelt.
+06.11.2026 23:35:29	Datenbankoptionen werden ermittelt.
+06.11.2026 23:35:29	Option zum Erfassen der generischen datenbankweit gültigen Konfiguration
+06.11.2026 23:35:29	Benutzer werden ermittelt.
+06.11.2026 23:35:29	Rollen werden ermittelt.
+06.11.2026 23:35:29	Anwendungsrollen werden ermittelt.
+06.11.2026 23:35:29	Rollenmitgliedschaften werden ermittelt.
+06.11.2026 23:35:29	Dateigruppen werden ermittelt.
+06.11.2026 23:35:29	Volltextkataloge werden ermittelt.
+06.11.2026 23:35:29	Assemblys werden ermittelt.
+06.11.2026 23:35:29	Zertifikate werden ermittelt.
+06.11.2026 23:35:29	Asymmetrische Schlüssel werden ermittelt.
+06.11.2026 23:35:29	Symmetrische Schlüssel werden ermittelt.
+06.11.2026 23:35:29	Verschlüsselte symmetrische Schlüssel werden ermittelt.
+06.11.2026 23:35:29	Schemas werden ermittelt.
+06.11.2026 23:35:29	XML-Schemaauflistungen werden ermittelt.
+06.11.2026 23:35:29	Benutzerdefinierte Datentypen werden ermittelt.
+06.11.2026 23:35:29	Benutzerdefinierte Typen werden ermittelt.
+06.11.2026 23:35:29	Tabellentypen werden ermittelt.
+06.11.2026 23:35:29	Eindeutige Schlüssel für Tabellentypen werden ermittelt
+06.11.2026 23:35:29	Primärschlüssel für Tabellentypen werden ermittelt.
+06.11.2026 23:35:29	Indizes für Tabellentypen werden ermittelt
+06.11.2026 23:35:29	CHECK-Einschränkungen für Tabellentypen werden ermittelt.
+06.11.2026 23:35:29	DEFAULT-Einschränkungen für Tabellentypen werden ermittelt.
+06.11.2026 23:35:29	Partitionsfunktionen werden ermittelt.
+06.11.2026 23:35:29	Partitionsschemas werden ermittelt.
+06.11.2026 23:35:29	Funktionen werden ermittelt.
+06.11.2026 23:35:29	Verschlüsselte Funktionen werden gesammelt.
+06.11.2026 23:35:29	Aggregate werden ermittelt.
+06.11.2026 23:35:29	Prozeduren werden ermittelt.
+06.11.2026 23:35:29	Verschlüsselte Prozeduren werden gesammelt.
+06.11.2026 23:35:29	Tabellen werden ermittelt.
+06.11.2026 23:35:29	Primärschlüssel werden ermittelt.
+06.11.2026 23:35:29	UNIQUE-Einschränkungen werden ermittelt.
+06.11.2026 23:35:29	Fremdschlüssel werden ermittelt.
+06.11.2026 23:35:29	Standardeinschränkungen werden ermittelt.
+06.11.2026 23:35:29	CHECK-Einschränkungen werden ermittelt.
+06.11.2026 23:35:29	Sichten werden ermittelt.
+06.11.2026 23:35:29	Verschlüsselte Sichten werden gesammelt.
+06.11.2026 23:35:29	Indizes werden ermittelt.
+06.11.2026 23:35:29	Statistiken werden ermittelt.
+06.11.2026 23:35:29	Volltextindex-Stopplisten werden ermittelt.
+06.11.2026 23:35:29	Sucheigenschaftenlisten werden ermittelt.
+06.11.2026 23:35:29	Sucheigenschaften werden ermittelt.
+06.11.2026 23:35:29	Volltextindizes werden ermittelt.
+06.11.2026 23:35:29	Columnstore-Indizes werden gesammelt
+06.11.2026 23:35:29	Räumliche Indizes werden ermittelt.
+06.11.2026 23:35:29	XML-Indizes werden ermittelt.
+06.11.2026 23:35:29	Selektive XML-Indexe werden ermittelt.
+06.11.2026 23:35:29	Verschlüsselte Trigger werden gesammelt.
+06.11.2026 23:35:29	Trigger werden ermittelt.
+06.11.2026 23:35:29	Verschlüsselte Trigger und CLR-DDL-Trigger werden ermittelt.
+06.11.2026 23:35:29	DDL-Trigger werden ermittelt.
+06.11.2026 23:35:29	Edgeeinschränkungen werden erstellt.
+06.11.2026 23:35:29	Synonyme werden ermittelt.
+06.11.2026 23:35:29	Standardwerte werden ermittelt.
+06.11.2026 23:35:29	UDDT-Bindungen für Dateneinschränkungen werden gesammelt.
+06.11.2026 23:35:29	Regeln werden ermittelt.
+06.11.2026 23:35:29	UDDT-Bindungen für Dateneinschränkungen werden gesammelt.
+06.11.2026 23:35:29	Nachrichtentypen werden ermittelt.
+06.11.2026 23:35:29	Warteschlangen werden ermittelt.
+06.11.2026 23:35:29	Verträge werden ermittelt.
+06.11.2026 23:35:29	Dienste werden ermittelt.
+06.11.2026 23:35:29	Ereignisbenachrichtigungen werden ermittelt.
+06.11.2026 23:35:29	Remotedienstbindungen werden ermittelt.
+06.11.2026 23:35:29	Broker-Prioritäten werden ermittelt.
+06.11.2026 23:35:29	Signaturen werden ermittelt.
+06.11.2026 23:35:29	Komprimierungsoptionen werden gesammelt
+06.11.2026 23:35:29	Sequenztypen werden ermittelt.
+06.11.2026 23:35:29	Sicherheitsrichtlinien werden ermittelt
+06.11.2026 23:35:29	Verschlüsselungsschlüssel für Spalten werden ermittelt
+06.11.2026 23:35:29	Hauptschlüssel für Spalten werden ermittelt
+06.11.2026 23:35:29	Externe Datenquellen werden gesammelt
+06.11.2026 23:35:29	Externe Dateiformate werden gesammelt
+06.11.2026 23:35:29	Externe Tabellen werden gesammelt
+06.11.2026 23:35:30	Optionen für die XML-Indexkomprimierung werden gesammelt
+06.11.2026 23:35:30	Erweiterte Eigenschaften werden ermittelt.
+06.11.2026 23:35:30	Assemblys werden ermittelt.
+06.11.2026 23:35:30	Anmeldeinformationen werden ermittelt.
+06.11.2026 23:35:30	Anmeldungen werden ermittelt.
+06.11.2026 23:35:30	Serverüberwachungen werden ermittelt.
+06.11.2026 23:35:30	Das Projekt wird auf doppelte Elemente überprüft.
+06.11.2026 23:35:30	Die Verarbeitung doppelter Elemente wurde abgeschlossen.
+06.11.2026 23:35:31	Datenbankimport abgeschlossen.
+06.11.2026 23:35:31	Eine Zusammenfassung des Importvorgangs wurde an folgendem Ort gespeichert: D:\KurzarmSQLer\tsql-qrcode-generator\Database\QRCode\QRCode\Schemaprotokolle importieren\QRCode_20261106103524.log
+06.11.2026 23:35:31	Klicken Sie auf "Fertig stellen", um den Vorgang fortzusetzen...

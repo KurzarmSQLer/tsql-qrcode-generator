@@ -1,6 +1,0 @@
-﻿CREATE TABLE [QR].[GF256Log] (
-    [Value]    TINYINT NOT NULL,
-    [Exponent] TINYINT NOT NULL,
-    CONSTRAINT [PK_QR_GF256Log] PRIMARY KEY CLUSTERED ([Value] ASC)
-);
-

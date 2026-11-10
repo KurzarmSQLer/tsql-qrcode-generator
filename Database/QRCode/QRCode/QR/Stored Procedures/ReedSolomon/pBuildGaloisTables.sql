@@ -1,27 +1,26 @@
-﻿
--- ##############################################################################
--- ### Procedure: [QR].[pBuildGaloisTables]                                   ###
--- ##############################################################################
--- ### Purpose:                                                               ###
--- ### Creates and populates the Galois lookup tables used for Reed-Solomon   ###
--- ### error correction calculations.                                         ###
--- ###                                                                        ###
--- ### The procedure fills [QR].[GaloisLog] and [QR].[GaloisExp].             ###
--- ###                                                                        ###
--- ### This procedure only needs to be executed when the lookup tables are    ###
--- ### missing or empty.                                                      ###
--- ### ---------------------------------------------------------------------- ###
--- ### API Level:                     Internal                                ###
--- ### ---------------------------------------------------------------------- ###
--- ### Input parameters:                                                      ###
--- ### None                                                                   ###
--- ### ---------------------------------------------------------------------- ###
--- ### Output parameters:                                                     ###
--- ### None                                                                   ###
--- ##############################################################################
-CREATE   PROCEDURE [QR].[pBuildGaloisTables]
+﻿CREATE PROCEDURE [QR].[pBuildGaloisTables]
 AS
 BEGIN
+    -- ##############################################################################
+    -- ### Procedure: [QR].[pBuildGaloisTables]                                   ###
+    -- ##############################################################################
+    -- ### Purpose:                                                               ###
+    -- ### Creates and populates the Galois lookup tables used for Reed-Solomon   ###
+    -- ### error correction calculations.                                         ###
+    -- ###                                                                        ###
+    -- ### The procedure fills [QR].[GaloisLog] and [QR].[GaloisExp].             ###
+    -- ###                                                                        ###
+    -- ### This procedure only needs to be executed when the lookup tables are    ###
+    -- ### missing or empty.                                                      ###
+    -- ### ---------------------------------------------------------------------- ###
+    -- ### API Level:                     Internal                                ###
+    -- ### ---------------------------------------------------------------------- ###
+    -- ### Input parameters:                                                      ###
+    -- ### None                                                                   ###
+    -- ### ---------------------------------------------------------------------- ###
+    -- ### Output parameters:                                                     ###
+    -- ### None                                                                   ###
+    -- ##############################################################################
     SET NOCOUNT ON;
 
     TRUNCATE TABLE [QR].[GaloisExp];

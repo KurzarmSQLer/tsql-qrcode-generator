@@ -36,10 +36,10 @@ BEGIN
     DECLARE @Direction          INTEGER = -1;
     DECLARE @CurrentX           INTEGER;
     DECLARE @CurrentBit         BIT;
-    DECLARE @ErrorMessage       NVARCHAR(300);
+    DECLARE @ErrorMessage       NVARCHAR(MAX);
 
     -------------------------------------------------------------------------
-    -- Parameter prüfen
+    -- Check Parameters
     -------------------------------------------------------------------------
     IF @Bits IS NULL OR LEN(@Bits) = 0
     BEGIN
@@ -228,12 +228,30 @@ BEGIN
         , [ModuleType] = 'Remainder'
     WHERE [ModuleType] IS NULL;
 
-    DECLARE @ExpectedRemainderBits INT;
+    DECLARE @ExpectedRemainderBits INTEGER;
+
+    -------------------------------------------------------------------------
+    -- Determine expected remainder bits for the current QR version
+    -------------------------------------------------------------------------
 
     SELECT
         @ExpectedRemainderBits = [RemainderBits]
     FROM [QR].[VersionRemainderBits]
     WHERE [VersionNumber] = @VersionNumber;
+    
+    -------------------------------------------------------------------------
+    -- Validate remainder-bit metadata
+    -------------------------------------------------------------------------
+
+    IF @ExpectedRemainderBits IS NULL
+    BEGIN
+
+        SET @ErrorMessage =
+              N'DE: Für die angegebene QR-Version sind keine Remainder-Bits definiert.'
+            + CHAR(13) + CHAR(10)
+            + N'EN: No remainder bits have been defined for the specified QR version.';
+        RAISERROR (@ErrorMessage, 16, 1);
+    END;
 
     IF
     (

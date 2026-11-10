@@ -77,6 +77,15 @@
     <Folder Include="QR\Stored Procedures\Rendering" />
     <Folder Include="QR\Stored Procedures\Logo" />
     <Folder Include="QR\Stored Procedures\Testing" />
+    <Folder Include="Scripts" />
+    <Folder Include="Scripts\SeedData" />
+    <Folder Include="Scripts\PreDeployment" />
+    <Folder Include="Scripts\PostDeployment" />
+    <Folder Include="Docs" />
+    <Folder Include="Docs\de" />
+    <Folder Include="Docs\en" />
+    <Folder Include="Scripts\Migration" />
+    <Folder Include="Scripts\Tools" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\SQLMatrix.sql" />
@@ -158,5 +167,44 @@
     <Build Include="QR\Stored Procedures\Testing\pRunRegressionTest.sql" />
     <Build Include="QR\Stored Procedures\Testing\pValidateRegressionResult.sql" />
     <Build Include="QR\Stored Procedures\Generation\pReserveVersionModules.sql" />
+    <None Include="Scripts\SeedData\Seed_ErrorCorrectionLevel.sql" />
+    <PostDeploy Include="Scripts\PostDeployment\PostDeployment.sql" />
+    <None Include="Scripts\SeedData\Seed_VersionDefinition.sql" />
+    <None Include="Scripts\SeedData\Seed_VersionInformation.sql" />
+    <None Include="Scripts\Migration\Populate_VersionCapacity_11_27.sql" />
+    <Build Include="Scripts\Tools\Import_QR_BlockStructure.sql" />
+    <Build Include="QR\Tables\Metadata\ImportVersionBlockStructure.sql" />
+    <None Include="Scripts\SeedData\Seed_VersionBlockStructure.sql" />
+    <None Include="Scripts\SeedData\Seed_VersionCapacity.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Docs\en\SeedData_Strategy.md" />
+    <None Include="Scripts\SeedData\Seed_VersionRemainderBits.sql" />
+    <None Include="Docs\en\architecture.md" />
+    <None Include="Docs\en\coding_standards.md" />
+    <None Include="Docs\en\coding-style.md" />
+    <None Include="Docs\en\conference-guide.md" />
+    <None Include="Docs\en\database-model.md" />
+    <None Include="Docs\en\dependency_analysis.md" />
+    <None Include="Docs\en\known-issues.md" />
+    <None Include="Docs\en\license-philosophy.md" />
+    <None Include="Docs\en\licensing.md" />
+    <None Include="Docs\en\logo-import.md" />
+    <None Include="Docs\en\logo-placement-modes.md" />
+    <None Include="Docs\en\logo-system.md" />
+    <None Include="Docs\en\object_inventory.md" />
+    <None Include="Docs\en\object-catalog.md" />
+    <None Include="Docs\en\processing-pipeline.md" />
+    <None Include="Docs\en\project-goals.md" />
+    <None Include="Docs\en\public-api.md" />
+    <None Include="Docs\en\qr_code_parameter_guide.md" />
+    <None Include="Docs\en\qr-code-structure.md" />
+    <None Include="Docs\en\qr-development-tools.md" />
+    <None Include="Docs\en\roadmap.md" />
+    <None Include="Docs\en\validation_against_nayuki.md" />
+    <None Include="CHANGELOG.md" />
+    <None Include="LICENSE.txt" />
+    <None Include="README.md" />
+    <None Include="Scripts\Tools\Import-NayukiBlockStructure.ps1" />
   </ItemGroup>
 </Project>

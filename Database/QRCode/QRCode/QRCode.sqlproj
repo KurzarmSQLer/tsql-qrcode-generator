@@ -9,8 +9,7 @@
     <ProjectGuid>{4d0402ce-4137-47e3-94b9-778052da976c}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>QRCode</RootNamespace>
     <AssemblyName>QRCode</AssemblyName>
     <ModelCollation>1033,CI</ModelCollation>
@@ -50,7 +49,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -176,6 +174,7 @@
     <Build Include="QR\Tables\Metadata\ImportVersionBlockStructure.sql" />
     <None Include="Scripts\SeedData\Seed_VersionBlockStructure.sql" />
     <None Include="Scripts\SeedData\Seed_VersionCapacity.sql" />
+    <None Include="Scripts\SeedData\Seed_RegressionTest.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Docs\en\SeedData_Strategy.md" />
